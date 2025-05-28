@@ -54,7 +54,7 @@ export default function CreateTrackModal({
   const toggleGenre = (
     genre: string,
     currentGenres: string[],
-    setFieldValue: (field: string, value: any) => void
+    setFieldValue: (field: string, value: string[]) => void
   ) => {
     const newGenres = currentGenres.includes(genre)
       ? currentGenres.filter((g) => g !== genre)

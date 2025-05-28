@@ -19,13 +19,7 @@ interface WaveformProps {
   minWidth?: number;
 }
 
-const Waveform = ({
-  url,
-  id,
-  isPlaying,
-  onPlayPause,
-  minWidth,
-}: WaveformProps) => {
+const Waveform = ({ url, id, isPlaying, onPlayPause }: WaveformProps) => {
   const waveformRef = useRef<HTMLDivElement>(null);
   const wavesurferRef = useRef<WaveSurfer | null>(null);
   const [error, setError] = useState<string | null>(null);

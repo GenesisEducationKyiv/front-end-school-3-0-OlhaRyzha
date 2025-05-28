@@ -38,7 +38,6 @@ export const trackColumns = ({
   onEdit,
   onUpload,
   onDelete,
-  playAudio,
 }: TrackColumnsOpts): ColumnDef<Track>[] => {
   const cols: ColumnDef<Track>[] = [];
 
