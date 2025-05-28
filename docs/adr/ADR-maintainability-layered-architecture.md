@@ -1,78 +1,78 @@
-# ADR 1: Впровадження логічного розділення шарів для покращення Maintainability в проекті Track Manager
+# ADR 1: Introducing Layered Architecture to Improve Maintainability in the Track Manager Project
 
 ---
 
 ## Context
 
-У процесі роздумів над тим, наскільки правильно зараз організована архітектура проекту, та над тим, як легко буде підтримувати, розуміти, тестувати, масштабувати код у майбутньому, я зіткнулася з тим, що бізнес-логіка, запити до серверу та керування станом часто знаходяться безпосередньо у UI-компонентах або сторінках.
+While evaluating how well the current architecture of the Track Manager project supports long-term maintainability, readability, testability, and scalability, I identified that business logic, API calls, and state management are often placed directly within UI components or pages.
 
-Це ускладнює:
+This creates several challenges:
 
-- адаптацію до змін API або бізнес-вимог;
-- повторне використання логіки в різних частинах застосунку;
-- написання unit-тестів на логіку окремо від UI;
+- Adapting to API or business logic changes becomes more difficult;
+- Logic is hard to reuse across different parts of the application;
+- Unit testing logic in isolation from UI is problematic;
 
-Крім того, без чітких меж між шарами даних, стану та представлення, порушується принцип Separation of Concerns.
+Additionally, the lack of clear boundaries between data access, logic, and UI layers violates the principle of Separation of Concerns.
 
 ---
 
 ## Decision
 
-Я вирішила впровадити архітектурне розділення логіки застосунку на три шари, зберігаючи при цьому горизонтальну структуру проекту:
+I decided to introduce a layered architectural approach to separate the logic of the application into three distinct layers, while preserving the horizontal folder structure of the project.
 
-### 1. Шар доступу до даних (`services/api/`)
+### 1. Data Access Layer (`services/api/`)
 
-- Відповідає за низькорівневі запити до бекенду (axios).
-- Це вже реалізовано у проєкті — залишаю без змін.
+- Responsible for low-level API calls (via Axios).
+- This layer is already implemented in the project and remains unchanged.
 
-### 2. Шар логіки (`store/`, `store/hooks/`)
+### 2. Logic Layer (`store/`, `store/hooks/`)
 
-- Містить React Query хуки, Redux slice та обробку даних.
-- Приклади: `useTracksQuery.ts`, `cacheSlice.ts`
+- Contains React Query hooks, Redux slices, and data transformation logic.
+- Examples: `useTracksQuery.ts`, `cacheSlice.ts`
 
-### 3. Шар UI (`components/`, `pages/`)
+### 3. UI Layer (`components/`, `pages/`)
 
-- Відповідає лише за представлення (рендеринг).
-- Приклади: `TrackTable.tsx`, `AudioUploadModal.tsx`
+- Responsible only for rendering and UI behavior.
+- Examples: `TrackTable.tsx`, `AudioUploadModal.tsx`
 
 ---
 
 ## Rationale
 
-Це рішення базується на принципах:
+This decision is based on the principles of:
 
 - Separation of Concerns
 - Single Responsibility Principle
-- Композиційності хуків у React
+- Composability of React hooks
 
-### Основні переваги:
+### Key Benefits:
 
-- Компоненти UI стануть легшими
-- Централізація логіки
-- Повторне використання логіки
-- Краща тестованість
+- UI components will become simpler and more focused;
+- Logic will be centralized and reusable;
+- Easier unit testing of business logic;
+- Better long-term maintainability.
 
-### Відкинуті альтернативи:
+### Rejected Alternatives:
 
-- Утримання всієї логіки в компонентах або сторінках (антипатерн)
+- Keeping all logic inside UI components or pages (anti-pattern).
 
 ---
 
 ## Status
 
-Accepted - Поступово буду впроваджуати зміни в усіх ключових частинах проєкту: модалках, таблицях, формах тощо.
+**Accepted** – Changes are being progressively implemented in key parts of the project including modals, tables, and forms.
 
 ---
 
 ## Consequences
 
-### Позитивні:
+### Positive:
 
-- Легший для підтримки та розуміння код
-- Краща тестованість логіки
-- Масштабованість
-- Відповідність сучасним архітектурним практикам
+- Easier to understand and maintain the codebase;
+- Improved testability of logic;
+- Better scalability;
+- Alignment with modern frontend architectural best practices.
 
-### Негативні:
+### Negative:
 
-- Початкові витрати часу на декомпозицію
+- Initial time investment required to refactor and separate concerns.
