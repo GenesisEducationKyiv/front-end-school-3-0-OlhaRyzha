@@ -60,7 +60,7 @@ This decision is based on the principles of:
 
 ## Status
 
-**Accepted** – Changes are being progressively implemented in key parts of the project including modals, tables, and forms.
+**Planned** – Changes are being progressively implemented in key parts of the project including modals, tables, and forms.
 
 ---
 
