@@ -1,3 +1,4 @@
+import { IdType } from '@/types/ids';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -10,7 +11,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 
-interface GetTableProps<T extends { id: string | number }> {
+interface GetTableProps<T extends { id: IdType }> {
   tracks: T[];
   columns: ColumnDef<T>[];
   sorting: SortingState;
@@ -27,9 +28,7 @@ interface GetTableProps<T extends { id: string | number }> {
   };
 }
 
-export function getTable<T extends { id: string | number }>(
-  props: GetTableProps<T>
-) {
+export function useTable<T extends { id: IdType }>(props: GetTableProps<T>) {
   const {
     tracks,
     columns,

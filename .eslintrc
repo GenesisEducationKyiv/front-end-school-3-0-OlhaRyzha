@@ -1,0 +1,47 @@
+{
+  "root": true,
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react-hooks/recommended",
+    "airbnb",
+    "airbnb-typescript",
+    "airbnb/hooks",
+    "plugin:jsx-a11y/recommended",
+    "prettier"
+  ],
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "plugins": ["jsx-a11y", "prettier", "react", "unused-imports"],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": 0,
+    "unused-imports/no-unused-imports": "warn",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "varsIgnorePattern": "^_",
+        "args": "after-used",
+        "argsIgnorePattern": "^_"
+      }
+    ],
+    "no-console": ["warn", { "allow": ["warn", "error"] }],
+    "prettier/prettier": [
+      "warn",
+      {
+        "singleQuote": true,
+        "jsxSingleQuote": true,
+        "bracketSameLine": true,
+        "singleAttributePerLine": true,
+        "endOfLine": "auto"
+      }
+    ]
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
+}

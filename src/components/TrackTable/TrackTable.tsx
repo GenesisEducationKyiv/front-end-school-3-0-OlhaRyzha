@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ColumnFiltersState, VisibilityState } from '@tanstack/react-table';
 import { META, TRACKS_LIST_KEY } from '@/constants/table.constants';
 import { useTableParams } from '@/utils/hooks/table/useTableParams';
@@ -9,7 +9,6 @@ import {
 import { useAppSelector } from '@/store';
 import { selectSelectMode } from '@/store/slices/table/tableSlice';
 import { trackColumns } from '@/configs/columnsConfig';
-import { getTable } from '@/utils/getTable';
 import { Loader } from '../Loader';
 import PaginationControls from './PaginationControls';
 import TableBodyComponent from './TableBody';
@@ -19,6 +18,7 @@ import { AudioUploadModal } from '@/components/Audio/AudioUploadModal';
 import { AlertDialogComponent } from '@/components/AlertDialog';
 import { Track } from '@/types/shared/track';
 import { Dialog } from '../ui/dialog';
+import { useTable } from '@/utils/hooks/useTable';
 
 export default function TrackTable() {
   const {
@@ -77,7 +77,7 @@ export default function TrackTable() {
     [selectMode, setPlayingTrackId]
   );
 
-  const table = getTable({
+  const table = useTable({
     tracks: tracks.map((track) => ({
       ...track,
       isPlaying: track.id === playingTrackId,
