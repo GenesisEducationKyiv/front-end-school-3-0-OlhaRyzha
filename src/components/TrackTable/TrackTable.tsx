@@ -9,18 +9,18 @@ import {
 import { useAppSelector } from '@/store';
 import { selectSelectMode } from '@/store/slices/table/tableSlice';
 import { trackColumns } from '@/configs/columnsConfig';
-import { Loader } from '../Loader';
 import PaginationControls from './PaginationControls';
 import TableBodyComponent from './TableBody';
-import { TableToolbar } from './TableToolbar';
 import CreateTrackModal from '@/components/Modal/CreateTrackModal';
-import { AudioUploadModal } from '@/components/Audio/AudioUploadModal';
-import { AlertDialogComponent } from '@/components/AlertDialog';
+import { AlertDialogComponent } from '@/components/shared/AlertDialog';
 import { Track } from '@/types/shared/track';
 import { Dialog } from '../ui/dialog';
 import { useTable } from '@/utils/hooks/useTable';
+import { AudioUploadModal } from '../Audio';
+import { Loader } from '../shared';
+import TableToolbar from './TableToolbar';
 
-export default function TrackTable() {
+function TrackTable() {
   const {
     params,
     setParams,
@@ -167,3 +167,4 @@ export default function TrackTable() {
     </>
   );
 }
+export default TrackTable;

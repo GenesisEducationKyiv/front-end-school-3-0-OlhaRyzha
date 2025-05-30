@@ -16,7 +16,7 @@ import {
 import { validateAudioFile } from '@/utils/audioUpload';
 import type { Track } from '@/types/shared/track';
 import { BTNS_LABELS } from '@/constants/labels.constant';
-import { Loader } from '../Loader';
+import { Loader } from '../shared';
 
 const Waveform = lazy(() => import('@/components/Audio/AudioWaveform'));
 
@@ -27,7 +27,7 @@ interface AudioUploadModalProps {
   onUploaded?: () => void;
 }
 
-export function AudioUploadModal({
+function AudioUploadModal({
   track,
   open,
   onOpenChange,
@@ -194,3 +194,4 @@ export function AudioUploadModal({
     </Dialog>
   );
 }
+export default AudioUploadModal;

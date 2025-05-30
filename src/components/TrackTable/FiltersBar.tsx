@@ -16,7 +16,7 @@ export interface FiltersBarProps {
   availableGenres: string[];
 }
 
-export const FiltersBar: FC<FiltersBarProps> = ({
+const FiltersBar: FC<FiltersBarProps> = ({
   params,
   setParams,
   availableArtists,
@@ -85,3 +85,4 @@ export const FiltersBar: FC<FiltersBarProps> = ({
     </div>
   );
 };
+export default FiltersBar;

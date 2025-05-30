@@ -60,3 +60,4 @@ export const AlertDialogComponent: React.FC<AlertDialogComponentProps> = ({
     </AlertDialogContent>
   </AlertDialog>
 );
+export default AlertDialogComponent;

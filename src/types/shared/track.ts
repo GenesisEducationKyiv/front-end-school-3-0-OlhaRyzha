@@ -33,7 +33,7 @@ export type Sort = 'title' | 'artist' | 'album' | 'createdAt' | '';
 export type Order = 'asc' | 'desc' | '';
 
 export interface QueryParams {
-  page?: number;
+  page?: number | string;
   limit?: number;
   sort?: Sort;
   order?: Order;

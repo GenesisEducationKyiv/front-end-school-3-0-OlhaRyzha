@@ -1,8 +1,7 @@
 import { Input } from '@/components/ui/input';
-import { FiltersBar } from '../FiltersBar';
 import { Button } from '@/components/ui/button';
 import { initialParams } from '@/configs/tableConfig';
-import { AlertDialogComponent } from '../AlertDialog';
+import { AlertDialogComponent } from '../shared/AlertDialog';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -22,6 +21,7 @@ import {
   setSelectMode,
 } from '@/store/slices/table/tableSlice';
 import { BTNS_LABELS } from '@/constants/labels.constant';
+import FiltersBar from './FiltersBar';
 
 interface TableToolbarProps {
   search: string;
@@ -34,7 +34,7 @@ interface TableToolbarProps {
   setRowSelection: Dispatch<SetStateAction<Record<string, boolean>>>;
 }
 
-export const TableToolbar = ({
+const TableToolbar = ({
   search,
   setSearch,
   params,
@@ -165,3 +165,4 @@ export const TableToolbar = ({
     </div>
   );
 };
+export default TableToolbar;

@@ -9,8 +9,8 @@ import { RouterProvider } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { router } from './Router';
-import { Loader } from './components/Loader';
 import store, { persistor } from './store';
+import { Loader } from './components/shared';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

@@ -14,7 +14,7 @@ import { TABLE_SIZES } from '@/constants/table.constants';
 interface PaginationControlsProps {
   totalItems: number;
   currentPage: number;
-  handlePageChange: (page: number) => void;
+  handlePageChange: (page: number | string) => void;
   totalPages: number;
   handleLimitChange: (page: number) => void;
   limit: number;
@@ -28,6 +28,11 @@ const PaginationControls: FC<PaginationControlsProps> = ({
   handleLimitChange,
   limit,
 }) => {
+  const handlePageClick = (e: React.MouseEvent, page: number | string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    handlePageChange(page);
+  };
   return (
     <div className='flex items-center justify-between py-3 text-sm text-muted-foreground'>
       <div className='flex items-center gap-2 shrink-0'>
@@ -39,11 +44,7 @@ const PaginationControls: FC<PaginationControlsProps> = ({
             <PaginationPrevious
               href='#'
               disabled={currentPage === 1}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                handlePageChange(currentPage - 1);
-              }}
+              onClick={(e) => handlePageClick(e, currentPage - 1)}
               data-testid='pagination-prev'
             />
           </PaginationItem>
@@ -56,11 +57,7 @@ const PaginationControls: FC<PaginationControlsProps> = ({
                 <PaginationLink
                   href='#'
                   isActive={p === currentPage}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    handlePageChange(p as number);
-                  }}>
+                  onClick={(e) => handlePageClick(e, p)}>
                   {p}
                 </PaginationLink>
               )}
@@ -71,11 +68,7 @@ const PaginationControls: FC<PaginationControlsProps> = ({
             <PaginationNext
               href='#'
               disabled={currentPage >= totalPages}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                handlePageChange(currentPage + 1);
-              }}
+              onClick={(e) => handlePageClick(e, currentPage + 1)}
               data-testid='pagination-next'
             />
           </PaginationItem>

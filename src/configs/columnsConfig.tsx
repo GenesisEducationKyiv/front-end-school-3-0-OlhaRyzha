@@ -21,7 +21,7 @@ import {
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
 import { RiDeleteBin5Fill } from 'react-icons/ri';
 import { lazy, Suspense } from 'react';
-import { Loader } from '@/components/Loader';
+import { Loader } from '@/components/shared';
 
 const Waveform = lazy(() => import('@/components/Audio/AudioWaveform'));
 

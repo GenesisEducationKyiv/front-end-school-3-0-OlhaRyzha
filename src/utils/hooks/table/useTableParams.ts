@@ -52,7 +52,7 @@ export function useTableParams({ listKey }: UseTableParamsOptions) {
     });
   };
 
-  const handlePageChange = useCallback((page: number) => {
+  const handlePageChange = useCallback((page: number | string) => {
     setParams((p) => ({ ...p, page }));
   }, []);
 

@@ -5,7 +5,7 @@ interface LoaderProps {
   loading: boolean;
 }
 
-export const Loader = ({ loading }: LoaderProps) => {
+const Loader = ({ loading }: LoaderProps) => {
   return (
     <div
       data-testid={loading.toString()}
@@ -18,3 +18,4 @@ export const Loader = ({ loading }: LoaderProps) => {
     </div>
   );
 };
+export default Loader;

@@ -9,7 +9,7 @@ import {
 import { PlayIcon, PauseIcon } from 'lucide-react';
 import fileBroken from '@/assets/png-transparent-file-broken-sign-computer.png';
 import { motion } from 'framer-motion';
-import { Loader } from '@/components/Loader';
+import { Loader } from '../shared';
 
 interface WaveformProps {
   url: string;

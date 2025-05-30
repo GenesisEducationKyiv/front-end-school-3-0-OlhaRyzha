@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { TRACKS_LIST_KEY } from '@/constants/table.constants';
 import { BTNS_LABELS } from '@/constants/labels.constant';
 
-export default function TracksPage() {
+function TracksPage() {
   const [open, setOpen] = useState(false);
 
   return (
@@ -37,3 +37,4 @@ export default function TracksPage() {
     </main>
   );
 }
+export default TracksPage;
