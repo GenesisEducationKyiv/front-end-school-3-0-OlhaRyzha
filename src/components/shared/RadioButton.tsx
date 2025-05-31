@@ -1,22 +1,15 @@
 import { cn } from '@/lib/utils';
-const RadioButton = ({
-  active,
-  onClick,
-  children,
-}: {
+
+interface RadioButtonProps {
   active: boolean;
   onClick: () => void;
   children: React.ReactNode;
-}) => (
+}
+const RadioButton = ({ active, onClick, children }: RadioButtonProps) => (
   <button
     type='button'
     onClick={onClick}
-    className={cn(
-      'px-3 py-1 text-sm border rounded transition-colors',
-      active
-        ? 'bg-gray-100 border-black font-medium'
-        : 'border-gray-300 hover:bg-gray-50'
-    )}>
+    className={cn('radio-btn', active ? 'active' : 'inactive')}>
     {children}
   </button>
 );

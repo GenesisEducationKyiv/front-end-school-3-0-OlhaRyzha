@@ -1,6 +1,9 @@
+import { isString } from 'formik';
+import { isFile } from './guards/isFile';
+
 export const normalizeCoverImage = (value?: string | File): string => {
-  if (value instanceof File) {
+  if (isFile(value)) {
     return URL.createObjectURL(value);
   }
-  return typeof value === 'string' ? value : '';
+  return isString(value) ? value : '';
 };

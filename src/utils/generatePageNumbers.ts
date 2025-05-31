@@ -1,3 +1,5 @@
+import { isString } from './guards/isString';
+
 export const generatePageNumbers = (
   totalPages: number,
   currentPage: number
@@ -20,7 +22,6 @@ export const generatePageNumbers = (
 
   return pages.filter(
     (page, index, arr) =>
-      page !== arr[index + 1] &&
-      (typeof page === 'string' || page <= totalPages)
+      page !== arr[index + 1] && (isString(page) || page <= totalPages)
   );
 };

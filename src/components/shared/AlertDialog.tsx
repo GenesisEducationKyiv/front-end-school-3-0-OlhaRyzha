@@ -10,6 +10,7 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from '@/components/ui/alert-dialog';
+import { dialogMessages } from '@/constants/message.constant';
 
 interface AlertDialogComponentProps {
   trigger?: React.ReactNode;
@@ -24,8 +25,8 @@ interface AlertDialogComponentProps {
 
 export const AlertDialogComponent: React.FC<AlertDialogComponentProps> = ({
   trigger,
-  title = 'Are you absolutely sure?',
-  description = 'This action cannot be undone.',
+  title = dialogMessages.areYouSure,
+  description = dialogMessages.cannotBeUndone,
   onConfirm,
   confirmText = 'Continue',
   cancelText = 'Cancel',

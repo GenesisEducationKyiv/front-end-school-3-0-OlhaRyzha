@@ -1,38 +1,46 @@
 import { cn } from '@/lib/utils';
 import { Input } from '../ui/input';
-import { Field, ErrorMessage, FieldProps } from 'formik';
+import { Field, FieldProps } from 'formik';
 import { FormikError, RadioButton } from '../shared';
-import { useCoverImageField } from '@/utils/hooks/useCoverImageField';
 import { COVER_IMAGE_FIELD_NAME } from '@/constants/fieldNames.constants';
+import { isUrl } from '@/utils/guards/isUrl';
+import { INPUT_COVER_IMG_TYPES } from '@/types/input';
+import { isFileType } from '@/utils/guards/isFile';
+import { useCoverImageField } from '@/utils/hooks/cover/useCoverImageField';
+
+type CoverImageFieldProps = {
+  placeholder?: string;
+  testId?: string;
+  errorTestId?: string;
+};
 
 const CoverImageField = ({
   placeholder = 'Enter image URL',
   testId,
   errorTestId,
-}: {
-  placeholder?: string;
-  testId?: string;
-  errorTestId?: string;
-}) => {
+}: CoverImageFieldProps) => {
   const { inputType, setInputType, handleUrlChange, handleFileChange } =
     useCoverImageField();
+
+  const isUrlType = isUrl(inputType);
+  const isFile = isFileType(inputType);
 
   return (
     <div className='space-y-2'>
       <div className='flex gap-2'>
         <RadioButton
-          active={inputType === 'url'}
-          onClick={() => setInputType('url')}>
+          active={isUrlType}
+          onClick={() => setInputType(INPUT_COVER_IMG_TYPES[0])}>
           Link
         </RadioButton>
         <RadioButton
-          active={inputType === 'file'}
-          onClick={() => setInputType('file')}>
+          active={isFile}
+          onClick={() => setInputType(INPUT_COVER_IMG_TYPES[1])}>
           Upload
         </RadioButton>
       </div>
 
-      {inputType === 'url' ? (
+      {isUrlType ? (
         <Field name={COVER_IMAGE_FIELD_NAME}>
           {({ field, meta }: FieldProps) => (
             <div>
@@ -63,15 +71,10 @@ const CoverImageField = ({
             className='w-full border-2'
             data-testid={testId}
           />
-          <ErrorMessage name={COVER_IMAGE_FIELD_NAME}>
-            {(msg) => (
-              <p
-                className='text-red-600 text-sm mt-1'
-                data-testid={errorTestId}>
-                {msg}
-              </p>
-            )}
-          </ErrorMessage>
+          <FormikError
+            name={COVER_IMAGE_FIELD_NAME}
+            errorTestId={errorTestId}
+          />
         </div>
       )}
     </div>

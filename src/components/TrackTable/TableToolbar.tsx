@@ -1,6 +1,5 @@
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { initialParams } from '@/configs/tableConfig';
 import { AlertDialogComponent } from '../shared/AlertDialog';
 import {
   DropdownMenu,
@@ -11,10 +10,6 @@ import {
 import { ChevronDown } from 'lucide-react';
 import { QueryParams, Track } from '@/types/shared/track';
 import { Table } from '@tanstack/react-table';
-import { useBulkDeleteTracks } from '@/utils/hooks/tanStackQuery/useTracksQuery';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { useGenresQuery } from '@/utils/hooks/tanStackQuery/useGenresQuery';
-import { useDebounce } from '@/utils/hooks/useDebounce';
 import { useAppDispatch, useAppSelector } from '@/store';
 import {
   selectSelectMode,
@@ -22,16 +17,20 @@ import {
 } from '@/store/slices/table/tableSlice';
 import { BTNS_LABELS } from '@/constants/labels.constant';
 import FiltersBar from './FiltersBar';
+import { SetParamsType, SetRowSelectionType } from '@/types/shared/table';
+import { useTableToolbar } from '@/utils/hooks/table/useTableToolbar';
+import { isNonEmptyArray } from '@/utils/guards/isNonEmptyArray';
+import { dialogMessages } from '@/constants/message.constant';
 
 interface TableToolbarProps {
   search: string;
   setSearch: (value: string) => void;
   params: QueryParams;
-  setParams: (updater: (p: QueryParams) => QueryParams) => void;
+  setParams: SetParamsType;
   availableArtists: string[];
   selectedIds: string[];
   table: Table<Track>;
-  setRowSelection: Dispatch<SetStateAction<Record<string, boolean>>>;
+  setRowSelection: SetRowSelectionType;
 }
 
 const TableToolbar = ({
@@ -45,44 +44,22 @@ const TableToolbar = ({
   setRowSelection,
 }: TableToolbarProps) => {
   const dispatch = useAppDispatch();
-
+  const {
+    localSearch,
+    setLocalSearch,
+    deleteDialogOpen,
+    setDeleteDialogOpen,
+    allGenres,
+    handleBulkDelete,
+    handleReset,
+  } = useTableToolbar({
+    search,
+    setSearch,
+    setParams,
+    selectedIds,
+    setRowSelection,
+  });
   const selectMode = useAppSelector(selectSelectMode);
-
-  const { data: allGenres = [] } = useGenresQuery();
-  const bulkDeleteMutation = useBulkDeleteTracks();
-
-  const [localSearch, setLocalSearch] = useState(search);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-
-  const debouncedSearch = useDebounce(localSearch);
-
-  useEffect(() => {
-    setLocalSearch(search);
-  }, [search]);
-
-  useEffect(() => {
-    if (debouncedSearch !== search) {
-      setSearch(debouncedSearch);
-    }
-  }, [debouncedSearch, setSearch]);
-
-  const handleBulkDelete = () => {
-    if (selectedIds.length === 0) return;
-    bulkDeleteMutation.mutate(selectedIds, {
-      onSuccess: () => {
-        setRowSelection({});
-        setDeleteDialogOpen(false);
-      },
-      onError: () => {
-        setDeleteDialogOpen(true);
-      },
-    });
-  };
-
-  const handleReset = () => {
-    setParams((p) => ({ ...p, ...initialParams }));
-    setLocalSearch(initialParams.search || '');
-  };
 
   return (
     <div className='flex items-center gap-4 py-2'>
@@ -101,7 +78,7 @@ const TableToolbar = ({
         availableGenres={allGenres}
       />
 
-      {selectedIds?.length > 0 && (
+      {isNonEmptyArray(selectedIds) && (
         <AlertDialogComponent
           open={deleteDialogOpen}
           onOpenChange={setDeleteDialogOpen}
@@ -114,8 +91,8 @@ const TableToolbar = ({
               {BTNS_LABELS.DELETE_SELECTED_ITEMS(selectedIds.length)}
             </Button>
           }
-          title='Delete selected tracks?'
-          description='This will permanently delete all selected tracks.'
+          title={dialogMessages.delete('selected tracks')}
+          description={dialogMessages.deleteAll('tracks')}
           confirmText='Delete'
           cancelText='Cancel'
           onConfirm={handleBulkDelete}
