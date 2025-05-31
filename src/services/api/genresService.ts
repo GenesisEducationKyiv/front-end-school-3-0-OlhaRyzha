@@ -1,7 +1,7 @@
-import apiClient from "../BaseService";
+import apiClient from '../BaseService';
 
 const Genres = {
   getAll: () => apiClient.get<string[]>('/api/genres'),
 };
 
-export default Genres
+export default Genres;

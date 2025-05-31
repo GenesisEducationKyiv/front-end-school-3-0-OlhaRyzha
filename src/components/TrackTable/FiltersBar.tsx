@@ -8,6 +8,8 @@ import {
 } from '@/components/ui/select';
 import { QueryParams } from '@/types/shared/track';
 import { ALL_ARTISTS, ALL_GENRES } from '@/constants/labels.constant';
+import { getFilterChangeHandler } from '@/utils/filters/getFilterChangeHandler';
+import { getFiltersConfig } from '@/configs/tableConfig';
 
 export interface FiltersBarProps {
   params: QueryParams;
@@ -22,42 +24,24 @@ const FiltersBar: FC<FiltersBarProps> = ({
   availableArtists,
   availableGenres,
 }) => {
-  const onArtistChange = (v: string) =>
-    setParams((p) => ({
-      ...p,
-      artist: v === ALL_ARTISTS ? null : v,
-      page: 1,
-    }));
+  const onArtistChange = getFilterChangeHandler(
+    'artist',
+    ALL_ARTISTS,
+    setParams
+  );
+  const onGenreChange = getFilterChangeHandler('genre', ALL_GENRES, setParams);
 
-  const onGenreChange = (v: string) =>
-    setParams((p) => ({
-      ...p,
-      genre: v === ALL_GENRES ? null : v,
-      page: 1,
-    }));
-
-  const FILTERS_LIST_KEY = [
-    {
-      value: params.artist ?? ALL_ARTISTS,
-      onChange: onArtistChange,
-      testid: 'filter-artist',
-      placeholder: 'Filter by artist',
-      availableOptions: availableArtists,
-      selectedItem: ALL_ARTISTS,
-    },
-    {
-      value: params.genre ?? ALL_GENRES,
-      onChange: onGenreChange,
-      testid: 'filter-genre',
-      placeholder: 'Filter by genre',
-      availableOptions: availableGenres,
-      selectedItem: ALL_GENRES,
-    },
-  ];
+  const FILTERS_LIST = getFiltersConfig(
+    params,
+    availableArtists,
+    availableGenres,
+    onArtistChange,
+    onGenreChange
+  );
 
   return (
     <div className='flex gap-4'>
-      {FILTERS_LIST_KEY.map((filter) => (
+      {FILTERS_LIST.map((filter) => (
         <Select
           key={filter.testid}
           value={filter.value}

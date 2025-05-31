@@ -22,6 +22,7 @@ import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
 import { RiDeleteBin5Fill } from 'react-icons/ri';
 import { lazy, Suspense } from 'react';
 import { Loader } from '@/components/shared';
+import { getTrackAudioUrl } from '@/utils/getTrackAudioUrl';
 
 const Waveform = lazy(() => import('@/components/Audio/AudioWaveform'));
 
@@ -126,9 +127,7 @@ export const trackColumns = ({
       minSize: 400,
       cell: ({ row, table }) => {
         const track = row.original;
-        const audioUrl = track.audioFile
-          ? `${import.meta.env.VITE_API_BASE_URL}/api/files/${track.audioFile}`
-          : null;
+        const audioUrl = getTrackAudioUrl(track.audioFile);
 
         return audioUrl ? (
           <Suspense fallback={<Loader loading />}>

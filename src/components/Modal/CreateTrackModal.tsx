@@ -71,8 +71,6 @@ function CreateTrackModal({ track, onClose }: CreateTrackModalProps) {
 
   return (
     <DialogContent
-      onPointerDownOutside={(e) => e.preventDefault()}
-      onEscapeKeyDown={(e) => e.preventDefault()}
       aria-describedby={undefined}
       className='bg-white rounded-lg p-6 w-full max-h-[90vh] overflow-y-auto max-w-md'>
       <DialogHeader>

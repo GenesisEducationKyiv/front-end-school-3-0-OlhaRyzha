@@ -1,16 +1,13 @@
 import { cn } from '@/lib/utils';
 import { SetFieldValueType } from '@/types/form';
+import { ToggleGenre } from '@/types/shared/genre';
 import { ErrorMessage } from 'formik';
 import { Plus, X } from 'lucide-react';
 
 interface GenresSectionProps {
   selectedGenres: string[];
   allGenres: string[];
-  toggleGenre: (
-    genre: string,
-    currentGenres: string[],
-    setFieldValue: SetFieldValueType
-  ) => void;
+  toggleGenre: ToggleGenre;
   setFieldValue: SetFieldValueType;
 }
 
@@ -23,7 +20,7 @@ const GenresSection = ({
   <div>
     <p className='text-sm font-medium mb-1'>Genres</p>
     <div
-      className='flex flex-wrap gap-2'
+      className='genres-section-list'
       data-testid='genre-selector'>
       {allGenres.map((genre) => {
         const selected = selectedGenres.includes(genre);
@@ -32,12 +29,7 @@ const GenresSection = ({
             type='button'
             key={genre}
             onClick={() => toggleGenre(genre, selectedGenres, setFieldValue)}
-            className={cn(
-              'flex items-center gap-1 rounded border px-2 py-1 text-sm transition-colors',
-              selected
-                ? 'bg-gray-800 text-white hover:bg-gray-700'
-                : 'bg-gray-100 hover:bg-gray-200'
-            )}>
+            className={cn('genre-btn', selected ? 'selected' : 'unselected')}>
             {genre}
             {selected ? (
               <X
@@ -57,7 +49,7 @@ const GenresSection = ({
     <ErrorMessage
       name='genres'
       component='p'
-      className='text-red-500 text-xs'
+      className='genre-error'
       data-testid='error-genre'
     />
   </div>

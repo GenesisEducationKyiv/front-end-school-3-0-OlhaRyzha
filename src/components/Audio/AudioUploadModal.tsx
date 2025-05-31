@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, lazy, Suspense } from 'react';
+import { lazy, Suspense } from 'react';
 import { HiXMark } from 'react-icons/hi2';
 import {
   Dialog,
@@ -9,14 +9,12 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import {
-  useUploadTrackAudio,
-  useDeleteTrackAudio,
-} from '@/utils/hooks/tanStackQuery/useTracksQuery';
-import { validateAudioFile } from '@/utils/audioUpload';
 import type { Track } from '@/types/shared/track';
 import { BTNS_LABELS } from '@/constants/labels.constant';
 import { Loader } from '../shared';
+import { audioUploadMessages } from '@/constants/message.constant';
+import { getTrackAudioUrl } from '@/utils/getTrackAudioUrl';
+import { useAudioUpload } from '@/utils/hooks/audio/useAudioUpload';
 
 const Waveform = lazy(() => import('@/components/Audio/AudioWaveform'));
 
@@ -33,77 +31,32 @@ function AudioUploadModal({
   onOpenChange,
   onUploaded,
 }: AudioUploadModalProps) {
-  const { mutateAsync: upload, isPending } = useUploadTrackAudio();
-  const { mutate: remove } = useDeleteTrackAudio();
-  const fileRef = useRef<HTMLInputElement>(null);
-
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [selectedUrl, setSelectedUrl] = useState<string | null>(null);
-  const [error, setError] = useState<string | null | undefined>(null);
-  const [playingTrackId, setPlayingTrackId] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!selectedFile) {
-      setSelectedUrl(null);
-      return;
-    }
-    const url = URL.createObjectURL(selectedFile);
-    setSelectedUrl(url);
-    return () => URL.revokeObjectURL(url);
-  }, [selectedFile]);
-
-  const handleChoose = () => fileRef.current?.click();
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    if (!file) return;
-
-    validateAudioFile(file).then(({ valid, error }) => {
-      if (!valid) {
-        setError(error);
-        setSelectedFile(null);
-      } else {
-        setError(null);
-        setSelectedFile(file);
-      }
-    });
-  };
-
-  const handlePlayPause = (id: string) => {
-    setPlayingTrackId((prev) => (prev === id ? null : id));
-  };
-
-  const handleSave = async () => {
-    if (!selectedFile) return;
-    try {
-      await upload({ id: track?.id, file: selectedFile });
-      onOpenChange(false);
-      onUploaded?.();
-    } catch (error) {
-      console.error('Error uploading audio:', error);
-    }
-  };
-  const handleRemove = () => {
-    remove({ id: track.id });
-    onOpenChange(false);
-  };
-  if (isPending) {
-    return <Loader loading={isPending} />;
-  }
+  const {
+    fileRef,
+    selectedFile,
+    selectedUrl,
+    error,
+    handleChoose,
+    handleChange,
+    handlePlayPause,
+    handleSave,
+    handleRemove,
+    loading: isPending,
+    clear,
+    playingTrackId,
+  } = useAudioUpload({ track, onOpenChange, onUploaded });
 
   return (
     <Dialog
       open={open}
       onOpenChange={onOpenChange}>
-      <DialogContent
-        onEscapeKeyDown={(e) => e.preventDefault()}
-        onPointerDownOutside={(e) => e.preventDefault()}>
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Audio for “{track.title}”</DialogTitle>
           <DialogDescription>
             {track.audioFile
-              ? 'Replace or remove the current audio file.'
-              : 'Select an audio file to upload.'}
+              ? audioUploadMessages.replaceOrRemove
+              : audioUploadMessages.selectToUpload}
           </DialogDescription>
         </DialogHeader>
 
@@ -138,7 +91,7 @@ function AudioUploadModal({
               <div className='flex items-center gap-2 mt-2'>
                 <span className='truncate text-sm'>{selectedFile.name}</span>
                 <button
-                  onClick={() => setSelectedFile(null)}
+                  onClick={clear}
                   className='text-gray-500 hover:text-gray-700'
                   data-testid={`clear-selected-file-${track.id}`}>
                   <HiXMark className='h-4 w-4' />
@@ -150,9 +103,7 @@ function AudioUploadModal({
               <p className='text-sm mb-2'>Current file:</p>
               <Suspense fallback={<Loader loading />}>
                 <Waveform
-                  url={`${import.meta.env.VITE_API_BASE_URL}/api/files/${
-                    track.audioFile
-                  }`}
+                  url={getTrackAudioUrl(track.audioFile)}
                   id={track.id}
                   isPlaying={playingTrackId === track.id}
                   onPlayPause={handlePlayPause}
@@ -183,10 +134,10 @@ function AudioUploadModal({
               {BTNS_LABELS.CHOOSE_FILE}
             </Button>
             <Button
-              disabled={!selectedFile}
+              disabled={!selectedFile || isPending}
               onClick={handleSave}
               data-testid={`save-audio-${track.id}`}>
-              {BTNS_LABELS.SAVE}
+              {isPending ? BTNS_LABELS.SAVING : BTNS_LABELS.SAVE}
             </Button>
           </div>
         </DialogFooter>
@@ -194,4 +145,5 @@ function AudioUploadModal({
     </Dialog>
   );
 }
+
 export default AudioUploadModal;

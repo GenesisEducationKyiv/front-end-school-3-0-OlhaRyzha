@@ -1,9 +1,5 @@
+import { Result, ok, err } from 'neverthrow';
 import { validationMessages } from '@/constants/message.constant';
-
-export interface ValidationResult {
-  valid: boolean;
-  error?: string;
-}
 
 const ALLOWED_MIME_TYPES = [
   'audio/mpeg',
@@ -24,26 +20,23 @@ const formatSize = (bytes: number) => {
 export async function validateAudioFile(
   file: File,
   maxSize: number = 10 * 1024 * 1024
-): Promise<ValidationResult> {
+): Promise<Result<void, string>> {
   if (file.size > maxSize) {
-    return {
-      valid: false,
-      error: validationMessages.lengthMax(formatSize(maxSize)),
-    };
+    return err(validationMessages.lengthMax(formatSize(maxSize)));
   }
 
   if (file.size === 0) {
-    return { valid: false, error: validationMessages.emty };
+    return err(validationMessages.emty);
   }
 
   if (!ALLOWED_MIME_TYPES.includes(file.type)) {
-    return { valid: false, error: validationMessages.unsupportedFormat };
+    return err(validationMessages.unsupportedFormat);
   }
 
   const extension = file.name.split('.').pop()?.toLowerCase();
   if (!extension || !ALLOWED_EXTENSIONS.includes(extension)) {
-    return { valid: false, error: validationMessages.fileExtension };
+    return err(validationMessages.fileExtension);
   }
 
-  return { valid: true };
+  return ok(undefined);
 }
