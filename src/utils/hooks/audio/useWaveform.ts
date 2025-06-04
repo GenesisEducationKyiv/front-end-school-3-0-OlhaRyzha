@@ -4,12 +4,12 @@ import { Result, ok, err } from 'neverthrow';
 import { audioUploadMessages } from '@/constants/message.constant';
 
 interface UseWaveformProps {
-  url: string | null;
+  url: string;
   isPlaying?: boolean;
 }
 export function useWaveform({ url, isPlaying = false }: UseWaveformProps) {
   const waveformRef = useRef<HTMLDivElement>(null);
-  const wavesurferRef = useRef<WaveSurfer | null>(null);
+  const wavesurferRef = useRef<WaveSurfer>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 

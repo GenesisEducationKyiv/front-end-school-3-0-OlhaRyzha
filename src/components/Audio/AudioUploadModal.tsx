@@ -15,6 +15,7 @@ import { Loader } from '../shared';
 import { audioUploadMessages } from '@/constants/message.constant';
 import { getTrackAudioUrl } from '@/utils/getTrackAudioUrl';
 import { useAudioUpload } from '@/utils/hooks/audio/useAudioUpload';
+import { isString } from '@/utils/guards/isString';
 
 const Waveform = lazy(() => import('@/components/Audio/AudioWaveform'));
 
@@ -98,7 +99,7 @@ function AudioUploadModal({
                 </button>
               </div>
             </>
-          ) : track.audioFile ? (
+          ) : isString(track.audioFile) ? (
             <>
               <p className='text-sm mb-2'>Current file:</p>
               <Suspense fallback={<Loader loading />}>
