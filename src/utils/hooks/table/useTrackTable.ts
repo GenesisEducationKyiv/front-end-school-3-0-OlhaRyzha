@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ColumnFiltersState, VisibilityState } from '@tanstack/react-table';
-import { META, TRACKS_LIST_KEY } from '@/constants/table.constants';
+import { META } from '@/constants/table.constants';
 import { useTableParams } from '@/utils/hooks/table/useTableParams';
 import {
   useTracksQuery,
@@ -22,7 +22,7 @@ export function useTrackTable() {
     handlePageChange,
     handleLimitChange,
     sorting,
-  } = useTableParams({ listKey: TRACKS_LIST_KEY });
+  } = useTableParams();
 
   const deleteTrack = useDeleteTrack();
   const { data: tracksData, isLoading, isFetching } = useTracksQuery(params);

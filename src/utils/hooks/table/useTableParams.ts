@@ -1,7 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { useAppDispatch, useAppSelector } from '@/store';
 import type { QueryParams } from '@/types/shared/track';
-import { setCacheParams } from '@/store/slices/cacheParams/cacheSlice';
 import { META } from '@/constants/table.constants';
 import {
   isFunction,
@@ -9,33 +7,22 @@ import {
   type SortingState,
 } from '@tanstack/react-table';
 import { isSortingState } from '@/utils/guards/isSortingState';
+import { useLocation } from 'react-router-dom';
+import {
+  getQueryParamsFromUrl,
+  setQueryParamsToUrl,
+} from '@/utils/table/queryParams';
 
-export interface UseTableParamsOptions {
-  listKey: string;
-}
-export function useTableParams({ listKey }: UseTableParamsOptions) {
-  const dispatch = useAppDispatch();
-  const cache = useAppSelector((state) => state.cache[listKey] as QueryParams);
+export function useTableParams() {
+  const { search } = useLocation();
+  const initialParams: QueryParams = getQueryParamsFromUrl(search);
 
-  const [params, setParams] = useState<QueryParams>({
-    page: cache?.page ?? META.page,
-    limit: cache?.limit ?? META.limit,
-    search: cache?.search ?? '',
-    sort: cache?.sort ?? META.sort,
-    order: cache?.order ?? META.order,
-    artist: cache?.artist,
-    genre: cache?.genre ?? null,
-  });
-
+  const [params, setParams] = useState<QueryParams>(initialParams);
   const [sortingState, setSortingState] = useState<SortingState>([]);
 
   useEffect(() => {
-    dispatch(setCacheParams({ key: listKey, params }));
-  }, [dispatch, listKey, params]);
-
-  const update = useCallback((updater: (prev: QueryParams) => QueryParams) => {
-    setParams(updater);
-  }, []);
+    setQueryParamsToUrl(params);
+  }, [params]);
 
   const handleSortingChange: OnChangeFn<SortingState> = (updater) => {
     setSortingState((prev) => {
@@ -53,10 +40,10 @@ export function useTableParams({ listKey }: UseTableParamsOptions) {
         );
         return next;
       }
-
       return prev;
     });
   };
+
   const handlePageChange = useCallback((page: number | string) => {
     setParams((p) => ({ ...p, page }));
   }, []);
@@ -75,7 +62,7 @@ export function useTableParams({ listKey }: UseTableParamsOptions) {
 
   return {
     params,
-    setParams: update,
+    setParams,
     sorting: sortingState,
     handleSortingChange,
     handlePageChange,

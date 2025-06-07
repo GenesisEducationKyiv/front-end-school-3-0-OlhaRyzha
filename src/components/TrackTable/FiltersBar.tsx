@@ -8,12 +8,13 @@ import {
 } from '@/components/ui/select';
 import { QueryParams } from '@/types/shared/track';
 import { ALL_ARTISTS, ALL_GENRES } from '@/constants/labels.constant';
-import { getFilterChangeHandler } from '@/utils/filters/getFilterChangeHandler';
+import { getFilterChangeHandler } from '@/utils/table/filters/getFilterChangeHandler';
 import { getFiltersConfig } from '@/configs/tableConfig';
+import { SetParamsType } from '@/types/shared/table';
 
 export interface FiltersBarProps {
   params: QueryParams;
-  setParams: (updater: (p: QueryParams) => QueryParams) => void;
+  setParams: SetParamsType;
   availableArtists: string[];
   availableGenres: string[];
 }
