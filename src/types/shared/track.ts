@@ -1,34 +1,19 @@
-import { IdType } from '../ids';
+import z from 'zod';
+import {
+  batchDeleteResponseSchema,
+  createTrackDtoSchema,
+  metaSchema,
+  trackSchema,
+  updateTrackDtoSchema,
+} from '@/schemas/track.schemas';
 
-export interface Track {
-  id: string;
-  title: string;
-  artist: string;
-  album?: string;
-  genres: string[];
-  slug: string;
-  coverImage?: string;
-  audioFile?: string;
-  createdAt: string;
-  updatedAt: string;
-}
+export type Track = z.infer<typeof trackSchema>;
 
-export interface CreateTrackDto {
-  title: string;
-  artist: string;
-  album?: string;
-  genres: string[];
-  coverImage?: string;
-}
+export type CreateTrackDto = z.infer<typeof createTrackDtoSchema>;
+export type UpdateTrackDto = z.infer<typeof updateTrackDtoSchema>;
+export type Meta = z.infer<typeof metaSchema>;
+export type BatchDeleteResponse = z.infer<typeof batchDeleteResponseSchema>;
 
-export interface UpdateTrackDto {
-  title?: string;
-  artist?: string;
-  album?: string;
-  genres?: string[];
-  coverImage?: string;
-  audioFile?: string;
-}
 export type Sort = 'title' | 'artist' | 'album' | 'createdAt' | '';
 export type Order = 'asc' | 'desc' | '';
 
@@ -44,16 +29,5 @@ export interface QueryParams {
 
 export interface PaginatedResponse<T> {
   data: T[];
-  meta: {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-  };
-}
-
-export interface BatchDeleteResponse {
-  id: IdType;
-  success: string[];
-  failed: string[];
+  meta: Meta;
 }

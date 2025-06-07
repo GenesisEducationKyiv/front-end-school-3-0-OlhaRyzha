@@ -7,13 +7,16 @@ import axios, {
 import qs from 'qs';
 import { cleanParams } from '@/utils/cleanParams';
 
+export const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const TIMEOUT = 30000;
+
 class ApiClient {
   private axiosInstance: AxiosInstance;
 
   constructor() {
     this.axiosInstance = axios.create({
-      baseURL: import.meta.env.VITE_API_BASE_URL,
-      timeout: 30000,
+      baseURL: BASE_URL,
+      timeout: TIMEOUT,
       paramsSerializer: {
         serialize: (params) =>
           qs.stringify(cleanParams(params), {

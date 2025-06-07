@@ -11,7 +11,7 @@ import { useWaveform } from '@/utils/hooks/audio/useWaveform';
 import { Loader } from '../shared';
 
 interface WaveformProps {
-  url: string;
+  url: string | null;
   id: string;
   isPlaying?: boolean;
   onPlayPause: (id: string) => void;

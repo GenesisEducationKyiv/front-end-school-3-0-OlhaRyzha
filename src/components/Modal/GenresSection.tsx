@@ -29,7 +29,10 @@ const GenresSection = ({
             type='button'
             key={genre}
             onClick={() => toggleGenre(genre, selectedGenres, setFieldValue)}
-            className={cn('genre-btn', selected ? 'selected' : 'unselected')}>
+            className={cn('genre-btn', {
+              ['selected']: selected,
+              ['unselected']: !selected,
+            })}>
             {genre}
             {selected ? (
               <X

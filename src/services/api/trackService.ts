@@ -1,3 +1,4 @@
+import { API_ROUTES } from '@/constants/api.constant';
 import { IdType } from '../../types/ids';
 import {
   BatchDeleteResponse,
@@ -8,43 +9,58 @@ import {
   UpdateTrackDto,
 } from '../../types/shared/track';
 import apiClient from '../BaseService';
+import { ACTIONS } from '@/constants/actions.constants';
+import { safeFetch } from '@/utils/safeFetch';
+import {
+  batchDeleteResponseSchema,
+  paginatedResponseSchema,
+  trackSchema,
+} from '@/schemas/track.schemas';
 
-const Track = {
-  getAll: async (params?: QueryParams) =>
-    apiClient.get<PaginatedResponse<TrackType>>('/api/tracks', { params }),
+const tracksRoute = API_ROUTES.TRACKS;
 
-  getTrackBySlug: (slug: string) =>
-    apiClient.get<TrackType>(`/api/tracks/${slug}`),
-
-  create: (payload: CreateTrackDto) =>
-    apiClient.post<TrackType, CreateTrackDto>('/api/tracks', payload),
-
-  update: (id: IdType, payload: UpdateTrackDto) =>
-    apiClient.put<TrackType, UpdateTrackDto>(`/api/tracks/${id}`, payload),
-
-  delete: (id: IdType) => apiClient.delete<void>(`/api/tracks/${id}`),
-
-  bulkDelete: (ids: IdType[]) =>
-    apiClient.post<BatchDeleteResponse, { ids: IdType[] }>(
-      '/api/tracks/delete',
-      { ids }
+const TrackService = {
+  getAll: (params?: QueryParams): Promise<PaginatedResponse<TrackType>> =>
+    safeFetch(
+      apiClient.get(tracksRoute, { params }),
+      paginatedResponseSchema(trackSchema)
     ),
 
-  uploadAudio: (id: IdType, file: File) => {
+  getTrackBySlug: (slug: string): Promise<TrackType> =>
+    safeFetch(apiClient.get(`${tracksRoute}/${slug}`), trackSchema),
+
+  create: (payload: CreateTrackDto): Promise<TrackType> =>
+    safeFetch(apiClient.post(tracksRoute, payload), trackSchema),
+
+  update: (id: IdType, payload: UpdateTrackDto): Promise<TrackType> =>
+    safeFetch(apiClient.put(`${tracksRoute}/${id}`, payload), trackSchema),
+
+  delete: (id: IdType): Promise<void> =>
+    apiClient.delete(`${tracksRoute}/${id}`),
+
+  bulkDelete: (ids: IdType[]): Promise<BatchDeleteResponse> =>
+    safeFetch(
+      apiClient.post(`${tracksRoute}/${ACTIONS.DELETE}`, { ids }),
+      batchDeleteResponseSchema
+    ),
+
+  uploadAudio: (id: IdType, file: File): Promise<TrackType> => {
     const formData = new FormData();
     formData.append('file', file);
 
-    return apiClient.post<TrackType, FormData>(
-      `/api/tracks/${id}/upload`,
-      formData,
-      {
+    return safeFetch(
+      apiClient.post(`${tracksRoute}/${id}/${ACTIONS.UPLOAD}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
-      }
+      }),
+      trackSchema
     );
   },
 
-  deleteAudio: (id?: IdType) =>
-    apiClient.delete<TrackType>(`/api/tracks/${id}/file`),
+  deleteAudio: (id?: IdType): Promise<TrackType> =>
+    safeFetch(
+      apiClient.delete(`${tracksRoute}/${id}/${API_ROUTES.FILE}`),
+      trackSchema
+    ),
 };
 
-export default Track;
+export default TrackService;

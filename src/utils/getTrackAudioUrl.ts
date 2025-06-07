@@ -1,4 +1,5 @@
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import { BASE_URL } from '@/services/BaseService';
+import { isString } from './guards/isString';
 
 export const getTrackAudioUrl = (audioFile?: string) =>
-  `${API_BASE_URL}/api/files/${audioFile}`;
+  isString(audioFile) ? `${BASE_URL}files/${audioFile}` : null;

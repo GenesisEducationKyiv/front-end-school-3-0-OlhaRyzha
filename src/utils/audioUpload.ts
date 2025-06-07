@@ -11,6 +11,7 @@ const ALLOWED_MIME_TYPES = [
 ];
 
 const ALLOWED_EXTENSIONS = ['mp3', 'wav', 'ogg', 'm4a', 'aac'];
+const MAX_SIZE = 10 * 1024 * 1024;
 
 const formatSize = (bytes: number) => {
   const mb = bytes / (1024 * 1024);
@@ -19,7 +20,7 @@ const formatSize = (bytes: number) => {
 
 export async function validateAudioFile(
   file: File,
-  maxSize: number = 10 * 1024 * 1024
+  maxSize: number = MAX_SIZE
 ): Promise<Result<void, string>> {
   if (file.size > maxSize) {
     return err(validationMessages.lengthMax(formatSize(maxSize)));

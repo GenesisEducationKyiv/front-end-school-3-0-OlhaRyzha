@@ -4,6 +4,7 @@ export const ACTIONS = {
   UPDATE: 'update',
   DELETE: 'delete',
   BULK_DELETE: 'bulk_delete',
+  UPLOAD: 'upload',
   UPLOAD_AUDIO: 'upload_audio',
   DELETE_AUDIO: 'delete_audio',
 } as const;

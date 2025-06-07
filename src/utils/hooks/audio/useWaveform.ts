@@ -4,7 +4,7 @@ import { Result, ok, err } from 'neverthrow';
 import { audioUploadMessages } from '@/constants/message.constant';
 
 interface UseWaveformProps {
-  url: string;
+  url: string | null;
   isPlaying?: boolean;
 }
 export function useWaveform({ url, isPlaying = false }: UseWaveformProps) {
