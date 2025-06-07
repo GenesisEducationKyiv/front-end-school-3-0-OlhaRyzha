@@ -9,7 +9,7 @@ const Loader = ({ loading }: LoaderProps) => {
   return (
     <div
       data-testid={loading.toString()}
-      className='fixed inset-0 flex items-center justify-center bg-white bg-opacity-50 z-50'>
+      className='loader-overlay'>
       <Quantum
         size='45'
         speed='1.75'

@@ -1,4 +1,3 @@
-import { UseMutationOptions } from '@tanstack/react-query';
 import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '../../../services';
 import { ActionType } from '../../../types/actions';
@@ -11,6 +10,11 @@ import {
 } from '@/constants/message.constant';
 import { handleAxiosError } from '@/utils/handleAxiosError';
 import { useToast } from '@/utils/hooks/use-toast';
+import {
+  MutateItemOptions,
+  OptimisticUpdateContext,
+} from '@/types/mutationTypes';
+import { hasId } from '@/utils/guards/hasId';
 
 interface UseMutateItemWithOptimisticUpdateProps<
   TItem extends { id: IdType },
@@ -20,15 +24,10 @@ interface UseMutateItemWithOptimisticUpdateProps<
   action: ActionType;
   mutateFn: (variables: TVariables) => Promise<TItem | void>;
   entity?: string;
-  options?: UseMutationOptions<
-    TItem | void,
-    Error,
-    TVariables,
-    { previousData: TItem[] | undefined }
-  >;
+  options?: MutateItemOptions<TItem, TVariables>;
 }
 
-export const useMutateItemWithOptimisticUpdate = <
+export function useMutateItemWithOptimisticUpdate<
   TItem extends { id: IdType },
   TVariables extends Partial<TItem> | IdType[]
 >({
@@ -37,54 +36,50 @@ export const useMutateItemWithOptimisticUpdate = <
   mutateFn,
   options,
   entity = '',
-}: UseMutateItemWithOptimisticUpdateProps<TItem, TVariables>) => {
+}: UseMutateItemWithOptimisticUpdateProps<TItem, TVariables>) {
   const { toast } = useToast();
+
   return useMutation<
     TItem | void,
     Error,
     TVariables,
-    { previousData: TItem[] | undefined }
+    OptimisticUpdateContext<TItem>
   >({
     mutationKey: [...queryKey, action],
     mutationFn: mutateFn,
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey });
-
       const previousData = queryClient.getQueryData<TItem[]>(queryKey);
 
       queryClient.setQueryData<TItem[]>(queryKey, (oldData = []) => {
         if (action === ACTIONS.BULK_DELETE && Array.isArray(variables)) {
           return oldData.filter((item) => !variables.includes(item.id));
         }
-        if (action === ACTIONS.UPDATE && 'id' in variables) {
+        if (action === ACTIONS.UPDATE && hasId(variables)) {
           return oldData?.map((item) =>
             item.id === variables.id ? { ...item, ...variables } : item
           );
         }
-
         if (action === ACTIONS.CREATE) {
-          const newItem: TItem = {
-            ...(variables as Partial<TItem>),
-          } as TItem;
+          const newItem: TItem = { ...(variables as Partial<TItem>) } as TItem;
           return [...oldData, newItem];
         }
-
-        if (action === ACTIONS.DELETE && 'id' in variables) {
+        if (action === ACTIONS.DELETE && hasId(variables)) {
           return oldData.filter((item) => item.id !== variables.id);
         }
-
         return oldData;
       });
 
       return { previousData };
     },
     onError: (err, _vars, context) => {
+      const errorMessage = handleAxiosError(err);
       if (context?.previousData) {
         queryClient.setQueryData(queryKey, context.previousData);
       }
       toast({
         title: 'Error',
-        description: handleAxiosError(err),
+        description: errorMessage,
         variant: 'destructive',
       });
     },
@@ -107,4 +102,4 @@ export const useMutateItemWithOptimisticUpdate = <
     },
     ...options,
   });
-};
+}

@@ -1,10 +1,4 @@
-import {
-  configureStore,
-  Action,
-  Reducer,
-  AnyAction,
-  Store,
-} from '@reduxjs/toolkit';
+import { configureStore, Action, Reducer, Store } from '@reduxjs/toolkit';
 import {
   persistStore,
   persistReducer,
@@ -25,7 +19,7 @@ const persistConfig = {
   whitelist: ['cache'],
 };
 
-interface CustomStore extends Store<RootState, AnyAction> {
+interface CustomStore extends Store<RootState, Action> {
   asyncReducers?: AsyncReducers;
 }
 
@@ -45,7 +39,10 @@ store.asyncReducers = {};
 
 export const persistor = persistStore(store);
 
-export function injectReducer<S>(key: string, reducer: Reducer<S, Action>) {
+export function injectReducer(
+  key: string,
+  reducer: Reducer<RootState, Action>
+) {
   if (store.asyncReducers) {
     if (store.asyncReducers[key]) {
       return false;

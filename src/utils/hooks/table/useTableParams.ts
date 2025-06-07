@@ -3,16 +3,19 @@ import { useAppDispatch, useAppSelector } from '@/store';
 import type { QueryParams } from '@/types/shared/track';
 import { setCacheParams } from '@/store/slices/cacheParams/cacheSlice';
 import { META } from '@/constants/table.constants';
-import type { OnChangeFn, SortingState } from '@tanstack/react-table';
+import {
+  isFunction,
+  type OnChangeFn,
+  type SortingState,
+} from '@tanstack/react-table';
+import { isSortingState } from '@/utils/guards/isSortingState';
 
 export interface UseTableParamsOptions {
   listKey: string;
 }
 export function useTableParams({ listKey }: UseTableParamsOptions) {
   const dispatch = useAppDispatch();
-  const cache = useAppSelector(
-    (state) => state.cache[listKey] as QueryParams | undefined
-  );
+  const cache = useAppSelector((state) => state.cache[listKey] as QueryParams);
 
   const [params, setParams] = useState<QueryParams>({
     page: cache?.page ?? META.page,
@@ -36,22 +39,24 @@ export function useTableParams({ listKey }: UseTableParamsOptions) {
 
   const handleSortingChange: OnChangeFn<SortingState> = (updater) => {
     setSortingState((prev) => {
-      const next = typeof updater === 'function' ? updater(prev) : updater;
-      setParams((paramsPrev) =>
-        next?.length
-          ? {
-              ...paramsPrev,
-              sort: next[0].id as QueryParams['sort'],
-              order: next[0].desc ? 'desc' : 'asc',
-              page: 1,
-            }
-          : { ...paramsPrev, sort: undefined, order: undefined, page: 1 }
-      );
+      const next = isFunction(updater) ? updater(prev) : updater;
+      if (isSortingState(next)) {
+        setParams((paramsPrev) =>
+          next?.length
+            ? {
+                ...paramsPrev,
+                sort: next[0].id as QueryParams['sort'],
+                order: next[0].desc ? 'desc' : 'asc',
+                page: META.page,
+              }
+            : { ...paramsPrev, sort: undefined, order: undefined, page: 1 }
+        );
+        return next;
+      }
 
-      return next;
+      return prev;
     });
   };
-
   const handlePageChange = useCallback((page: number | string) => {
     setParams((p) => ({ ...p, page }));
   }, []);
@@ -60,12 +65,12 @@ export function useTableParams({ listKey }: UseTableParamsOptions) {
     setParams((prev) => ({
       ...prev,
       limit: newLimit,
-      page: 1,
+      page: META.page,
     }));
   }, []);
 
   const handleSearchChange = useCallback((search: string) => {
-    setParams((p) => ({ ...p, search, page: 1 }));
+    setParams((p) => ({ ...p, search, page: META.page }));
   }, []);
 
   return {

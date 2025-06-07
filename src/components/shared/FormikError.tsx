@@ -1,12 +1,10 @@
 import { ErrorMessage } from 'formik';
 
-const FormikError = ({
-  name,
-  errorTestId,
-}: {
+interface FormikErrorProps {
   name: string;
   errorTestId?: string;
-}) => (
+}
+const FormikError = ({ name, errorTestId }: FormikErrorProps) => (
   <ErrorMessage name={name}>
     {(msg) => (
       <p
