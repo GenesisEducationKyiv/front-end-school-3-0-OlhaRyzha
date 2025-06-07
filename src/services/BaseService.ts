@@ -5,37 +5,21 @@ import axios, {
   AxiosError,
 } from 'axios';
 import qs from 'qs';
-import { QueryParams } from '../types/shared/track';
+import { cleanParams } from '@/utils/cleanParams';
 
-const cleanParams = (params: QueryParams): Record<string, string> => {
-  const cleanedParams: Record<string, string> = {};
-
-  Object.entries(params).forEach(([key, value]) => {
-    if (!value) return;
-
-    if (Array.isArray(value)) {
-      const filtered = value.filter((item) => item != null && item !== '');
-      if (filtered.length > 0) {
-        cleanedParams[key] = filtered.join(',');
-      }
-    } else {
-      cleanedParams[key] = String(value);
-    }
-  });
-
-  return cleanedParams;
-};
+export const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const TIMEOUT = 30000;
 
 class ApiClient {
   private axiosInstance: AxiosInstance;
 
   constructor() {
     this.axiosInstance = axios.create({
-      baseURL: import.meta.env.VITE_API_BASE_URL,
-      timeout: 30000,
+      baseURL: BASE_URL,
+      timeout: TIMEOUT,
       paramsSerializer: {
         serialize: (params) =>
-          qs.stringify(cleanParams(params as QueryParams), {
+          qs.stringify(cleanParams(params), {
             arrayFormat: 'repeat',
             encode: false,
           }),

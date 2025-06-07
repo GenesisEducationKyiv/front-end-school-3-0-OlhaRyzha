@@ -1,3 +1,4 @@
+import { DEFAULT_TABLE_COLUMN } from '@/constants/table.constants';
 import { IdType } from '@/types/ids';
 import {
   ColumnDef,
@@ -46,10 +47,7 @@ export function useTable<T extends { id: IdType }>(props: GetTableProps<T>) {
   return useReactTable({
     data: tracks,
     columns,
-    defaultColumn: {
-      size: 150,
-      minSize: 100,
-    },
+    defaultColumn: DEFAULT_TABLE_COLUMN,
     state: {
       sorting,
       columnFilters,

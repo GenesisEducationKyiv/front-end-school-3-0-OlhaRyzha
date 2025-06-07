@@ -1,8 +1,9 @@
-import { AxiosError } from 'axios';
+import { validationMessages } from '@/constants/message.constant';
+import { isAxiosError } from 'axios';
 
 export const handleAxiosError = (error: unknown) => {
-  if (error instanceof AxiosError) {
-    return error?.response?.data?.error || 'An error occurred';
+  if (isAxiosError(error)) {
+    return error?.response?.data?.error || validationMessages.error;
   }
-  return 'An unknown error occurred';
+  return validationMessages.unknownError;
 };

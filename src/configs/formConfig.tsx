@@ -1,5 +1,7 @@
 import { validationMessages } from '@/constants/message.constant';
 import { CreateTrackDto, Track } from '@/types/shared/track';
+import { isFile } from '@/utils/guards/isFile';
+import { isString } from '@/utils/guards/isString';
 import * as Yup from 'yup';
 
 const allowedSchemes = ['http:', 'https:', 'blob:'];
@@ -25,7 +27,7 @@ export const validationSchema = Yup.object({
     .test('is-valid-url-or-file', validationMessages.url, (value) => {
       if (!value) return true;
 
-      if (typeof value === 'string') {
+      if (isString(value)) {
         try {
           const url = new URL(value);
           return allowedSchemes.includes(url.protocol);
@@ -34,14 +36,14 @@ export const validationSchema = Yup.object({
         }
       }
 
-      if (value instanceof File) {
+      if (isFile(value)) {
         return allowedImageTypes.includes(value.type);
       }
 
       return false;
     })
     .test('valid-host-if-url', validationMessages.invalidHost, (value) => {
-      if (!value || typeof value !== 'string') return true;
+      if (!value || !isString(value)) return true;
 
       try {
         const url = new URL(value);
@@ -52,7 +54,7 @@ export const validationSchema = Yup.object({
       }
     })
     .test('max-size-if-file', validationMessages.lengthMax('5MB'), (value) => {
-      if (value instanceof File) {
+      if (isFile(value)) {
         return value.size <= maxFileSize;
       }
       return true;
