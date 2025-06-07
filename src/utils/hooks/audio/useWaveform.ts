@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from 'react';
 import WaveSurfer from 'wavesurfer.js';
 import { Result, ok, err } from 'neverthrow';
 import { audioUploadMessages } from '@/constants/message.constant';
+import { isString } from '@/utils/guards/isString';
 
 interface UseWaveformProps {
   url: string | null;
@@ -14,7 +15,11 @@ export function useWaveform({ url, isPlaying = false }: UseWaveformProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!waveformRef.current) return;
+    if (!waveformRef.current || !isString(url) || !url) {
+      setError(null);
+      setIsLoading(false);
+      return;
+    }
 
     wavesurferRef.current = WaveSurfer.create({
       container: waveformRef.current,

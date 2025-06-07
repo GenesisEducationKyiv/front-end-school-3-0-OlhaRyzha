@@ -87,7 +87,6 @@ function CreateTrackModal({ track, onClose }: CreateTrackModalProps) {
         onSubmit={handleSubmit}>
         {({ values, setFieldValue, isSubmitting, dirty, isValid }) => {
           const previewSrc = normalizeCoverImage(values.coverImage);
-
           return (
             <Form className='space-y-4'>
               <div className='flex justify-center'>
