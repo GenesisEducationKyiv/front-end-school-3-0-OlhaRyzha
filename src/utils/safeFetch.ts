@@ -1,14 +1,41 @@
-import { ZodSchema } from 'zod';
+import { pipe, R } from '@mobily/ts-belt';
+import type { Result } from '@mobily/ts-belt';
+import z from 'zod';
+import { ApiError } from '@/utils/apiError';
+import { validationMessages } from '@/constants/message.constant';
 
 export async function safeFetch<T>(
-  promise: Promise<unknown>,
-  schema: ZodSchema<T>
-): Promise<T> {
-  const data = await promise;
-  const parsed = schema.safeParse(data);
-  if (!parsed.success) {
-    console.error('[ZOD PARSE ERROR]', parsed.error, data);
-    throw new Error('Response validation failed');
-  }
-  return parsed.data;
+  apiCall: Promise<T>,
+  schema?: z.Schema<NonNullable<T>>
+): Promise<NonNullable<T>> {
+  const initial: Result<T, unknown> = await R.fromPromise(apiCall);
+
+  const checked: Result<NonNullable<T>, ApiError> = pipe(
+    initial,
+    R.mapError((err) => ApiError.fromUnknown(err)),
+
+    R.flatMap((response) => {
+      if (response == null) {
+        return R.Error(
+          ApiError.fromUnknown(new Error(validationMessages.responseIsNull))
+        );
+      }
+      if (!schema) {
+        return R.Ok(response);
+      }
+      const parsed = schema.safeParse(response);
+      if (!parsed.success) {
+        console.error(validationMessages.zodError, parsed.error, response);
+      }
+      return R.Ok(response);
+    })
+  );
+
+  return R.match(
+    checked,
+    (value) => value,
+    (err) => {
+      throw err;
+    }
+  );
 }

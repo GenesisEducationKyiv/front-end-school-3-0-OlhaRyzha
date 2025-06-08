@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import trackService from '../../../services/api/trackService';
+import trackService from '@/services/api/trackService';
 import { useMutateItemWithOptimisticUpdate } from './useMutateItemWithOptimisticUpdate';
 import { TRACKS_QUERY_KEY } from '../../../constants/queryKeys.constants';
 import { ACTIONS } from '../../../constants/actions.constants';

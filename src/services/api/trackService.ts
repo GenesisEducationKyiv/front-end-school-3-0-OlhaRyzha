@@ -19,7 +19,7 @@ import {
 
 const tracksRoute = API_ROUTES.TRACKS;
 
-const TrackService = {
+const Track = {
   getAll: (params?: QueryParams): Promise<PaginatedResponse<TrackType>> =>
     safeFetch(
       apiClient.get(tracksRoute, { params }),
@@ -36,7 +36,7 @@ const TrackService = {
     safeFetch(apiClient.put(`${tracksRoute}/${id}`, payload), trackSchema),
 
   delete: (id: IdType): Promise<void> =>
-    apiClient.delete(`${tracksRoute}/${id}`),
+    safeFetch(apiClient.delete(`${tracksRoute}/${id}`)),
 
   bulkDelete: (ids: IdType[]): Promise<BatchDeleteResponse> =>
     safeFetch(
@@ -47,7 +47,6 @@ const TrackService = {
   uploadAudio: (id: IdType, file: File): Promise<TrackType> => {
     const formData = new FormData();
     formData.append('file', file);
-
     return safeFetch(
       apiClient.post(`${tracksRoute}/${id}/${ACTIONS.UPLOAD}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -63,4 +62,4 @@ const TrackService = {
     ),
 };
 
-export default TrackService;
+export default Track;
