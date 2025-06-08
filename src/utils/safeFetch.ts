@@ -12,7 +12,7 @@ export async function safeFetch<T>(
 
   const checked: Result<NonNullable<T>, ApiError> = pipe(
     initial,
-    R.mapError((err) => ApiError.fromUnknown(err)),
+    R.mapError(ApiError.fromUnknown),
 
     R.flatMap((response) => {
       if (response == null) {
@@ -20,12 +20,11 @@ export async function safeFetch<T>(
           ApiError.fromUnknown(new Error(validationMessages.responseIsNull))
         );
       }
-      if (!schema) {
-        return R.Ok(response);
-      }
-      const parsed = schema.safeParse(response);
-      if (!parsed.success) {
-        console.error(validationMessages.zodError, parsed.error, response);
+      if (schema) {
+        const parsed = schema.safeParse(response);
+        if (!parsed.success) {
+          console.error(validationMessages.zodError, parsed.error, response);
+        }
       }
       return R.Ok(response);
     })
