@@ -71,8 +71,6 @@ function CreateTrackModal({ track, onClose }: CreateTrackModalProps) {
 
   return (
     <DialogContent
-      onPointerDownOutside={(e) => e.preventDefault()}
-      onEscapeKeyDown={(e) => e.preventDefault()}
       aria-describedby={undefined}
       className='bg-white rounded-lg p-6 w-full max-h-[90vh] overflow-y-auto max-w-md'>
       <DialogHeader>
@@ -89,7 +87,6 @@ function CreateTrackModal({ track, onClose }: CreateTrackModalProps) {
         onSubmit={handleSubmit}>
         {({ values, setFieldValue, isSubmitting, dirty, isValid }) => {
           const previewSrc = normalizeCoverImage(values.coverImage);
-
           return (
             <Form className='space-y-4'>
               <div className='flex justify-center'>

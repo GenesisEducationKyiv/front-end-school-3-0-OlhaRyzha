@@ -2,17 +2,26 @@ import { useState, useEffect } from 'react';
 import { useFormikContext } from 'formik';
 import { COVER_IMAGE_FIELD_NAME } from '@/constants/fieldNames.constants';
 
-type CoverImageValue = string | File | null;
+import {
+  CoverImageValue,
+  INPUT_COVER_IMG_TYPES,
+  InputCoverImageType,
+} from '@/types/input';
+import { isString } from '@/utils/guards/isString';
+import { isFile, isFileType } from '@/utils/guards/isFile';
+import { isUrl } from '@/utils/guards/isUrl';
 
 export const useCoverImageField = () => {
   const { setFieldValue, values } = useFormikContext<{
-    coverImage: CoverImageValue;
+    [COVER_IMAGE_FIELD_NAME]: CoverImageValue;
   }>();
 
-  const initialInputType =
-    typeof values[COVER_IMAGE_FIELD_NAME] === 'string' ? 'url' : 'file';
+  const initialInputType = isString(values[COVER_IMAGE_FIELD_NAME])
+    ? INPUT_COVER_IMG_TYPES[0]
+    : INPUT_COVER_IMG_TYPES[1];
 
-  const [inputType, setInputType] = useState<'url' | 'file'>(initialInputType);
+  const [inputType, setInputType] =
+    useState<InputCoverImageType>(initialInputType);
 
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFieldValue(COVER_IMAGE_FIELD_NAME, e.target.value);
@@ -24,10 +33,12 @@ export const useCoverImageField = () => {
 
   useEffect(() => {
     const currentValue = values[COVER_IMAGE_FIELD_NAME];
-    if (inputType === 'url' && typeof currentValue !== 'string') {
+
+    if (isUrl(inputType) && !isString(currentValue)) {
       setFieldValue(COVER_IMAGE_FIELD_NAME, '');
     }
-    if (inputType === 'file' && !(currentValue instanceof File)) {
+
+    if (isFileType(inputType) && !isFile(currentValue)) {
       setFieldValue(COVER_IMAGE_FIELD_NAME, null);
     }
   }, [inputType, setFieldValue, values]);
