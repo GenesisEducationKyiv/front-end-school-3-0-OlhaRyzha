@@ -1,73 +1,47 @@
-import { useEffect, useState, useCallback } from 'react';
+import { ArtistsType } from './../../../types/shared/artists';
+import { GenresType } from '@/types/shared/genre';
+import { useEffect } from 'react';
 import type { QueryParams } from '@/types/shared/track';
-import { META } from '@/constants/table.constants';
-import {
-  isFunction,
-  type OnChangeFn,
-  type SortingState,
-} from '@tanstack/react-table';
-import { isSortingState } from '@/utils/guards/isSortingState';
 import { useLocation } from 'react-router-dom';
 import {
   getQueryParamsFromUrl,
   setQueryParamsToUrl,
 } from '@/utils/table/queryParams';
+import { queryClient } from '@/services';
+import {
+  ARTISTS_QUERY_KEY,
+  GENRES_QUERY_KEY,
+} from '@/constants/queryKeys.constants';
+import { useAppDispatch, useAppSelector } from '@/store';
+import {
+  selectTableParams,
+  setTableParams,
+} from '@/store/slices/table/tableSlice';
 
 export function useTableParams() {
+  const dispatch = useAppDispatch();
   const { search } = useLocation();
-  const initialParams: QueryParams = getQueryParamsFromUrl(search);
+  const params = useAppSelector(selectTableParams);
 
-  const [params, setParams] = useState<QueryParams>(initialParams);
-  const [sortingState, setSortingState] = useState<SortingState>([]);
+  const allGenres =
+    queryClient.getQueryData<GenresType>(GENRES_QUERY_KEY) ?? [];
+
+  const allArtists =
+    queryClient.getQueryData<ArtistsType>(ARTISTS_QUERY_KEY) ?? [];
+
+  const initialParams: QueryParams = getQueryParamsFromUrl(
+    search,
+    allGenres,
+    allArtists
+  );
+
+  useEffect(() => {
+    dispatch(setTableParams(initialParams));
+  }, []);
 
   useEffect(() => {
     setQueryParamsToUrl(params);
   }, [params]);
 
-  const handleSortingChange: OnChangeFn<SortingState> = (updater) => {
-    setSortingState((prev) => {
-      const next = isFunction(updater) ? updater(prev) : updater;
-      if (isSortingState(next)) {
-        setParams((paramsPrev) =>
-          next?.length
-            ? {
-                ...paramsPrev,
-                sort: next[0].id as QueryParams['sort'],
-                order: next[0].desc ? 'desc' : 'asc',
-                page: META.page,
-              }
-            : { ...paramsPrev, sort: undefined, order: undefined, page: 1 }
-        );
-        return next;
-      }
-      return prev;
-    });
-  };
-
-  const handlePageChange = useCallback((page: number | string) => {
-    setParams((p) => ({ ...p, page }));
-  }, []);
-
-  const handleLimitChange = useCallback((newLimit: number) => {
-    setParams((prev) => ({
-      ...prev,
-      limit: newLimit,
-      page: META.page,
-    }));
-  }, []);
-
-  const handleSearchChange = useCallback((search: string) => {
-    setParams((p) => ({ ...p, search, page: META.page }));
-  }, []);
-
-  return {
-    params,
-    setParams,
-    sorting: sortingState,
-    handleSortingChange,
-    handlePageChange,
-    handleLimitChange,
-    search: params.search ?? '',
-    setSearch: handleSearchChange,
-  };
+  return {};
 }

@@ -3,6 +3,7 @@ export const META = {
   limit: 10,
   sort: 'createdAt',
   order: 'desc',
+  total: 0,
 } as const;
 
 export const TABLE_SIZES = [10, 20, 30, 40, 50];

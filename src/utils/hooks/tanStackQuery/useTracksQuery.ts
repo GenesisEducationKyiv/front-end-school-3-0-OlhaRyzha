@@ -1,7 +1,10 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import trackService from '@/services/api/trackService';
 import { useMutateItemWithOptimisticUpdate } from './useMutateItemWithOptimisticUpdate';
-import { TRACKS_QUERY_KEY } from '../../../constants/queryKeys.constants';
+import {
+  ARTISTS_QUERY_KEY,
+  TRACKS_QUERY_KEY,
+} from '../../../constants/queryKeys.constants';
 import { ACTIONS } from '../../../constants/actions.constants';
 import {
   BatchDeleteResponse,
@@ -14,6 +17,7 @@ import {
 import { IdType } from '@/types/ids';
 import {
   FILE_KEY,
+  META,
   TRACK_KEY,
   TRACKS_LIST_KEY,
 } from '@/constants/table.constants';
@@ -83,3 +87,32 @@ export const useDeleteTrackAudio = () =>
     mutateFn: ({ id }) => trackService.deleteAudio(id),
     entity: FILE_KEY,
   });
+
+export function useGetAllArtists(maxLimit = 100) {
+  return useQuery<string[]>({
+    queryKey: ARTISTS_QUERY_KEY,
+    queryFn: async () => {
+      let page = META.page;
+      let artistsSet = new Set<string>();
+      let totalPages = 1;
+
+      do {
+        const res: PaginatedResponse<Track> = await trackService.getAll({
+          page,
+          limit: maxLimit,
+        });
+
+        res.data.forEach((track) => {
+          if (track.artist) {
+            artistsSet.add(track.artist);
+          }
+        });
+
+        totalPages = res.meta?.totalPages || META.page;
+        page++;
+      } while (page <= totalPages);
+
+      return Array.from(artistsSet);
+    },
+  });
+}

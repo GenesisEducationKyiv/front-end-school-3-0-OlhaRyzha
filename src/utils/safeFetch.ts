@@ -6,33 +6,44 @@ import { validationMessages } from '@/constants/message.constant';
 
 export async function safeFetch<T>(
   apiCall: Promise<T>,
-  schema?: z.Schema<NonNullable<T>>
-): Promise<NonNullable<T>> {
-  const initial: Result<T, unknown> = await R.fromPromise(apiCall);
+  schema: z.Schema<NonNullable<T>>
+): Promise<T> {
+  const initial: Result<NonNullable<T>, unknown> = await R.fromPromise(apiCall);
 
-  const checked: Result<NonNullable<T>, ApiError> = pipe(
+  const checked: Result<T, ApiError> = pipe(
     initial,
     R.mapError(ApiError.fromUnknown),
-
     R.flatMap((response) => {
-      if (response == null) {
-        return R.Error(
-          ApiError.fromUnknown(new Error(validationMessages.responseIsNull))
-        );
-      }
-      if (schema) {
-        const parsed = schema.safeParse(response);
-        if (!parsed.success) {
-          console.error(validationMessages.zodError, parsed.error, response);
-        }
-      }
-      return R.Ok(response);
+      const parsed = schema.safeParse(response);
+      if (parsed.success) return R.Ok(parsed.data);
+      console.error(validationMessages.zodError, parsed.error, response);
+      return R.Error(ApiError.fromZod(parsed.error));
     })
   );
 
   return R.match(
     checked,
     (value) => value,
+    (err) => {
+      throw err;
+    }
+  );
+}
+
+export async function fetchVoidResponse(
+  apiCall: Promise<unknown>
+): Promise<void> {
+  const initial: Result<unknown, unknown> = await R.fromPromise(apiCall);
+
+  const checked: Result<{}, ApiError> = pipe(
+    initial,
+    R.mapError(ApiError.fromUnknown),
+    R.flatMap(() => R.Ok<{}>({}))
+  );
+
+  return R.match(
+    checked,
+    () => undefined,
     (err) => {
       throw err;
     }

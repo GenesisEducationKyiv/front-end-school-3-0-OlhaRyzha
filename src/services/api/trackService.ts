@@ -10,7 +10,7 @@ import {
 } from '../../types/shared/track';
 import apiClient from '../BaseService';
 import { ACTIONS } from '@/constants/actions.constants';
-import { safeFetch } from '@/utils/safeFetch';
+import { safeFetch, fetchVoidResponse } from '@/utils/safeFetch';
 import {
   batchDeleteResponseSchema,
   paginatedResponseSchema,
@@ -19,7 +19,7 @@ import {
 
 const tracksRoute = API_ROUTES.TRACKS;
 
-const Track = {
+const TrackService = {
   getAll: (params?: QueryParams): Promise<PaginatedResponse<TrackType>> =>
     safeFetch(
       apiClient.get(tracksRoute, { params }),
@@ -36,7 +36,7 @@ const Track = {
     safeFetch(apiClient.put(`${tracksRoute}/${id}`, payload), trackSchema),
 
   delete: (id: IdType): Promise<void> =>
-    safeFetch(apiClient.delete(`${tracksRoute}/${id}`)),
+    fetchVoidResponse(apiClient.delete(`${tracksRoute}/${id}`)),
 
   bulkDelete: (ids: IdType[]): Promise<BatchDeleteResponse> =>
     safeFetch(
@@ -62,4 +62,4 @@ const Track = {
     ),
 };
 
-export default Track;
+export default TrackService;

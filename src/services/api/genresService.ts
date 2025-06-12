@@ -4,9 +4,9 @@ import { GenresType } from '@/types/shared/genre';
 import { safeFetch } from '@/utils/safeFetch';
 import { genresSchema } from '@/schemas/genres.schemas';
 
-const Genres = {
+const GenresService = {
   getAll: (): Promise<GenresType> =>
     safeFetch(apiClient.get(API_ROUTES.GENRES), genresSchema),
 };
 
-export default Genres;
+export default GenresService;
