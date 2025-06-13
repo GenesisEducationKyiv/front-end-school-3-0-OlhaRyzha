@@ -56,7 +56,7 @@
     "@types/lodash": "^4.17.16",
     "@types/node": "^22.15.29",
     "@types/qs": "^6.9.18",
-    "@types/react": "^19.1.2",
+    "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.2",
     "@types/react-redux": "^7.1.34",
     "@types/react-router-dom": "^5.3.3",
