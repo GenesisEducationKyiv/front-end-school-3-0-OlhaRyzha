@@ -8,7 +8,7 @@ import {
   DropdownMenuCheckboxItem,
 } from '@/components/ui/dropdown-menu';
 import { ChevronDown } from 'lucide-react';
-import { QueryParams, Track } from '@/types/shared/track';
+import { Track } from '@/types/shared/track';
 import { Table } from '@tanstack/react-table';
 import { useAppDispatch, useAppSelector } from '@/store';
 import {
@@ -17,45 +17,32 @@ import {
 } from '@/store/slices/table/tableSlice';
 import { BTNS_LABELS } from '@/constants/labels.constant';
 import FiltersBar from './FiltersBar';
-import { SetParamsType, SetRowSelectionType } from '@/types/shared/table';
+import { SetRowSelectionType } from '@/types/shared/table';
 import { useTableToolbar } from '@/utils/hooks/table/useTableToolbar';
 import { isNonEmptyArray } from '@/utils/guards/isNonEmptyArray';
 import { dialogMessages } from '@/constants/message.constant';
 
 interface TableToolbarProps {
-  search: string;
-  setSearch: (value: string) => void;
-  params: QueryParams;
-  setParams: SetParamsType;
-  availableArtists: string[];
   selectedIds: string[];
   table: Table<Track>;
   setRowSelection: SetRowSelectionType;
 }
 
 const TableToolbar = ({
-  search,
-  setSearch,
-  params,
-  setParams,
-  availableArtists,
   selectedIds,
   table,
   setRowSelection,
 }: TableToolbarProps) => {
   const dispatch = useAppDispatch();
+
   const {
     localSearch,
     setLocalSearch,
     deleteDialogOpen,
     setDeleteDialogOpen,
-    allGenres,
     handleBulkDelete,
     handleReset,
   } = useTableToolbar({
-    search,
-    setSearch,
-    setParams,
     selectedIds,
     setRowSelection,
   });
@@ -71,12 +58,7 @@ const TableToolbar = ({
         data-testid='search-input'
       />
 
-      <FiltersBar
-        params={params}
-        setParams={setParams}
-        availableArtists={availableArtists}
-        availableGenres={allGenres}
-      />
+      <FiltersBar />
 
       {isNonEmptyArray(selectedIds) && (
         <AlertDialogComponent

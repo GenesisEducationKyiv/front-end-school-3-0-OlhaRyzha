@@ -1,27 +1,39 @@
 import { useEffect, useState, useCallback } from 'react';
 import { initialParams } from '@/configs/tableConfig';
-import { useBulkDeleteTracks } from '@/utils/hooks/tanStackQuery/useTracksQuery';
+import {
+  useBulkDeleteTracks,
+  useGetAllArtists,
+} from '@/utils/hooks/tanStackQuery/useTracksQuery';
 import { useGenresQuery } from '@/utils/hooks/tanStackQuery/useGenresQuery';
 import { useDebounce } from '@/utils/hooks/useDebounce';
-import { SetParamsType, SetRowSelectionType } from '@/types/shared/table';
+import { SetRowSelectionType } from '@/types/shared/table';
 import { isNonEmptyArray } from '@/utils/guards/isNonEmptyArray';
+import { useAppDispatch, useAppSelector } from '@/store';
+import {
+  selectMeta,
+  selectTableParams,
+  setTableParams,
+  updateSearch,
+} from '@/store/slices/table/tableSlice';
 
 interface UseTableToolbarProps {
-  search: string;
-  setSearch: (value: string) => void;
-  setParams: SetParamsType;
   selectedIds: string[];
   setRowSelection: SetRowSelectionType;
 }
 
 export function useTableToolbar({
-  search,
-  setSearch,
-  setParams,
   selectedIds,
   setRowSelection,
 }: UseTableToolbarProps) {
+  const dispatch = useAppDispatch();
+  const { limit } = useAppSelector(selectMeta);
+  const params = useAppSelector(selectTableParams);
+
+  const search = params?.search ?? '';
+
   const { data: allGenres = [] } = useGenresQuery();
+  useGetAllArtists(limit);
+
   const bulkDeleteMutation = useBulkDeleteTracks();
 
   const [localSearch, setLocalSearch] = useState(search);
@@ -34,9 +46,9 @@ export function useTableToolbar({
 
   useEffect(() => {
     if (debouncedSearch !== search) {
-      setSearch(debouncedSearch);
+      dispatch(updateSearch(debouncedSearch));
     }
-  }, [debouncedSearch, search, setSearch]);
+  }, [debouncedSearch, search]);
 
   const handleBulkDelete = useCallback(() => {
     if (!isNonEmptyArray(selectedIds)) return;
@@ -53,9 +65,9 @@ export function useTableToolbar({
   }, [selectedIds, bulkDeleteMutation, setRowSelection]);
 
   const handleReset = useCallback(() => {
-    setParams((prev) => ({ ...prev, ...initialParams }));
+    dispatch(setTableParams({ ...params, ...initialParams }));
     setLocalSearch(initialParams.search || '');
-  }, [setParams]);
+  }, []);
 
   return {
     localSearch,

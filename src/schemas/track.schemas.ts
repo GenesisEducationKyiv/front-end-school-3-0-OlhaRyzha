@@ -38,7 +38,6 @@ export const paginatedResponseSchema = <T extends z.ZodTypeAny>(
   });
 
 export const batchDeleteResponseSchema = z.object({
-  id: z.string(),
   success: z.array(z.string()),
   failed: z.array(z.string()),
 });

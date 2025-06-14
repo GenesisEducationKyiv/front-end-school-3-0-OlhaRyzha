@@ -16,7 +16,7 @@ const persistConfig = {
   key: 'tracker',
   keyPrefix: '',
   storage,
-  whitelist: ['cache'],
+  whitelist: [],
 };
 
 interface CustomStore extends Store<RootState, Action> {

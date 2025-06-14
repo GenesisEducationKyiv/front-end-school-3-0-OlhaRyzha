@@ -20,6 +20,7 @@ import { normalizeCoverImage } from '@/utils/normalizeCoverImage';
 import FormField from './FormField';
 import GenresSection from './GenresSection';
 import { SetFieldValueType } from '@/types/form';
+import { GenresType } from '@/types/shared/genre';
 
 export interface CreateTrackModalProps {
   track?: Track;
@@ -56,7 +57,7 @@ function CreateTrackModal({ track, onClose }: CreateTrackModalProps) {
 
   const toggleGenre = (
     genre: string,
-    currentGenres: string[],
+    currentGenres: GenresType,
     setFieldValue: SetFieldValueType
   ) => {
     const newGenres = currentGenres.includes(genre)
