@@ -3,6 +3,7 @@ import type { Result } from '@mobily/ts-belt';
 import z from 'zod';
 import { ApiError } from '@/utils/apiError';
 import { validationMessages } from '@/constants/message.constant';
+import { toast } from './hooks/use-toast';
 
 export async function safeFetch<T>(
   apiCall: Promise<T>,
@@ -25,6 +26,11 @@ export async function safeFetch<T>(
     checked,
     (value) => value,
     (err) => {
+      toast({
+        title: 'Error',
+        description: err.userMessage,
+        variant: 'destructive',
+      });
       throw err;
     }
   );

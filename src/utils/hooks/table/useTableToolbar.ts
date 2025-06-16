@@ -1,16 +1,12 @@
 import { useEffect, useState, useCallback } from 'react';
 import { initialParams } from '@/configs/tableConfig';
-import {
-  useBulkDeleteTracks,
-  useGetAllArtists,
-} from '@/utils/hooks/tanStackQuery/useTracksQuery';
+import { useBulkDeleteTracks } from '@/utils/hooks/tanStackQuery/useTracksQuery';
 import { useGenresQuery } from '@/utils/hooks/tanStackQuery/useGenresQuery';
 import { useDebounce } from '@/utils/hooks/useDebounce';
 import { SetRowSelectionType } from '@/types/shared/table';
 import { isNonEmptyArray } from '@/utils/guards/isNonEmptyArray';
 import { useAppDispatch, useAppSelector } from '@/store';
 import {
-  selectMeta,
   selectTableParams,
   setTableParams,
   updateSearch,
@@ -26,13 +22,11 @@ export function useTableToolbar({
   setRowSelection,
 }: UseTableToolbarProps) {
   const dispatch = useAppDispatch();
-  const { limit } = useAppSelector(selectMeta);
   const params = useAppSelector(selectTableParams);
 
   const search = params?.search ?? '';
 
   const { data: allGenres = [] } = useGenresQuery();
-  useGetAllArtists(limit);
 
   const bulkDeleteMutation = useBulkDeleteTracks();
 

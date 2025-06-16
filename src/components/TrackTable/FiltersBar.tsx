@@ -11,14 +11,11 @@ import { ALL_ARTISTS, ALL_GENRES } from '@/constants/labels.constant';
 import { getFilterChangeHandler } from '@/utils/table/filters/getFilterChangeHandler';
 import { getFiltersConfig } from '@/configs/tableConfig';
 import { queryClient } from '@/services';
-import {
-  ARTISTS_QUERY_KEY,
-  GENRES_QUERY_KEY,
-} from '@/constants/queryKeys.constants';
+import { GENRES_QUERY_KEY } from '@/constants/queryKeys.constants';
 import { GenresType } from '@/types/shared/genre';
-import { ArtistsType } from '@/types/shared/artists';
 import { useAppDispatch, useAppSelector } from '@/store';
 import {
+  selectAllArtists,
   selectTableParams,
   setTableParams,
 } from '@/store/slices/table/tableSlice';
@@ -26,8 +23,7 @@ import {
 const FiltersBar = () => {
   const dispatch = useAppDispatch();
   const params = useAppSelector(selectTableParams);
-  const availableArtists =
-    queryClient.getQueryData<ArtistsType>(ARTISTS_QUERY_KEY) ?? [];
+  const availableArtists = useAppSelector(selectAllArtists);
   const availableGenres =
     queryClient.getQueryData<GenresType>(GENRES_QUERY_KEY) ?? [];
 

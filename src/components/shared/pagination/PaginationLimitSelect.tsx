@@ -5,10 +5,15 @@ import { selectMeta, updateLimit } from '@/store/slices/table/tableSlice';
 const PaginationLimitSelect = () => {
   const dispatch = useAppDispatch();
   const { limit } = useAppSelector(selectMeta);
+
+  const onChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    dispatch(updateLimit(Number(e.target.value)));
+  };
+
   return (
     <select
       value={limit}
-      onChange={(e) => dispatch(updateLimit(Number(e.target.value)))}
+      onChange={onChange}
       className='text-sm p-1 border rounded'
       aria-label='Rows per page'>
       {TABLE_SIZES.map((sz) => (

@@ -8,7 +8,7 @@ import {
 } from '@tanstack/react-table';
 import { META } from '@/constants/table.constants';
 import {
-  useTracksQuery,
+  useGetTracks,
   useDeleteTrack,
 } from '@/utils/hooks/tanStackQuery/useTracksQuery';
 import { useAppDispatch, useAppSelector } from '@/store';
@@ -22,7 +22,8 @@ import {
 import { trackColumns } from '@/configs/columnsConfig';
 import { useTable } from '@/utils/hooks/table/useTable';
 import { Track } from '@/types/shared/track';
-import { useTableParams } from './useTableParams';
+import { useInitTableParamsOnce } from './useInitTableParamsOnce';
+import { useSyncTableParamsToUrl } from './useTableParams';
 
 export function useTrackTable() {
   const dispatch = useAppDispatch();
@@ -31,8 +32,11 @@ export function useTrackTable() {
   const selectMode = useAppSelector(selectSelectMode);
 
   const deleteTrack = useDeleteTrack();
-  useTableParams();
-  const { data: tracksData, isLoading, isFetching } = useTracksQuery(params);
+
+  useInitTableParamsOnce();
+  useSyncTableParamsToUrl();
+
+  const { data: tracksData, isLoading, isFetching } = useGetTracks(params);
 
   const tracks = useMemo(() => tracksData?.data ?? [], [tracksData]);
 

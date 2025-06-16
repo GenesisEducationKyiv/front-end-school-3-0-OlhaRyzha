@@ -10,7 +10,7 @@ const VALID_ORDERS = ['asc', 'desc', ''] as const;
 
 type ParamConfig = {
   key: keyof QueryParams;
-  map?: (value: string) => string;
+  map?: (value: string) => string | number;
   validate?: (
     value: string | number,
     allGenres: GenresType,
@@ -20,9 +20,21 @@ type ParamConfig = {
 };
 
 const PARAMS_CONFIG: ParamConfig[] = [
-  { key: PARAMS.PAGE, def: META.page },
-  { key: PARAMS.LIMIT, def: META.limit },
-  { key: PARAMS.SEARCH, map: getTrimmedValue, def: '' },
+  {
+    key: PARAMS.PAGE,
+    def: META.page,
+    map: Number,
+  },
+  {
+    key: PARAMS.LIMIT,
+    def: META.limit,
+    map: Number,
+  },
+  {
+    key: PARAMS.SEARCH,
+    map: getTrimmedValue,
+    def: '',
+  },
   {
     key: PARAMS.SORT,
     def: META.sort,
@@ -65,9 +77,11 @@ export function getQueryParamsFromUrl(
         map ? O.map(map) : O.map((x) => x),
         O.getWithDefault(def)
       );
+
       if (validate && !validate(value, allGenres, allArtists)) {
         value = def;
       }
+
       return { ...acc, [key]: value };
     },
     {}

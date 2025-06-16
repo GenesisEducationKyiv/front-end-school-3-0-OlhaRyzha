@@ -40,7 +40,7 @@ const TableBodyComponent: FC<TableBodyProps> = ({ tracks, table }) => {
         </TableHeader>
         <TableBody data-testid='track-list'>
           {tracks?.length ? (
-            table.getRowModel().rows.map((row) => (
+            table?.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
                 data-testid={`track-item-${row.id}`}
