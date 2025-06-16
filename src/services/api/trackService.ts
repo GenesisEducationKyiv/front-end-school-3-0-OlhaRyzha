@@ -35,7 +35,7 @@ const TrackService = {
   update: (id: IdType, payload: UpdateTrackDto): Promise<TrackType> =>
     safeFetch(apiClient.put(`${tracksRoute}/${id}`, payload), trackSchema),
 
-  delete: (id: IdType): Promise<void> =>
+  delete: (id: IdType): Promise<{}> =>
     fetchVoidResponse(apiClient.delete(`${tracksRoute}/${id}`)),
 
   bulkDelete: (ids: IdType[]): Promise<BatchDeleteResponse> =>

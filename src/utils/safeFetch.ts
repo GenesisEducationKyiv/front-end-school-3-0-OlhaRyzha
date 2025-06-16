@@ -5,6 +5,21 @@ import { ApiError } from '@/utils/apiError';
 import { validationMessages } from '@/constants/message.constant';
 import { toast } from './hooks/use-toast';
 
+function handleErrorToastAndThrow<T>(result: Result<T, ApiError>): T {
+  return R.match(
+    result,
+    (value) => value,
+    (err) => {
+      toast({
+        title: 'Error',
+        description: err.userMessage,
+        variant: 'destructive',
+      });
+      throw err;
+    }
+  );
+}
+
 export async function safeFetch<T>(
   apiCall: Promise<T>,
   schema: z.Schema<NonNullable<T>>
@@ -22,23 +37,12 @@ export async function safeFetch<T>(
     })
   );
 
-  return R.match(
-    checked,
-    (value) => value,
-    (err) => {
-      toast({
-        title: 'Error',
-        description: err.userMessage,
-        variant: 'destructive',
-      });
-      throw err;
-    }
-  );
+  return handleErrorToastAndThrow(checked);
 }
 
 export async function fetchVoidResponse(
   apiCall: Promise<unknown>
-): Promise<void> {
+): Promise<{}> {
   const initial: Result<unknown, unknown> = await R.fromPromise(apiCall);
 
   const checked: Result<{}, ApiError> = pipe(
@@ -47,11 +51,5 @@ export async function fetchVoidResponse(
     R.flatMap(() => R.Ok<{}>({}))
   );
 
-  return R.match(
-    checked,
-    () => undefined,
-    (err) => {
-      throw err;
-    }
-  );
+  return handleErrorToastAndThrow(checked);
 }
