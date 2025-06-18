@@ -8,13 +8,13 @@ import {
   messageOnSuccessDeleted,
   messageOnSuccessEdited,
 } from '@/constants/message.constant';
-import { handleAxiosError } from '@/utils/handleAxiosError';
 import { useToast } from '@/utils/hooks/use-toast';
 import {
   MutateItemOptions,
   OptimisticUpdateContext,
 } from '@/types/mutationTypes';
 import { hasId } from '@/utils/guards/hasId';
+import { ApiError } from '@/utils/apiError';
 
 interface UseMutateItemWithOptimisticUpdateProps<
   TItem extends { id: IdType },
@@ -72,8 +72,9 @@ export function useMutateItemWithOptimisticUpdate<
 
       return { previousData };
     },
-    onError: (err, _vars, context) => {
-      const errorMessage = handleAxiosError(err);
+    onError: (err: ApiError, _vars, context) => {
+      const errorMessage = err.userMessage;
+
       if (context?.previousData) {
         queryClient.setQueryData(queryKey, context.previousData);
       }

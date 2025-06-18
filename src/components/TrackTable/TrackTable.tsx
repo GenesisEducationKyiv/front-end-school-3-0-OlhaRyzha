@@ -11,11 +11,6 @@ import { dialogMessages } from '@/constants/message.constant';
 
 function TrackTable() {
   const {
-    params,
-    setParams,
-    search,
-    setSearch,
-    availableArtists,
     selectedIds,
     trackForEdit,
     setTrackForEdit,
@@ -27,12 +22,6 @@ function TrackTable() {
     table,
     tracks,
     loading,
-    totalItems,
-    currentPage,
-    totalPages,
-    limit,
-    handlePageChange,
-    handleLimitChange,
     setRowSelection,
   } = useTrackTable();
 
@@ -73,11 +62,6 @@ function TrackTable() {
       ) : (
         <div className='w-full'>
           <TableToolbar
-            search={search}
-            setSearch={setSearch}
-            params={params}
-            setParams={setParams}
-            availableArtists={availableArtists}
             selectedIds={selectedIds}
             table={table}
             setRowSelection={setRowSelection}
@@ -86,14 +70,7 @@ function TrackTable() {
             tracks={tracks}
             table={table}
           />
-          <PaginationControls
-            totalItems={totalItems}
-            currentPage={currentPage}
-            handlePageChange={handlePageChange}
-            totalPages={totalPages}
-            handleLimitChange={handleLimitChange}
-            limit={limit}
-          />
+          <PaginationControls />
         </div>
       )}
     </>

@@ -10,7 +10,7 @@ import {
 } from '../../types/shared/track';
 import apiClient from '../BaseService';
 import { ACTIONS } from '@/constants/actions.constants';
-import { safeFetch } from '@/utils/safeFetch';
+import { safeFetch, fetchVoidResponse } from '@/utils/safeFetch';
 import {
   batchDeleteResponseSchema,
   paginatedResponseSchema,
@@ -35,8 +35,8 @@ const TrackService = {
   update: (id: IdType, payload: UpdateTrackDto): Promise<TrackType> =>
     safeFetch(apiClient.put(`${tracksRoute}/${id}`, payload), trackSchema),
 
-  delete: (id: IdType): Promise<void> =>
-    apiClient.delete(`${tracksRoute}/${id}`),
+  delete: (id: IdType): Promise<{}> =>
+    fetchVoidResponse(apiClient.delete(`${tracksRoute}/${id}`)),
 
   bulkDelete: (ids: IdType[]): Promise<BatchDeleteResponse> =>
     safeFetch(
@@ -47,7 +47,6 @@ const TrackService = {
   uploadAudio: (id: IdType, file: File): Promise<TrackType> => {
     const formData = new FormData();
     formData.append('file', file);
-
     return safeFetch(
       apiClient.post(`${tracksRoute}/${id}/${ACTIONS.UPLOAD}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },

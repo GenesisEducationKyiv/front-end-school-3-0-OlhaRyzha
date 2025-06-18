@@ -1,5 +1,5 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import trackService from '../../../services/api/trackService';
+import { useQuery } from '@tanstack/react-query';
+import trackService from '@/services/api/trackService';
 import { useMutateItemWithOptimisticUpdate } from './useMutateItemWithOptimisticUpdate';
 import { TRACKS_QUERY_KEY } from '../../../constants/queryKeys.constants';
 import { ACTIONS } from '../../../constants/actions.constants';
@@ -17,14 +17,31 @@ import {
   TRACK_KEY,
   TRACKS_LIST_KEY,
 } from '@/constants/table.constants';
+import { useAppDispatch } from '@/store';
+import { setAllArtists } from '@/store/slices/table/tableSlice';
+import { useEffect } from 'react';
 
-export const useTracksQuery = (params?: QueryParams) => {
-  return useQuery<PaginatedResponse<Track>>({
+export const useGetTracks = (params?: QueryParams) => {
+  const dispatch = useAppDispatch();
+
+  const query = useQuery<PaginatedResponse<Track>>({
     queryKey: [TRACKS_LIST_KEY, params],
-    queryFn: () => trackService.getAll(params),
-    placeholderData: keepPreviousData,
+    queryFn: async () => await trackService.getAll(params),
   });
+
+  useEffect(() => {
+    const tracks = query.data?.data;
+    if (tracks) {
+      const availableArtists = Array.from(
+        new Set(tracks?.map((t) => t?.artist))
+      );
+      dispatch(setAllArtists(availableArtists));
+    }
+  }, [query.data, dispatch]);
+
+  return query;
 };
+
 export const useGetTrack = (slug: string) => {
   return useQuery<Track>({
     queryKey: [TRACKS_LIST_KEY, slug],

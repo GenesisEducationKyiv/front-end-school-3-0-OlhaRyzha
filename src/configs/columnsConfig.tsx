@@ -23,6 +23,7 @@ import { RiDeleteBin5Fill } from 'react-icons/ri';
 import { lazy, Suspense } from 'react';
 import { Loader } from '@/components/shared';
 import { getTrackAudioUrl } from '@/utils/getTrackAudioUrl';
+import { formatDate } from '@/utils/formatDate';
 
 const Waveform = lazy(() => import('@/components/Audio/AudioWaveform'));
 
@@ -118,6 +119,25 @@ export const trackColumns = ({
           alt={row.original.coverImage ? 'Cover image' : 'No cover available'}
           data-testid={`track-item-${row.original.id}-cover`}
         />
+      ),
+    },
+    {
+      id: 'createdAt',
+      size: 50,
+      minSize: 50,
+      header: ({ column }) => (
+        <Button
+          type='button'
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          data-testid='sort-select'>
+          Created At <ArrowUpDown className='ml-1 h-4 w-4' />
+        </Button>
+      ),
+      cell: ({ row }) => (
+        <span data-testid={`track-item-${row.original.id}-createdAt`}>
+          {formatDate(row.original.createdAt)}
+        </span>
       ),
     },
     {

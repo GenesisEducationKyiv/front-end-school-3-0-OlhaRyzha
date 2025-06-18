@@ -1,6 +1,8 @@
 import { META } from '@/constants/table.constants';
 import { QueryParams } from '@/types/shared/track';
 import { ALL_ARTISTS, ALL_GENRES } from '@/constants/labels.constant';
+import { GenresType } from '@/types/shared/genre';
+import { ArtistsType } from '@/types/shared/artists';
 
 export const initialParams: QueryParams = {
   page: META.page,
@@ -14,8 +16,8 @@ export const initialParams: QueryParams = {
 
 export function getFiltersConfig(
   params: QueryParams,
-  availableArtists: string[],
-  availableGenres: string[],
+  availableArtists: ArtistsType,
+  availableGenres: GenresType,
   onArtistChange: (v: string) => void,
   onGenreChange: (v: string) => void
 ) {

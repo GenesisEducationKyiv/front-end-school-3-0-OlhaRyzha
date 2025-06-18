@@ -8,23 +8,18 @@ import {
   PaginationEllipsis,
 } from '@/components/ui/pagination';
 import { META } from '@/constants/table.constants';
+import { useAppDispatch, useAppSelector } from '@/store';
+import { selectMeta, updatePage } from '@/store/slices/table/tableSlice';
 import { generatePageNumbers } from '@/utils/generatePageNumbers';
 
-interface PaginationNavProps {
-  totalPages: number;
-  currentPage: number;
-  onPageChange: (page: number | string) => void;
-}
+const PaginationNav = () => {
+  const dispatch = useAppDispatch();
+  const { currentPage, totalPages } = useAppSelector(selectMeta);
 
-const PaginationNav = ({
-  totalPages,
-  currentPage,
-  onPageChange,
-}: PaginationNavProps) => {
   const handlePageClick = (e: React.MouseEvent, page: number | string) => {
     e.preventDefault();
     e.stopPropagation();
-    onPageChange(page);
+    dispatch(updatePage(page));
   };
 
   return (

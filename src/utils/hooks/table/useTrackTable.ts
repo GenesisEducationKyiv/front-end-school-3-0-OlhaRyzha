@@ -1,37 +1,57 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ColumnFiltersState, VisibilityState } from '@tanstack/react-table';
-import { META, TRACKS_LIST_KEY } from '@/constants/table.constants';
-import { useTableParams } from '@/utils/hooks/table/useTableParams';
 import {
-  useTracksQuery,
+  ColumnFiltersState,
+  isFunction,
+  OnChangeFn,
+  SortingState,
+  VisibilityState,
+} from '@tanstack/react-table';
+import { META } from '@/constants/table.constants';
+import {
+  useGetTracks,
   useDeleteTrack,
 } from '@/utils/hooks/tanStackQuery/useTracksQuery';
-import { useAppSelector } from '@/store';
-import { selectSelectMode } from '@/store/slices/table/tableSlice';
+import { useAppDispatch, useAppSelector } from '@/store';
+import {
+  selectSelectMode,
+  selectSorting,
+  selectTableParams,
+  setMeta,
+  updateSorting,
+} from '@/store/slices/table/tableSlice';
 import { trackColumns } from '@/configs/columnsConfig';
 import { useTable } from '@/utils/hooks/table/useTable';
 import { Track } from '@/types/shared/track';
+import { useInitTableParamsOnce } from './useInitTableParamsOnce';
+import { useSyncTableParamsToUrl } from './useTableParams';
 
 export function useTrackTable() {
-  const {
-    params,
-    setParams,
-    search,
-    setSearch,
-    handleSortingChange,
-    handlePageChange,
-    handleLimitChange,
-    sorting,
-  } = useTableParams({ listKey: TRACKS_LIST_KEY });
+  const dispatch = useAppDispatch();
+  const params = useAppSelector(selectTableParams);
+  const sorting = useAppSelector(selectSorting);
+  const selectMode = useAppSelector(selectSelectMode);
 
   const deleteTrack = useDeleteTrack();
-  const { data: tracksData, isLoading, isFetching } = useTracksQuery(params);
+
+  useInitTableParamsOnce();
+  useSyncTableParamsToUrl();
+
+  const { data: tracksData, isLoading, isFetching } = useGetTracks(params);
 
   const tracks = useMemo(() => tracksData?.data ?? [], [tracksData]);
-  const totalItems = tracksData?.meta?.total ?? 0;
-  const totalPages = tracksData?.meta?.totalPages ?? META.page;
-  const currentPage = tracksData?.meta?.page ?? META.page;
-  const limit = tracksData?.meta?.limit ?? META.limit;
+
+  useEffect(() => {
+    if (tracksData?.meta) {
+      dispatch(
+        setMeta({
+          total: tracksData.meta.total ?? META.total,
+          totalPages: tracksData.meta.totalPages ?? META.page,
+          currentPage: tracksData.meta.page ?? META.page,
+          limit: tracksData.meta.limit ?? META.limit,
+        })
+      );
+    }
+  }, [tracksData, dispatch]);
 
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -42,8 +62,6 @@ export function useTrackTable() {
   const [trackForDelete, setTrackForDelete] = useState<Track | null>(null);
   const [playingTrackId, setPlayingTrackId] = useState<string | null>(null);
 
-  const selectMode = useAppSelector(selectSelectMode);
-
   const handleConfirmDelete = useCallback(
     (track: Track) => deleteTrack.mutate({ id: track.id }),
     [deleteTrack]
@@ -52,11 +70,6 @@ export function useTrackTable() {
   useEffect(() => {
     setRowSelection({});
   }, [params.page, params.limit, params.sort, params.order, params.search]);
-
-  const availableArtists = useMemo(
-    () => Array.from(new Set(tracks.map((t) => t.artist))),
-    [tracks]
-  );
 
   const columns = useMemo(
     () =>
@@ -70,6 +83,13 @@ export function useTrackTable() {
     [selectMode, setPlayingTrackId]
   );
 
+  const handleSortingChange: OnChangeFn<SortingState> = (updaterOrValue) => {
+    const next = isFunction(updaterOrValue)
+      ? updaterOrValue(sorting)
+      : updaterOrValue;
+
+    dispatch(updateSorting(next));
+  };
   const table = useTable({
     tracks: tracks.map((track) => ({
       ...track,
@@ -98,20 +118,7 @@ export function useTrackTable() {
   );
 
   return {
-    params,
-    setParams,
-    search,
-    setSearch,
-    sorting,
-    handleSortingChange,
-    handlePageChange,
-    handleLimitChange,
-    totalItems,
-    totalPages,
-    currentPage,
-    limit,
     loading,
-    availableArtists,
     selectedIds,
     trackForEdit,
     setTrackForEdit,
