@@ -72,8 +72,8 @@ export function useMutateItemWithOptimisticUpdate<
 
       return { previousData };
     },
-    onError: (err: ApiError, _vars, context) => {
-      const errorMessage = err.userMessage;
+    onError: (error: ApiError, _vars, context) => {
+      const errorMessage = error.userMessage;
 
       if (context?.previousData) {
         queryClient.setQueryData(queryKey, context.previousData);
