@@ -73,7 +73,10 @@ export const useDeleteTrack = () =>
   useMutateItemWithOptimisticUpdate<Track, { id: string }>({
     queryKey: TRACKS_QUERY_KEY,
     action: ACTIONS.DELETE,
-    mutateFn: ({ id }) => trackService.delete(id),
+    mutateFn: async ({ id }) => {
+      await trackService.delete(id);
+      return;
+    },
     entity: TRACK_KEY,
   });
 
