@@ -24,6 +24,20 @@ import { useTable } from '@/utils/hooks/table/useTable';
 import { Track } from '@/types/shared/track';
 import { useInitTableParamsOnce } from './useInitTableParamsOnce';
 import { useSyncTableParamsToUrl } from './useTableParams';
+import {
+  selectSetTrackForDelete,
+  selectSetTrackForEdit,
+  selectSetTrackForUpload,
+  selectTrackForDelete,
+  selectTrackForEdit,
+  selectTrackForUpload,
+  useModalsStore,
+} from '@/store/ zustand/useModalsStore';
+import {
+  selectPlayingTrackId,
+  selectSetPlayingTrackId,
+  usePlayingTrackStore,
+} from '@/store/ zustand/usePlayingTrackStore';
 
 export function useTrackTable() {
   const dispatch = useAppDispatch();
@@ -57,10 +71,17 @@ export function useTrackTable() {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
 
-  const [trackForEdit, setTrackForEdit] = useState<Track | null>(null);
-  const [trackForUpload, setTrackForUpload] = useState<Track | null>(null);
-  const [trackForDelete, setTrackForDelete] = useState<Track | null>(null);
-  const [playingTrackId, setPlayingTrackId] = useState<string | null>(null);
+  const trackForEdit = useModalsStore(selectTrackForEdit);
+  const setTrackForEdit = useModalsStore(selectSetTrackForEdit);
+
+  const trackForUpload = useModalsStore(selectTrackForUpload);
+  const setTrackForUpload = useModalsStore(selectSetTrackForUpload);
+
+  const trackForDelete = useModalsStore(selectTrackForDelete);
+  const setTrackForDelete = useModalsStore(selectSetTrackForDelete);
+
+  const playingTrackId = usePlayingTrackStore(selectPlayingTrackId);
+  const setPlayingTrackId = usePlayingTrackStore(selectSetPlayingTrackId);
 
   const handleConfirmDelete = useCallback(
     (track: Track) => deleteTrack.mutate({ id: track.id }),

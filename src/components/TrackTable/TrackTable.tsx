@@ -8,6 +8,7 @@ import TableToolbar from './TableToolbar';
 import { PaginationControls } from '../shared/pagination';
 import { useTrackTable } from '@/utils/hooks/table/useTrackTable';
 import { dialogMessages } from '@/constants/message.constant';
+import { useModalCloseHandler } from '@/utils/hooks/modal/useModalCloseHandler';
 
 function TrackTable() {
   const {
@@ -25,12 +26,16 @@ function TrackTable() {
     setRowSelection,
   } = useTrackTable();
 
+  const handleEditModalChange = useModalCloseHandler(setTrackForEdit);
+  const handleUploadModalChange = useModalCloseHandler(setTrackForUpload);
+  const handleDeleteModalChange = useModalCloseHandler(setTrackForDelete);
+
   return (
     <>
       {trackForEdit && (
         <Dialog
           open
-          onOpenChange={(o) => !o && setTrackForEdit(null)}>
+          onOpenChange={handleEditModalChange}>
           <CreateTrackModal
             track={trackForEdit}
             onClose={() => setTrackForEdit(null)}
@@ -41,12 +46,12 @@ function TrackTable() {
         <AudioUploadModal
           track={trackForUpload}
           open={!!trackForUpload}
-          onOpenChange={(o) => !o && setTrackForUpload(null)}
+          onOpenChange={handleUploadModalChange}
         />
       )}
       <AlertDialogComponent
         open={!!trackForDelete}
-        onOpenChange={(open) => !open && setTrackForDelete(null)}
+        onOpenChange={handleDeleteModalChange}
         title={dialogMessages.delete('track')}
         description={dialogMessages.cannotBeUndone}
         confirmText='Delete'
