@@ -115,17 +115,6 @@ export function useTrackTable() {
     [rowSelection]
   );
 
-  useEffect(() => {
-    console.log(
-      'isLoading:',
-      isLoading,
-      'isFetching:',
-      isFetching,
-      'tracksData:',
-      tracksData
-    );
-  }, [isLoading, isFetching, tracksData]);
-
   return {
     loading,
     selectedIds,
