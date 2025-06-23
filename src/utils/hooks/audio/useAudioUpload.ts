@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, ChangeEvent } from 'react';
+import { useEffect, useRef, ChangeEvent } from 'react';
 import { validateAudioFile } from '@/utils/audioUpload';
 import { validationMessages } from '@/constants/message.constant';
 import { Track } from '@/types/shared/track';
@@ -7,6 +7,20 @@ import {
   useUploadTrackAudio,
 } from '../tanStackQuery/useTracksQuery';
 import { invariant } from '@/utils/invariant';
+import {
+  selectAudioError,
+  selectAudioFile,
+  selectAudioUrl,
+  selectSetAudioError,
+  selectSetAudioFile,
+  selectSetAudioUrl,
+  useAudioUploadStore,
+} from '@/store/ zustand/useAudioUploadStore';
+import {
+  selectPlayingTrackId,
+  selectSetPlayingTrackId,
+  usePlayingTrackStore,
+} from '@/store/ zustand/usePlayingTrackStore';
 
 interface UseAudioUploadProps {
   track: Track;
@@ -22,23 +36,31 @@ export function useAudioUpload({
   const { mutate: remove } = useDeleteTrackAudio();
 
   const fileRef = useRef<HTMLInputElement>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [selectedUrl, setSelectedUrl] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [playingTrackId, setPlayingTrackId] = useState<string | null>(null);
+
+  const file = useAudioUploadStore(selectAudioFile);
+  const setFile = useAudioUploadStore(selectSetAudioFile);
+
+  const url = useAudioUploadStore(selectAudioUrl);
+  const setUrl = useAudioUploadStore(selectSetAudioUrl);
+
+  const error = useAudioUploadStore(selectAudioError);
+  const setError = useAudioUploadStore(selectSetAudioError);
+
+  const playingTrackId = usePlayingTrackStore(selectPlayingTrackId);
+  const setPlayingTrackId = usePlayingTrackStore(selectSetPlayingTrackId);
 
   useEffect(() => {
-    if (!selectedFile) {
-      setSelectedUrl(null);
+    if (!file) {
+      setUrl(null);
       return;
     }
-    const url = URL.createObjectURL(selectedFile);
-    setSelectedUrl(url);
+    const url = URL.createObjectURL(file);
+    setUrl(url);
     return () => URL.revokeObjectURL(url);
-  }, [selectedFile]);
+  }, [file]);
 
   const handlePlayPause = (id: string) => {
-    setPlayingTrackId((prev) => (prev === id ? null : id));
+    setPlayingTrackId(playingTrackId === id ? null : id);
   };
 
   const handleChoose = () => fileRef.current?.click();
@@ -51,24 +73,24 @@ export function useAudioUpload({
     validationResult.match(
       () => {
         setError(null);
-        setSelectedFile(file);
+        setFile(file);
       },
       (errorMsg) => {
         setError(errorMsg);
-        setSelectedFile(null);
+        setFile(null);
       }
     );
   };
 
   const clear = () => {
-    setSelectedFile(null);
+    setFile(null);
     setError(null);
   };
 
   const handleSave = async () => {
-    invariant(selectedFile, validationMessages.requiredFile);
+    invariant(file, validationMessages.requiredFile);
     try {
-      await upload({ id: track.id, file: selectedFile });
+      await upload({ id: track.id, file: file });
       onOpenChange(false);
       onUploaded?.();
     } catch (error) {
@@ -83,8 +105,8 @@ export function useAudioUpload({
 
   return {
     fileRef,
-    selectedFile,
-    selectedUrl,
+    file,
+    url,
     error,
     handleChoose,
     handleChange,
