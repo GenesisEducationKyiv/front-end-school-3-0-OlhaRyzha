@@ -1,11 +1,20 @@
 import { Quantum } from 'ldrs/react';
 import 'ldrs/react/Quantum.css';
+import { useEffect } from 'react';
 
 interface LoaderProps {
   loading: boolean;
 }
 
 const Loader = ({ loading }: LoaderProps) => {
+  useEffect(() => {
+    if (loading) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
+  }, [loading]);
+
   return loading ? (
     <div
       data-testid='true'
