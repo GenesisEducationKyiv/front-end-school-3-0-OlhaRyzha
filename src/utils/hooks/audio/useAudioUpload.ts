@@ -105,8 +105,8 @@ export function useAudioUpload({
 
   return {
     fileRef,
-    file,
-    url,
+    selectedFile: file,
+    selectedUrl: url,
     error,
     handleChoose,
     handleChange,
