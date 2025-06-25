@@ -7,6 +7,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useWaveform } from '@/utils/hooks/audio/useWaveform';
 
 interface WaveformProps {
@@ -23,7 +24,7 @@ const Waveform = ({ url, id, isPlaying, onPlayPause }: WaveformProps) => {
 
   return (
     <div
-      className='waveform-container'
+      className='relative waveform-container'
       data-testid={`audio-progress-${id}`}>
       {error ? (
         <TooltipProvider>
@@ -38,28 +39,28 @@ const Waveform = ({ url, id, isPlaying, onPlayPause }: WaveformProps) => {
             <TooltipContent>{error}</TooltipContent>
           </Tooltip>
         </TooltipProvider>
+      ) : isLoading ? (
+        <Skeleton className='h-10 w-full rounded-md' />
       ) : (
-        !isLoading && (
-          <motion.button
-            type='button'
-            onClick={handlePlayPause}
-            className='waveform-play-btn'
-            whileTap={{ scale: 0.9 }}
-            animate={{ scale: isPlaying ? [1, 1.1, 1] : 1 }}
-            transition={{ duration: 0.5 }}>
-            {isPlaying ? (
-              <PauseIcon className='waveform-icon' />
-            ) : (
-              <PlayIcon className='waveform-icon' />
-            )}
-          </motion.button>
-        )
+        <motion.button
+          type='button'
+          onClick={handlePlayPause}
+          className='waveform-play-btn'
+          whileTap={{ scale: 0.9 }}
+          animate={{ scale: isPlaying ? [1, 1.1, 1] : 1 }}
+          transition={{ duration: 0.5 }}>
+          {isPlaying ? (
+            <PauseIcon className='waveform-icon' />
+          ) : (
+            <PlayIcon className='waveform-icon' />
+          )}
+        </motion.button>
       )}
 
       {!error && (
         <div
           ref={waveformRef}
-          className='waveform-progress'
+          className='waveform-progress mt-2'
         />
       )}
     </div>
