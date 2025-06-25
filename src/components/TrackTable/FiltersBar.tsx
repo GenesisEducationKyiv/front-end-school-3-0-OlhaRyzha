@@ -1,4 +1,4 @@
-import { FC, useCallback } from 'react';
+import { useCallback } from 'react';
 import {
   Select,
   SelectContent,
@@ -43,6 +43,7 @@ const FiltersBar = () => {
     ALL_GENRES,
     handleParamsUpdate
   );
+
   const FILTERS_LIST = getFiltersConfig(
     params,
     availableArtists,
@@ -57,15 +58,14 @@ const FiltersBar = () => {
         <Select
           key={filter.testid}
           value={filter.value}
-          onValueChange={filter.onChange}
-          data-testid={filter.testid}>
-          <SelectTrigger className='w-[180px]'>
+          onValueChange={filter.onChange}>
+          <SelectTrigger
+            className='w-[180px]'
+            data-testid={filter.testid}>
             <SelectValue placeholder={filter.placeholder} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem
-              className='capitalize'
-              value={filter.selectedItem}>
+            <SelectItem value={filter.selectedItem}>
               {filter.selectedItem}
             </SelectItem>
             {filter.availableOptions?.map((option) => (
@@ -81,4 +81,5 @@ const FiltersBar = () => {
     </div>
   );
 };
+
 export default FiltersBar;

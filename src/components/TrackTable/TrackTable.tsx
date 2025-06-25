@@ -25,6 +25,7 @@ function TrackTable() {
     setRowSelection,
   } = useTrackTable();
 
+  if (loading) return <Loader loading={loading} />;
   return (
     <>
       {trackForEdit && (
@@ -57,22 +58,18 @@ function TrackTable() {
         }}
       />
 
-      {loading ? (
-        <Loader loading />
-      ) : (
-        <div className='w-full'>
-          <TableToolbar
-            selectedIds={selectedIds}
-            table={table}
-            setRowSelection={setRowSelection}
-          />
-          <TableBodyComponent
-            tracks={tracks}
-            table={table}
-          />
-          <PaginationControls />
-        </div>
-      )}
+      <div className='w-full'>
+        <TableToolbar
+          selectedIds={selectedIds}
+          table={table}
+          setRowSelection={setRowSelection}
+        />
+        <TableBodyComponent
+          tracks={tracks}
+          table={table}
+        />
+        <PaginationControls />
+      </div>
     </>
   );
 }

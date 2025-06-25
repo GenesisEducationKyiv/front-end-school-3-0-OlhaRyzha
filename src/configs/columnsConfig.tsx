@@ -196,7 +196,8 @@ export const trackColumns = ({
                 <Button
                   type='button'
                   size='icon'
-                  variant='ghost'>
+                  variant='ghost'
+                  data-testid='track-menu-button'>
                   <MoreHorizontal className='h-4 w-4' />
                 </Button>
               </DropdownMenuTrigger>

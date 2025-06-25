@@ -1,6 +1,6 @@
-export const ALL_ARTISTS = 'all artist';
+export const ALL_ARTISTS = 'All artist';
 
-export const ALL_GENRES = 'all genres';
+export const ALL_GENRES = 'All genres';
 
 export const BTNS_LABELS = {
   CREATE_TRACK: 'Create Track',
