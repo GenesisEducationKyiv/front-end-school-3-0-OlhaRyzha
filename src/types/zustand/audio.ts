@@ -1,7 +1,11 @@
-import { NullableSetter } from './base';
+import { NullableSetter, ValueSetter } from './base';
 
 export interface AudioUploadState {
-  file: NullableSetter<File>;
-  url: NullableSetter<string>;
-  error: NullableSetter<string>;
+  file: ValueSetter<File>;
+  setFile: NullableSetter<File>;
+  url: ValueSetter<string>;
+  setUrl: NullableSetter<string>;
+  error: ValueSetter<string>;
+  setError: NullableSetter<string>;
+  reset: () => void;
 }

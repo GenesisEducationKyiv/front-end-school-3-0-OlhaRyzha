@@ -1,38 +1,21 @@
-import { ModalsState } from '@/types/zustand/modal';
 import { create } from 'zustand';
+import { ModalsState } from '@/types/zustand/modal';
 
 export const useModalsStore = create<ModalsState>((set) => ({
-  trackForEdit: {
-    value: null,
-    setValue: (track) =>
-      set((s) => ({
-        trackForEdit: { ...s.trackForEdit, value: track },
-      })),
-  },
-  trackForUpload: {
-    value: null,
-    setValue: (track) =>
-      set((s) => ({
-        trackForUpload: { ...s.trackForUpload, value: track },
-      })),
-  },
-  trackForDelete: {
-    value: null,
-    setValue: (track) =>
-      set((s) => ({
-        trackForDelete: { ...s.trackForDelete, value: track },
-      })),
-  },
+  selectedTrack: null,
+  modalAction: null,
+
+  openModal: (track, action) =>
+    set({ selectedTrack: track, modalAction: action }),
+
+  closeModal: () => set({ selectedTrack: null, modalAction: null }),
 }));
 
-export const selectTrackForEdit = (s: ModalsState) => s.trackForEdit.value;
-export const selectSetTrackForEdit = (s: ModalsState) =>
-  s.trackForEdit.setValue;
-
-export const selectTrackForUpload = (s: ModalsState) => s.trackForUpload.value;
-export const selectSetTrackForUpload = (s: ModalsState) =>
-  s.trackForUpload.setValue;
-
-export const selectTrackForDelete = (s: ModalsState) => s.trackForDelete.value;
-export const selectSetTrackForDelete = (s: ModalsState) =>
-  s.trackForDelete.setValue;
+export const useModalsState = () => {
+  return useModalsStore((state) => ({
+    selectedTrack: state.selectedTrack,
+    modalAction: state.modalAction,
+    openModal: state.openModal,
+    closeModal: state.closeModal,
+  }));
+};

@@ -1,11 +1,12 @@
-import { NullableSetter } from '@/types/zustand/base';
+import { PlayingTrackIdState } from '@/types/zustand/playingTrackId';
 import { create } from 'zustand';
 
-export const usePlayingTrackStore = create<NullableSetter<string>>((set) => ({
-  value: null,
-  setValue: (id) => set({ value: id }),
+export const usePlayingTrackStore = create<PlayingTrackIdState>((set) => ({
+  playingTrackId: null,
+  setPlayingTrackId: (playingTrackId) => set({ playingTrackId }),
 }));
 
-export const selectPlayingTrackId = (s: NullableSetter<string>) => s.value;
-export const selectSetPlayingTrackId = (s: NullableSetter<string>) =>
-  s.setValue;
+export const selectPlayingTrackId = (s: PlayingTrackIdState) =>
+  s.playingTrackId;
+export const selectSetPlayingTrackId = (s: PlayingTrackIdState) =>
+  s.setPlayingTrackId;

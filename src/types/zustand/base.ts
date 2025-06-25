@@ -1,9 +1,2 @@
-export type ValueSetter<T> = {
-  value: T;
-  setValue: (v: T) => void;
-};
-
-export type NullableSetter<T> = {
-  value: T | null;
-  setValue: (v: T | null) => void;
-};
+export type ValueSetter<T> = T | null;
+export type NullableSetter<T> = (v: T | null) => void;

@@ -12,53 +12,50 @@ import { useModalCloseHandler } from '@/utils/hooks/modal/useModalCloseHandler';
 
 function TrackTable() {
   const {
+    loading,
     selectedIds,
-    trackForEdit,
-    setTrackForEdit,
-    trackForUpload,
-    setTrackForUpload,
-    trackForDelete,
-    setTrackForDelete,
+    selectedTrack,
+    modalAction,
+    closeModal,
     handleConfirmDelete,
     table,
     tracks,
-    loading,
     setRowSelection,
   } = useTrackTable();
 
-  const handleEditModalChange = useModalCloseHandler(setTrackForEdit);
-  const handleUploadModalChange = useModalCloseHandler(setTrackForUpload);
-  const handleDeleteModalChange = useModalCloseHandler(setTrackForDelete);
+  const handleModalClose = useModalCloseHandler(() => closeModal());
 
   return (
     <>
-      {trackForEdit && (
+      {modalAction === 'edit' && selectedTrack && (
         <Dialog
           open
-          onOpenChange={handleEditModalChange}>
+          onOpenChange={handleModalClose}>
           <CreateTrackModal
-            track={trackForEdit}
-            onClose={() => setTrackForEdit(null)}
+            track={selectedTrack}
+            onClose={closeModal}
           />
         </Dialog>
       )}
-      {trackForUpload && (
+
+      {modalAction === 'upload' && selectedTrack && (
         <AudioUploadModal
-          track={trackForUpload}
-          open={!!trackForUpload}
-          onOpenChange={handleUploadModalChange}
+          track={selectedTrack}
+          open
+          onOpenChange={handleModalClose}
         />
       )}
+
       <AlertDialogComponent
-        open={!!trackForDelete}
-        onOpenChange={handleDeleteModalChange}
+        open={modalAction === 'delete'}
+        onOpenChange={handleModalClose}
         title={dialogMessages.delete('track')}
         description={dialogMessages.cannotBeUndone}
         confirmText='Delete'
         cancelText='Cancel'
         onConfirm={() => {
-          if (trackForDelete) handleConfirmDelete(trackForDelete);
-          setTrackForDelete(null);
+          if (selectedTrack) handleConfirmDelete(selectedTrack);
+          closeModal();
         }}
       />
 
@@ -81,4 +78,5 @@ function TrackTable() {
     </>
   );
 }
+
 export default TrackTable;

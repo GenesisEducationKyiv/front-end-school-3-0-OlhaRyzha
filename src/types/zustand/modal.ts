@@ -1,8 +1,11 @@
-import { Track } from '../shared/track';
-import { NullableSetter } from './base';
+import { Track } from '@/types/shared/track';
+import { ValueSetter } from './base';
+
+export type ModalAction = 'edit' | 'upload' | 'delete';
 
 export interface ModalsState {
-  trackForEdit: NullableSetter<Track>;
-  trackForUpload: NullableSetter<Track>;
-  trackForDelete: NullableSetter<Track>;
+  selectedTrack: ValueSetter<Track>;
+  modalAction: ValueSetter<ModalAction>;
+  openModal: (track: Track, action: ModalAction) => void;
+  closeModal: () => void;
 }

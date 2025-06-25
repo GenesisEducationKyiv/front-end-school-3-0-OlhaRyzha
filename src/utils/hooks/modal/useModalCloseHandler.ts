@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 
-export function useModalCloseHandler<T>(setValue: (value: T | null) => void) {
+export function useModalCloseHandler(closeFn: () => void) {
   return useCallback(
     (open: boolean) => {
-      if (!open) setValue(null);
+      if (!open) closeFn();
     },
-    [setValue]
+    [closeFn]
   );
 }
