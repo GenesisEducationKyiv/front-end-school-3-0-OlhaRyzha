@@ -24,7 +24,13 @@ import { useTable } from '@/utils/hooks/table/useTable';
 import { Track } from '@/types/shared/track';
 import { useInitTableParamsOnce } from './useInitTableParamsOnce';
 import { useSyncTableParamsToUrl } from './useTableParams';
-import { useModalsState } from '@/store/ zustand/useModalsStore';
+import {
+  selectCloseModal,
+  selectModalAction,
+  selectOpenModal,
+  selectSelectedTrack,
+  useModalsStore,
+} from '@/store/ zustand/useModalsStore';
 import {
   selectPlayingTrackId,
   selectSetPlayingTrackId,
@@ -62,8 +68,10 @@ export function useTrackTable() {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
 
-  const { selectedTrack, modalAction, openModal, closeModal } =
-    useModalsState();
+  const openModal = useModalsStore(selectOpenModal);
+  const closeModal = useModalsStore(selectCloseModal);
+  const selectedTrack = useModalsStore(selectSelectedTrack);
+  const modalAction = useModalsStore(selectModalAction);
 
   const playingTrackId = usePlayingTrackStore(selectPlayingTrackId);
   const setPlayingTrackId = usePlayingTrackStore(selectSetPlayingTrackId);

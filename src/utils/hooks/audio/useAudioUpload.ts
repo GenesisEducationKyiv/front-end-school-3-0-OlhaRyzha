@@ -7,7 +7,15 @@ import {
   useUploadTrackAudio,
 } from '../tanStackQuery/useTracksQuery';
 import { invariant } from '@/utils/invariant';
-import { useAudioUploadState } from '@/store/ zustand/useAudioUploadStore';
+import {
+  selectAudioError,
+  selectAudioFile,
+  selectAudioUrl,
+  selectSetAudioError,
+  selectSetAudioFile,
+  selectSetAudioUrl,
+  useAudioUploadStore,
+} from '@/store/ zustand/useAudioUploadStore';
 import {
   selectPlayingTrackId,
   selectSetPlayingTrackId,
@@ -29,7 +37,14 @@ export function useAudioUpload({
 
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const { file, url, error, setFile, setUrl, setError } = useAudioUploadState();
+  const file = useAudioUploadStore(selectAudioFile);
+  const setFile = useAudioUploadStore(selectSetAudioFile);
+
+  const url = useAudioUploadStore(selectAudioUrl);
+  const setUrl = useAudioUploadStore(selectSetAudioUrl);
+
+  const error = useAudioUploadStore(selectAudioError);
+  const setError = useAudioUploadStore(selectSetAudioError);
 
   const playingTrackId = usePlayingTrackStore(selectPlayingTrackId);
   const setPlayingTrackId = usePlayingTrackStore(selectSetPlayingTrackId);

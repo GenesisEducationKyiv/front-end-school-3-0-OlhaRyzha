@@ -11,11 +11,8 @@ export const useModalsStore = create<ModalsState>((set) => ({
   closeModal: () => set({ selectedTrack: null, modalAction: null }),
 }));
 
-export const useModalsState = () => {
-  return useModalsStore((state) => ({
-    selectedTrack: state.selectedTrack,
-    modalAction: state.modalAction,
-    openModal: state.openModal,
-    closeModal: state.closeModal,
-  }));
-};
+export const selectSelectedTrack = (s: ModalsState) => s.selectedTrack;
+export const selectModalAction = (s: ModalsState) => s.modalAction;
+
+export const selectOpenModal = (s: ModalsState) => s.openModal;
+export const selectCloseModal = (s: ModalsState) => s.closeModal;
