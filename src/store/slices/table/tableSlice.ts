@@ -5,6 +5,7 @@ import type { SortingState } from '@tanstack/react-table';
 import { META } from '@/constants/table.constants';
 import { getSortParamsFromSortingState } from '@/utils/getSortParamsFromSortingState';
 import { ArtistsType } from '@/types/shared/artists';
+import { getQueryParamsFromUrl } from '@/utils/table/queryParams';
 
 export const DEFAULT_SORTING: SortingState = [{ id: 'createdAt', desc: true }];
 export const DEFAULT_PARAMS = {
@@ -23,6 +24,18 @@ export const DEFAULT_META = {
   limit: META.limit,
 };
 
+const initialParamsFromUrl = (() => {
+  if (typeof window !== 'undefined') {
+    const allArtists = window.__PRELOADED_STATE__?.table?.allArtists ?? [
+      'Lady Gaga',
+    ];
+    const allGenresRaw = window.__QUERY_CLIENT__?.['GENRES_QUERY_KEY'];
+    const allGenres = Array.isArray(allGenresRaw) ? allGenresRaw : [];
+    return getQueryParamsFromUrl(window.location.search, allGenres, allArtists);
+  }
+  return DEFAULT_PARAMS;
+})();
+
 export interface TableMeta {
   total: number;
   totalPages: number;
@@ -39,7 +52,7 @@ export interface TableState {
 
 export const initialState: TableState = {
   selectMode: true,
-  params: DEFAULT_PARAMS,
+  params: initialParamsFromUrl,
   sorting: DEFAULT_SORTING,
   meta: DEFAULT_META,
   allArtists: ['Lady Gaga'],
@@ -53,7 +66,7 @@ export const tableSlice = createSlice({
       state.selectMode = action.payload;
     },
     setTableParams: (state, action: PayloadAction<Partial<QueryParams>>) => {
-      state.params = action.payload;
+      state.params = { ...state.params, ...action.payload };
     },
     setSorting: (state, action: PayloadAction<SortingState>) => {
       state.sorting = action.payload;

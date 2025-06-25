@@ -67,7 +67,7 @@ function CreateTrackModal({ track, onClose }: CreateTrackModalProps) {
   };
 
   if (loadingGenres) {
-    return <Loader loading={true} />;
+    return <Loader loading={loadingGenres} />;
   }
 
   return (

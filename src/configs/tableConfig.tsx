@@ -1,18 +1,9 @@
-import { META } from '@/constants/table.constants';
 import { QueryParams } from '@/types/shared/track';
 import { ALL_ARTISTS, ALL_GENRES } from '@/constants/labels.constant';
 import { GenresType } from '@/types/shared/genre';
 import { ArtistsType } from '@/types/shared/artists';
-
-export const initialParams: QueryParams = {
-  page: META.page,
-  limit: META.limit,
-  search: '',
-  sort: META.sort,
-  order: META.order,
-  genre: '',
-  artist: '',
-};
+import { getArtistValue } from '@/utils/table/filters/getArtistValue';
+import { getGenreValue } from '@/utils/table/filters/getGenreValue';
 
 export function getFiltersConfig(
   params: QueryParams,
@@ -23,7 +14,7 @@ export function getFiltersConfig(
 ) {
   return [
     {
-      value: params.artist ?? ALL_ARTISTS,
+      value: getArtistValue(params.artist),
       onChange: onArtistChange,
       testid: 'filter-artist',
       placeholder: 'Filter by artist',
@@ -31,7 +22,7 @@ export function getFiltersConfig(
       selectedItem: ALL_ARTISTS,
     },
     {
-      value: params.genre ?? ALL_GENRES,
+      value: getGenreValue(params.genre),
       onChange: onGenreChange,
       testid: 'filter-genre',
       placeholder: 'Filter by genre',

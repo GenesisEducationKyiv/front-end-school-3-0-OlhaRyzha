@@ -22,7 +22,6 @@ import {
 import { trackColumns } from '@/configs/columnsConfig';
 import { useTable } from '@/utils/hooks/table/useTable';
 import { Track } from '@/types/shared/track';
-import { useInitTableParamsOnce } from './useInitTableParamsOnce';
 import { useSyncTableParamsToUrl } from './useTableParams';
 
 export function useTrackTable() {
@@ -33,7 +32,6 @@ export function useTrackTable() {
 
   const deleteTrack = useDeleteTrack();
 
-  useInitTableParamsOnce();
   useSyncTableParamsToUrl();
 
   const { data: tracksData, isLoading, isFetching } = useGetTracks(params);
@@ -116,6 +114,17 @@ export function useTrackTable() {
     () => Object.keys(rowSelection).filter((id) => rowSelection[id]),
     [rowSelection]
   );
+
+  useEffect(() => {
+    console.log(
+      'isLoading:',
+      isLoading,
+      'isFetching:',
+      isFetching,
+      'tracksData:',
+      tracksData
+    );
+  }, [isLoading, isFetching, tracksData]);
 
   return {
     loading,

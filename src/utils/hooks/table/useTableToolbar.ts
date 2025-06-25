@@ -1,5 +1,4 @@
 import { useEffect, useState, useCallback } from 'react';
-import { initialParams } from '@/configs/tableConfig';
 import { useBulkDeleteTracks } from '@/utils/hooks/tanStackQuery/useTracksQuery';
 import { useGenresQuery } from '@/utils/hooks/tanStackQuery/useGenresQuery';
 import { useDebounce } from '@/utils/hooks/useDebounce';
@@ -7,6 +6,7 @@ import { SetRowSelectionType } from '@/types/shared/table';
 import { isNonEmptyArray } from '@/utils/guards/isNonEmptyArray';
 import { useAppDispatch, useAppSelector } from '@/store';
 import {
+  DEFAULT_PARAMS,
   selectTableParams,
   setTableParams,
   updateSearch,
@@ -59,8 +59,8 @@ export function useTableToolbar({
   }, [selectedIds, bulkDeleteMutation, setRowSelection]);
 
   const handleReset = useCallback(() => {
-    dispatch(setTableParams({ ...params, ...initialParams }));
-    setLocalSearch(initialParams.search || '');
+    dispatch(setTableParams({ ...params, ...DEFAULT_PARAMS }));
+    setLocalSearch(DEFAULT_PARAMS.search || '');
   }, []);
 
   return {

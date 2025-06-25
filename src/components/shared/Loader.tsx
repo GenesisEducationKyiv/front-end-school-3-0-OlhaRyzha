@@ -6,9 +6,9 @@ interface LoaderProps {
 }
 
 const Loader = ({ loading }: LoaderProps) => {
-  return (
+  return loading ? (
     <div
-      data-testid={loading.toString()}
+      data-testid='true'
       className='loader-overlay'>
       <Quantum
         size='45'
@@ -16,6 +16,7 @@ const Loader = ({ loading }: LoaderProps) => {
         color='black'
       />
     </div>
-  );
+  ) : null;
 };
+
 export default Loader;

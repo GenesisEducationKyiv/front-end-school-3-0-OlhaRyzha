@@ -2,7 +2,7 @@ import { test, expect, vi } from 'vitest';
 import * as toastModule from '@/utils/hooks/use-toast';
 import { trackSchema } from '@/schemas/track.schemas';
 import { safeFetch } from '@/utils/safeFetch';
-import { mockTrack } from './__mocks__/mockTrack';
+import { mockTrack } from '../__mocks__/mockTrack';
 
 vi.spyOn(toastModule, 'toast').mockImplementation(() => ({
   id: 'mock-toast-id',
@@ -17,7 +17,7 @@ test('should return parsed data from API (valid)', async () => {
 });
 
 test('should throw error and call toast if API returns invalid data', async () => {
-  const api = vi.fn().mockResolvedValue({ id: 123 }); 
+  const api = vi.fn().mockResolvedValue({ id: 123 });
   await expect(safeFetch(api(), trackSchema)).rejects.toThrow();
   expect(toastModule.toast).toHaveBeenCalled();
 });

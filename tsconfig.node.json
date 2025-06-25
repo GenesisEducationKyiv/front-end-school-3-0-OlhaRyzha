@@ -5,6 +5,12 @@
     "lib": ["ES2023"],
     "module": "ESNext",
     "skipLibCheck": true,
+    "types": [
+      "node",
+      "vitest",
+      "@testing-library/jest-dom",
+      "@playwright/experimental-ct-react"
+    ],
 
     /* Bundler mode */
     "moduleResolution": "bundler",

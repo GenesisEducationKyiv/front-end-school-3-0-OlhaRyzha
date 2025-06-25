@@ -8,7 +8,6 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { useWaveform } from '@/utils/hooks/audio/useWaveform';
-import { Loader } from '../shared';
 
 interface WaveformProps {
   url: string | null;
@@ -26,8 +25,6 @@ const Waveform = ({ url, id, isPlaying, onPlayPause }: WaveformProps) => {
     <div
       className='waveform-container'
       data-testid={`audio-progress-${id}`}>
-      {isLoading && <Loader loading={isLoading} />}
-
       {error ? (
         <TooltipProvider>
           <Tooltip>
