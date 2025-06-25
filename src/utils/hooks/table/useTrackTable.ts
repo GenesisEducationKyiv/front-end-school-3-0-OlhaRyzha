@@ -22,7 +22,6 @@ import {
 import { trackColumns } from '@/configs/columnsConfig';
 import { useTable } from '@/utils/hooks/table/useTable';
 import { Track } from '@/types/shared/track';
-import { useInitTableParamsOnce } from './useInitTableParamsOnce';
 import { useSyncTableParamsToUrl } from './useTableParams';
 import {
   selectCloseModal,
@@ -45,7 +44,6 @@ export function useTrackTable() {
 
   const deleteTrack = useDeleteTrack();
 
-  useInitTableParamsOnce();
   useSyncTableParamsToUrl();
 
   const { data: tracksData, isLoading, isFetching } = useGetTracks(params);
