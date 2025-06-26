@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { HiXMark } from 'react-icons/hi2';
 import {
   Dialog,
@@ -45,6 +45,15 @@ function AudioUploadModal({
     clear,
     playingTrackId,
   } = useAudioUpload({ track, onOpenChange, onUploaded });
+
+  useEffect(() => {
+    if (open) {
+      requestAnimationFrame(() => {
+        const activeEl = document.activeElement as HTMLElement | null;
+        if (activeEl) activeEl.blur();
+      });
+    }
+  }, [open]);
 
   return (
     <Dialog
@@ -122,6 +131,7 @@ function AudioUploadModal({
               {BTNS_LABELS.REMOVE_FILE}
             </Button>
           )}
+
           <div className='flex gap-2 ml-auto'>
             <Button
               variant='outline'

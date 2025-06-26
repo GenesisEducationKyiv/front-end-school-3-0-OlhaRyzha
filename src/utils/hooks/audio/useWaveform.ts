@@ -1,60 +1,89 @@
 import { useRef, useEffect, useState } from 'react';
 import WaveSurfer from 'wavesurfer.js';
-import { Result, ok, err } from 'neverthrow';
 import { audioUploadMessages } from '@/constants/message.constant';
-import { isString } from '@/utils/guards/isString';
 
 interface UseWaveformProps {
   url: string | null;
   isPlaying?: boolean;
 }
+
 export function useWaveform({ url, isPlaying = false }: UseWaveformProps) {
   const waveformRef = useRef<HTMLDivElement>(null);
-  const wavesurferRef = useRef<WaveSurfer>(null);
+  const wavesurferRef = useRef<WaveSurfer | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!waveformRef.current || !isString(url) || !url) {
+    let isCancelled = false;
+
+    if (!waveformRef.current || !url) {
       setError(null);
       setIsLoading(false);
       return;
     }
 
-    wavesurferRef.current = WaveSurfer.create({
+    // Очистити попередній інстанс
+    if (wavesurferRef.current) {
+      wavesurferRef.current.destroy();
+    }
+
+    const wavesurfer = WaveSurfer.create({
       container: waveformRef.current,
       waveColor: '#9ca3af',
       progressColor: '#374151',
       cursorColor: 'transparent',
       height: 40,
-      barWidth: 2,
-      barGap: 1,
-      barRadius: 2,
-      normalize: true,
+      // Вимкнено barWidth / barGap / normalize — вони викликають баги в wavesurfer
     });
+
+    wavesurferRef.current = wavesurfer;
 
     const loadAudio = async () => {
       setIsLoading(true);
-      const result: Result<void, string> = await fetch(url)
-        .then((response) => {
-          if (!response.ok) return err(audioUploadMessages.audioNotFound);
-          return ok(undefined);
-        })
-        .catch(() => err(audioUploadMessages.audioUnavailable));
-
-      if (result.isErr()) {
-        setError(result.error);
-        setIsLoading(false);
-        return;
-      }
 
       try {
-        await wavesurferRef.current?.load(url);
-        setError(null);
-      } catch (e) {
-        setError(audioUploadMessages.audioUnavailable);
-        console.error(audioUploadMessages.audioLoadError, e);
-      } finally {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(audioUploadMessages.audioNotFound);
+        }
+
+        const blob = await response.blob();
+
+        if (blob.size === 0 || !blob.type.startsWith('audio/')) {
+          throw new Error(audioUploadMessages.audioUnavailable);
+        }
+
+        const blobUrl = URL.createObjectURL(blob);
+
+        // Додатковий захист від крашу при load
+        try {
+          wavesurfer.load(blobUrl);
+        } catch (err) {
+          console.error('WaveSurfer load() failed', err);
+          setError(audioUploadMessages.audioLoadError);
+          setIsLoading(false);
+          return;
+        }
+
+        wavesurfer.once('ready', () => {
+          if (isCancelled) return;
+          setError(null);
+          setIsLoading(false);
+        });
+
+        wavesurfer.once('error', (e) => {
+          if (isCancelled) return;
+          setError(
+            typeof e === 'string' ? e : audioUploadMessages.audioLoadError
+          );
+          setIsLoading(false);
+        });
+      } catch (err) {
+        setError(
+          err instanceof Error
+            ? err.message
+            : audioUploadMessages.audioUnavailable
+        );
         setIsLoading(false);
       }
     };
@@ -62,17 +91,19 @@ export function useWaveform({ url, isPlaying = false }: UseWaveformProps) {
     loadAudio();
 
     return () => {
+      isCancelled = true;
       wavesurferRef.current?.destroy();
     };
   }, [url]);
 
   useEffect(() => {
-    if (!wavesurferRef.current) return;
+    const wavesurfer = wavesurferRef.current;
+    if (!wavesurfer) return;
 
     if (isPlaying) {
-      wavesurferRef.current.play();
+      wavesurfer.play();
     } else {
-      wavesurferRef.current.pause();
+      wavesurfer.pause();
     }
   }, [isPlaying]);
 
