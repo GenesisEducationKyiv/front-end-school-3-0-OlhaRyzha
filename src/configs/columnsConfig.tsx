@@ -215,7 +215,9 @@ export const trackColumns = ({
 
                 <DropdownMenuItem
                   data-testid={`upload-track-${track.id}`}
-                  onSelect={() => onUpload(track)}>
+                  onSelect={() => {
+                    setTimeout(() => onUpload(track), 0);
+                  }}>
                   {track.audioFile ? 'Remove audio' : 'Upload audio'}
                 </DropdownMenuItem>
 

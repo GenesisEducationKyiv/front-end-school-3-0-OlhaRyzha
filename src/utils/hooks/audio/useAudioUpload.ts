@@ -50,6 +50,12 @@ export function useAudioUpload({
   const setPlayingTrackId = usePlayingTrackStore(selectSetPlayingTrackId);
 
   useEffect(() => {
+    setFile(null);
+    setUrl(null);
+    setError(null);
+  }, [track.id]);
+
+  useEffect(() => {
     if (!file) {
       setUrl(null);
       return;
