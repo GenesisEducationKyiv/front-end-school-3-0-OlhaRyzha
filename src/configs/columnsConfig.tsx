@@ -1,12 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Track } from '@/types/shared/track';
-
-declare module '@tanstack/react-table' {
-  interface TableMeta<TData> {
-    playingTrackId?: string | null;
-    setPlayingTrackId?: (id: string | null) => void;
-  }
-}
 import noCover from '@/assets/image_not_available.png';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
@@ -22,6 +15,11 @@ import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
 import { RiDeleteBin5Fill } from 'react-icons/ri';
 import { formatDate } from '@/utils/formatDate';
 import { TrackWaveform } from '@/components/Audio/TrackWaveform';
+import {
+  selectPlayingTrackId,
+  selectSetPlayingTrackId,
+  usePlayingTrackStore,
+} from '@/store/zustand/usePlayingTrackStore';
 
 interface TrackColumnsOpts {
   selectMode: boolean;
@@ -141,14 +139,14 @@ export const trackColumns = ({
       header: 'Audio',
       size: 600,
       minSize: 400,
-      cell: ({ row, table }) => {
+      cell: ({ row }) => {
         const track = row.original;
-        const isPlaying = table.options.meta?.playingTrackId === track.id;
-        const onPlayPause = (id: string) => {
-          const setId = table.options.meta?.setPlayingTrackId;
-          const current = table.options.meta?.playingTrackId;
-          setId?.(current === id ? null : id);
-        };
+        const playingTrackId = usePlayingTrackStore(selectPlayingTrackId);
+        const setPlayingTrackId = usePlayingTrackStore(selectSetPlayingTrackId);
+
+        const isPlaying = playingTrackId === track.id;
+        const onPlayPause = () =>
+          setPlayingTrackId(isPlaying ? null : track.id);
 
         return (
           <TrackWaveform

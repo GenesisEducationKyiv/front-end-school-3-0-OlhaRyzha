@@ -30,3 +30,4 @@ export const selectPlaying = (s: ActiveTrackState) => s.playing;
 export const selectTogglePlay = (s: ActiveTrackActions) => s.togglePlay;
 export const selectToggleRandom = (s: ActiveTrackActions) => s.toggleRandom;
 export const selectSetIndex = (s: ActiveTrackActions) => s.setIndex;
+export const selectSetPlaying = (s: ActiveTrackActions) => s.setPlaying;

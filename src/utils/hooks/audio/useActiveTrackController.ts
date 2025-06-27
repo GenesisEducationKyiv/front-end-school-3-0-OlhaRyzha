@@ -6,6 +6,7 @@ import {
   selectPlaying,
   selectRandom,
   selectSetIndex,
+  selectSetPlaying,
   selectTogglePlay,
   selectToggleRandom,
   useActiveTrackStore,
@@ -26,13 +27,18 @@ export function useActiveTrackController() {
   const toggleRandom = useActiveTrackStore(selectToggleRandom);
   const random = useActiveTrackStore(selectRandom);
   const setIndex = useActiveTrackStore(selectSetIndex);
+  const setPlaying = useActiveTrackStore(selectSetPlaying);
 
-  const next = () =>
+  const next = () => {
     setIndex((i) => (tracks.length ? (i + 1) % tracks.length : 0));
-  const prev = () =>
+    setPlaying(false);
+  };
+  const prev = () => {
     setIndex((i) =>
       tracks.length ? (i - 1 + tracks.length) % tracks.length : 0
     );
+    setPlaying(false);
+  };
 
   const randomTrack = useActiveTrack(random ? WS_URL : null);
 

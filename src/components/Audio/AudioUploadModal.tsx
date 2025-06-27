@@ -13,7 +13,7 @@ import type { Track } from '@/types/shared/track';
 import { BTNS_LABELS } from '@/constants/labels.constant';
 import { audioUploadMessages } from '@/constants/message.constant';
 import { useAudioUpload } from '@/utils/hooks/audio/useAudioUpload';
-import TrackWaveform from './TrackWaveform';
+import { TrackWaveform } from './TrackWaveform';
 
 interface AudioUploadModalProps {
   track: Track;
@@ -93,7 +93,9 @@ function AudioUploadModal({
                 onPlayPause={handlePlayPause}
               />
               <div className='flex items-center gap-2 mt-2'>
-                <span className='truncate text-sm'>{selectedFile.name}</span>
+                <span className='truncate text-sm text-balance'>
+                  {selectedFile.name}
+                </span>
                 <button
                   onClick={clear}
                   className='text-gray-500 hover:text-gray-700'
