@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { Track } from '@/types/shared/track';
+import { ValueSetter } from '@/types/zustand/base';
 
-export function useActiveTrack(url: string | null) {
-  const [track, setTrack] = useState<Track | null>(null);
-  const wsRef = useRef<WebSocket | null>(null);
+export function useActiveTrack(url: ValueSetter<string>) {
+  const [track, setTrack] = useState<ValueSetter<Track>>(null);
+  const wsRef = useRef<ValueSetter<WebSocket>>(null);
 
   useEffect(() => {
     if (!url) return;
@@ -13,7 +14,7 @@ export function useActiveTrack(url: string | null) {
 
     ws.onopen = () => console.log('[WS] Connected');
 
-    ws.onmessage = ev => {
+    ws.onmessage = (ev) => {
       try {
         const msg = JSON.parse(ev.data);
         if (msg.type === 'ACTIVE_TRACK') {
@@ -24,7 +25,7 @@ export function useActiveTrack(url: string | null) {
       }
     };
 
-    ws.onerror = err => console.error('[WS] Error:', err);
+    ws.onerror = (err) => console.error('[WS] Error:', err);
     ws.onclose = () => {
       console.log('[WS] Closed');
       wsRef.current = null;
