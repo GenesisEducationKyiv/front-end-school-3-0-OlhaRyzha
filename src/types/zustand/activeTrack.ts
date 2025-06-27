@@ -6,7 +6,6 @@ export interface ActiveTrackState {
 
 export interface ActiveTrackActions {
   toggleRandom: () => void;
-  togglePlay: () => void;
   setIndex: (idx: number | ((curr: number) => number)) => void;
   setPlaying: (v: boolean) => void;
 }

@@ -3,11 +3,9 @@ import { useGetTracks } from '@/utils/hooks/tanStackQuery/useTracksQuery';
 import { useActiveTrack } from '@/utils/hooks/audio/useActiveTrack';
 import {
   selectIndex,
-  selectPlaying,
   selectRandom,
   selectSetIndex,
   selectSetPlaying,
-  selectTogglePlay,
   selectToggleRandom,
   useActiveTrackStore,
 } from '@/store/zustand/useActiveTrackStore';
@@ -22,8 +20,6 @@ export function useActiveTrackController() {
   const tracks = data?.data || [];
 
   const index = useActiveTrackStore(selectIndex);
-  const playing = useActiveTrackStore(selectPlaying);
-  const togglePlay = useActiveTrackStore(selectTogglePlay);
   const toggleRandom = useActiveTrackStore(selectToggleRandom);
   const random = useActiveTrackStore(selectRandom);
   const setIndex = useActiveTrackStore(selectSetIndex);
@@ -50,11 +46,9 @@ export function useActiveTrackController() {
   return {
     current,
     isLoading,
-    playing,
     next,
     prev,
     toggleRandom,
-    togglePlay,
     random,
   };
 }

@@ -15,7 +15,6 @@ export const useActiveTrackStore = create<
     playing: false,
 
     toggleRandom: () => set((state) => ({ random: !state.random })),
-    togglePlay: () => set((state) => ({ playing: !state.playing })),
     setIndex: (idxOrFn) =>
       set((state) => ({
         index: isFunction(idxOrFn) ? idxOrFn(state.index) : idxOrFn,
@@ -26,8 +25,7 @@ export const useActiveTrackStore = create<
 
 export const selectIndex = (s: ActiveTrackState) => s.index;
 export const selectRandom = (s: ActiveTrackState) => s.random;
-export const selectPlaying = (s: ActiveTrackState) => s.playing;
-export const selectTogglePlay = (s: ActiveTrackActions) => s.togglePlay;
+
 export const selectToggleRandom = (s: ActiveTrackActions) => s.toggleRandom;
 export const selectSetIndex = (s: ActiveTrackActions) => s.setIndex;
 export const selectSetPlaying = (s: ActiveTrackActions) => s.setPlaying;

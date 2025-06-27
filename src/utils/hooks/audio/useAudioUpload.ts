@@ -16,11 +16,6 @@ import {
   selectSetAudioUrl,
   useAudioUploadStore,
 } from '@/store/zustand/useAudioUploadStore';
-import {
-  selectPlayingTrackId,
-  selectSetPlayingTrackId,
-  usePlayingTrackStore,
-} from '@/store/zustand/usePlayingTrackStore';
 
 interface UseAudioUploadProps {
   track: Track;
@@ -46,9 +41,6 @@ export function useAudioUpload({
   const error = useAudioUploadStore(selectAudioError);
   const setError = useAudioUploadStore(selectSetAudioError);
 
-  const playingTrackId = usePlayingTrackStore(selectPlayingTrackId);
-  const setPlayingTrackId = usePlayingTrackStore(selectSetPlayingTrackId);
-
   useEffect(() => {
     setFile(null);
     setUrl(null);
@@ -64,10 +56,6 @@ export function useAudioUpload({
     setUrl(url);
     return () => URL.revokeObjectURL(url);
   }, [file]);
-
-  const handlePlayPause = (id: string) => {
-    setPlayingTrackId(playingTrackId === id ? null : id);
-  };
 
   const handleChoose = () => fileRef.current?.click();
 
@@ -116,11 +104,9 @@ export function useAudioUpload({
     error,
     handleChoose,
     handleChange,
-    handlePlayPause,
     handleSave,
     handleRemove,
     loading: isPending,
     clear,
-    playingTrackId,
   };
 }

@@ -152,8 +152,6 @@ export const trackColumns = ({
           <TrackWaveform
             id={track.id}
             audioFile={track.audioFile}
-            isPlaying={isPlaying}
-            onPlayPause={onPlayPause}
           />
         );
       },

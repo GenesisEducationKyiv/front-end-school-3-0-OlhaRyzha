@@ -4,16 +4,8 @@ import Controls from './Controls';
 import { TrackWaveform } from '../Audio';
 
 export default function ActiveTrack() {
-  const {
-    current,
-    isLoading,
-    playing,
-    random,
-    next,
-    prev,
-    toggleRandom,
-    togglePlay,
-  } = useActiveTrackController();
+  const { current, isLoading, random, next, prev, toggleRandom } =
+    useActiveTrackController();
 
   return (
     <div className='relative w-full bg-white shadow-md rounded-xl px-6 py-3 flex items-center justify-between gap-10'>
@@ -28,8 +20,6 @@ export default function ActiveTrack() {
           <TrackWaveform
             id={current.id}
             audioFile={current.audioFile}
-            isPlaying={playing}
-            onPlayPause={togglePlay}
           />
         </div>
       )}

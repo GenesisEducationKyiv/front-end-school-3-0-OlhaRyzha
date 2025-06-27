@@ -35,12 +35,10 @@ function AudioUploadModal({
     error,
     handleChoose,
     handleChange,
-    handlePlayPause,
     handleSave,
     handleRemove,
     loading: isPending,
     clear,
-    playingTrackId,
   } = useAudioUpload({ track, onOpenChange, onUploaded });
 
   useEffect(() => {
@@ -89,9 +87,8 @@ function AudioUploadModal({
               <TrackWaveform
                 id='preview'
                 previewUrl={selectedUrl}
-                isPlaying={playingTrackId === 'preview'}
-                onPlayPause={handlePlayPause}
               />
+
               <div className='flex items-center gap-2 mt-2'>
                 <span className='truncate text-sm text-balance'>
                   {selectedFile.name}
@@ -110,8 +107,6 @@ function AudioUploadModal({
               <TrackWaveform
                 id={track.id}
                 audioFile={track.audioFile}
-                isPlaying={playingTrackId === track.id}
-                onPlayPause={handlePlayPause}
               />
             </>
           ) : null}
