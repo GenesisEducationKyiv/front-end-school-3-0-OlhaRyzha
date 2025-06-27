@@ -22,7 +22,6 @@ export function useWaveform({ url, isPlaying = false }: UseWaveformProps) {
       return;
     }
 
-    // Очистити попередній інстанс
     if (wavesurferRef.current) {
       wavesurferRef.current.destroy();
     }
@@ -33,7 +32,6 @@ export function useWaveform({ url, isPlaying = false }: UseWaveformProps) {
       progressColor: '#374151',
       cursorColor: 'transparent',
       height: 40,
-      // Вимкнено barWidth / barGap / normalize — вони викликають баги в wavesurfer
     });
 
     wavesurferRef.current = wavesurfer;
@@ -55,7 +53,6 @@ export function useWaveform({ url, isPlaying = false }: UseWaveformProps) {
 
         const blobUrl = URL.createObjectURL(blob);
 
-        // Додатковий захист від крашу при load
         try {
           wavesurfer.load(blobUrl);
         } catch (err) {

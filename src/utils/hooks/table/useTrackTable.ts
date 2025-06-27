@@ -29,12 +29,12 @@ import {
   selectOpenModal,
   selectSelectedTrack,
   useModalsStore,
-} from '@/store/ zustand/useModalsStore';
+} from '@/store/zustand/useModalsStore';
 import {
   selectPlayingTrackId,
   selectSetPlayingTrackId,
   usePlayingTrackStore,
-} from '@/store/ zustand/usePlayingTrackStore';
+} from '@/store/zustand/usePlayingTrackStore';
 
 export function useTrackTable() {
   const dispatch = useAppDispatch();

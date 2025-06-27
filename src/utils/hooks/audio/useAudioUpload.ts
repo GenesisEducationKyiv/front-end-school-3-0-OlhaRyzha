@@ -15,12 +15,12 @@ import {
   selectSetAudioFile,
   selectSetAudioUrl,
   useAudioUploadStore,
-} from '@/store/ zustand/useAudioUploadStore';
+} from '@/store/zustand/useAudioUploadStore';
 import {
   selectPlayingTrackId,
   selectSetPlayingTrackId,
   usePlayingTrackStore,
-} from '@/store/ zustand/usePlayingTrackStore';
+} from '@/store/zustand/usePlayingTrackStore';
 
 interface UseAudioUploadProps {
   track: Track;

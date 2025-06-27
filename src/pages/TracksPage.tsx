@@ -12,7 +12,7 @@ import {
   TooltipContent,
   TooltipProvider,
 } from '@/components/ui/tooltip';
-import ActiveTrack from '@/components/Audio/ActiveTrack';
+import ActiveTrack from '@/components/ActiveTrack/ActiveTrack';
 
 function TracksPage() {
   const [open, setOpen] = useState(false);
