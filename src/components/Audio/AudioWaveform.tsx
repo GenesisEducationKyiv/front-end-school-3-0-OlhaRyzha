@@ -9,16 +9,26 @@ import {
 } from '@/components/ui/tooltip';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useWaveform } from '@/utils/hooks/audio/useWaveform';
+import { ValueSetter } from '@/types/zustand/base';
 
 interface WaveformProps {
-  url: string | null;
+  url: ValueSetter<string>;
   id: string;
   isPlaying?: boolean;
   onPlayPause: (id: string) => void;
+  loading?: boolean;
+  error?: ValueSetter<string>;
 }
 
-const Waveform = ({ url, id, isPlaying, onPlayPause }: WaveformProps) => {
-  const { waveformRef, error, isLoading } = useWaveform({ url, isPlaying });
+const Waveform = ({
+  url,
+  id,
+  isPlaying,
+  onPlayPause,
+  loading,
+  error,
+}: WaveformProps) => {
+  const { waveformRef } = useWaveform({ url, isPlaying });
 
   const handlePlayPause = () => onPlayPause(id);
 
@@ -39,7 +49,7 @@ const Waveform = ({ url, id, isPlaying, onPlayPause }: WaveformProps) => {
             <TooltipContent>{error}</TooltipContent>
           </Tooltip>
         </TooltipProvider>
-      ) : isLoading ? (
+      ) : loading ? (
         <Skeleton className='h-10 w-full rounded-md' />
       ) : (
         <motion.button

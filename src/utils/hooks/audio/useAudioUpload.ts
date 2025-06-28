@@ -1,4 +1,4 @@
-import { useEffect, useRef, ChangeEvent } from 'react';
+import { useRef, ChangeEvent, useEffect } from 'react';
 import { validateAudioFile } from '@/utils/audioUpload';
 import { validationMessages } from '@/constants/message.constant';
 import { Track } from '@/types/shared/track';
@@ -10,18 +10,22 @@ import { invariant } from '@/utils/invariant';
 import {
   selectAudioError,
   selectAudioFile,
-  selectAudioUrl,
   selectSetAudioError,
   selectSetAudioFile,
-  selectSetAudioUrl,
   useAudioUploadStore,
 } from '@/store/zustand/useAudioUploadStore';
+import { useLocalAudioUrl } from '@/utils/hooks/audio/useLocalAudioUrl';
+import {
+  selectRemoveBlob,
+  useAudioBlobStore,
+} from '@/store/zustand/useAudioBlobStore';
 
 interface UseAudioUploadProps {
   track: Track;
   onOpenChange: (open: boolean) => void;
   onUploaded?: () => void;
 }
+
 export function useAudioUpload({
   track,
   onOpenChange,
@@ -35,27 +39,17 @@ export function useAudioUpload({
   const file = useAudioUploadStore(selectAudioFile);
   const setFile = useAudioUploadStore(selectSetAudioFile);
 
-  const url = useAudioUploadStore(selectAudioUrl);
-  const setUrl = useAudioUploadStore(selectSetAudioUrl);
-
   const error = useAudioUploadStore(selectAudioError);
   const setError = useAudioUploadStore(selectSetAudioError);
 
-  useEffect(() => {
-    setFile(null);
-    setUrl(null);
-    setError(null);
-  }, [track.id]);
+  const removeBlob = useAudioBlobStore(selectRemoveBlob);
+
+  const url = useLocalAudioUrl(file);
 
   useEffect(() => {
-    if (!file) {
-      setUrl(null);
-      return;
-    }
-    const url = URL.createObjectURL(file);
-    setUrl(url);
-    return () => URL.revokeObjectURL(url);
-  }, [file]);
+    setFile(null);
+    setError(null);
+  }, [track.id]);
 
   const handleChoose = () => fileRef.current?.click();
 
@@ -94,6 +88,7 @@ export function useAudioUpload({
 
   const handleRemove = () => {
     remove({ id: track.id });
+    removeBlob(track.id);
     onOpenChange(false);
   };
 

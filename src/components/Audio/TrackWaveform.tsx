@@ -1,18 +1,20 @@
 import { lazy, Suspense } from 'react';
 import { Loader } from '@/components/shared';
 import { getTrackAudioUrl } from '@/utils/getTrackAudioUrl';
+import { useAudioUrl } from '@/utils/hooks/audio/useAudioUrl';
 import {
   selectPlayingTrackId,
   selectSetPlayingTrackId,
   usePlayingTrackStore,
 } from '@/store/zustand/usePlayingTrackStore';
+import { ValueSetter } from '@/types/zustand/base';
 
 const Waveform = lazy(() => import('@/components/Audio/AudioWaveform'));
 
 interface TrackWaveformProps {
   id: string;
-  previewUrl?: string | null;
-  audioFile?: string | null;
+  previewUrl?: ValueSetter<string>;
+  audioFile?: ValueSetter<string>;
   onPlayPauseExternal?: (id: string, isPlaying: boolean) => void;
 }
 
@@ -22,7 +24,8 @@ export function TrackWaveform({
   audioFile,
   onPlayPauseExternal,
 }: TrackWaveformProps) {
-  const url = previewUrl ?? (audioFile ? getTrackAudioUrl(audioFile) : null);
+  const src = previewUrl ?? (audioFile ? getTrackAudioUrl(audioFile) : null);
+  const { url, loading, error } = useAudioUrl(id, src);
 
   const playingTrackId = usePlayingTrackStore(selectPlayingTrackId);
   const setPlayingTrackId = usePlayingTrackStore(selectSetPlayingTrackId);
@@ -34,7 +37,7 @@ export function TrackWaveform({
     if (onPlayPauseExternal) onPlayPauseExternal(id, !isPlaying);
   };
 
-  if (!url) return null;
+  if (!url && !loading && !error) return null;
 
   return (
     <Suspense fallback={<Loader loading />}>
@@ -43,6 +46,8 @@ export function TrackWaveform({
         id={id}
         url={url}
         isPlaying={isPlaying}
+        loading={loading}
+        error={error}
         onPlayPause={handlePlayPause}
       />
     </Suspense>

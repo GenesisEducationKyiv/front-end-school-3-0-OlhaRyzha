@@ -18,7 +18,7 @@ export default function ActiveTrack() {
       {current?.audioFile && (
         <div className='flex-1'>
           <TrackWaveform
-            id={current.id}
+            id={`player-${current.id}`}
             audioFile={current.audioFile}
           />
         </div>

@@ -14,6 +14,7 @@ import { BTNS_LABELS } from '@/constants/labels.constant';
 import { audioUploadMessages } from '@/constants/message.constant';
 import { useAudioUpload } from '@/utils/hooks/audio/useAudioUpload';
 import { TrackWaveform } from './TrackWaveform';
+import { ValueSetter } from '@/types/zustand/base';
 
 interface AudioUploadModalProps {
   track: Track;
@@ -44,7 +45,7 @@ function AudioUploadModal({
   useEffect(() => {
     if (open) {
       requestAnimationFrame(() => {
-        const activeEl = document.activeElement as HTMLElement | null;
+        const activeEl = document.activeElement as ValueSetter<HTMLElement>;
         if (activeEl) activeEl.blur();
       });
     }
