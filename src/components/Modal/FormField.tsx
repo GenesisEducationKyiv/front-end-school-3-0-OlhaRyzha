@@ -2,9 +2,9 @@ import { cn } from '@/lib/utils';
 import { Input } from '../ui/input';
 import { Label } from '@radix-ui/react-label';
 import { Field, FieldProps } from 'formik';
-import CoverImageField from './CoverImageField';
 import { FormikError } from '../shared';
 import { isCoverImageField } from '@/utils/guards/isCoverImageField';
+import CoverImageField from './CoverImageField';
 
 interface FormFieldProps {
   name: string;

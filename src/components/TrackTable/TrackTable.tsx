@@ -1,14 +1,21 @@
 import TableBodyComponent from './TableBody';
-import CreateTrackModal from '@/components/Modal/CreateTrackModal';
 import { AlertDialogComponent } from '@/components/shared/AlertDialog';
 import { Dialog } from '../ui/dialog';
-import { AudioUploadModal } from '../Audio';
 import { Loader } from '../shared';
 import TableToolbar from './TableToolbar';
 import { PaginationControls } from '../shared/pagination';
 import { useTrackTable } from '@/utils/hooks/table/useTrackTable';
 import { dialogMessages } from '@/constants/message.constant';
 import { useModalCloseHandler } from '@/utils/hooks/modal/useModalCloseHandler';
+import { lazy } from 'react';
+
+const CreateTrackModal = lazy(() =>
+  import('../Modal').then((m) => ({ default: m.CreateTrackModal }))
+);
+
+const AudioUploadModal = lazy(() =>
+  import('../Audio').then((m) => ({ default: m.AudioUploadModal }))
+);
 
 function TrackTable() {
   const {

@@ -35,3 +35,7 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# Source maps
+build/**/*.map
+dist/**/*.map
