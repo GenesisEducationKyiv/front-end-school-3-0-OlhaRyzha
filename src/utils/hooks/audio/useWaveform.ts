@@ -3,6 +3,11 @@ import WaveSurfer from 'wavesurfer.js';
 import { isString } from '@/utils/guards/isString';
 import { ValueSetter } from '@/types/zustand/base';
 import { getWaveSurfer } from '@/utils/getWaveSurfer';
+import { isAbortError } from '@/utils/guards/isAbortError';
+import {
+  audioUploadMessages,
+  audioWaveformMessages,
+} from '@/constants/message.constant';
 
 interface UseWaveformProps {
   url: ValueSetter<string>;
@@ -30,36 +35,37 @@ export function useWaveform({ url, isPlaying = false }: UseWaveformProps) {
     const wavesurfer = getWaveSurfer(waveformRef.current);
     wavesurferRef.current = wavesurfer;
 
-    const load = async () => {
-      setIsLoading(true);
+    setIsLoading(true);
+    setError(null);
+
+    wavesurfer.once('ready', () => {
+      if (isCancelled) return;
+      setIsLoading(false);
       setError(null);
+    });
 
-      if (isBlob) {
-        wavesurfer.load(url);
-      } else if (isHttp) {
-        setError('Only blob urls supported in waveform!');
-        setIsLoading(false);
-        return;
-      } else {
-        setError('Invalid url');
-        setIsLoading(false);
-        return;
-      }
+    wavesurfer.once('error', (e) => {
+      if (isCancelled) return;
+      if (isAbortError(e)) return;
+      setError(isString(e) ? e : audioUploadMessages.audioLoadError);
+      setIsLoading(false);
+    });
 
-      wavesurfer.once('ready', () => {
-        if (isCancelled) return;
-        setIsLoading(false);
-        setError(null);
-      });
-
-      wavesurfer.once('error', (e) => {
-        if (isCancelled) return;
-        setError(isString(e) ? e : 'Audio load error');
+    if (isBlob) {
+      wavesurfer.load(url).catch((e) => {
+        if (isCancelled || isAbortError(e)) return;
+        setError(isString(e) ? e : audioUploadMessages.audioLoadError);
         setIsLoading(false);
       });
-    };
-
-    load();
+    } else if (isHttp) {
+      setError(audioWaveformMessages.onlyBlobUrls);
+      setIsLoading(false);
+      return;
+    } else {
+      setError(audioWaveformMessages.invalidUrl);
+      setIsLoading(false);
+      return;
+    }
 
     return () => {
       isCancelled = true;

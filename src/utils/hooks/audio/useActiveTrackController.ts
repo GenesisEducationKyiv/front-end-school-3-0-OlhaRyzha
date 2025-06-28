@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useGetTracks } from '@/utils/hooks/tanStackQuery/useTracksQuery';
+import { useAllGetTracks } from '@/utils/hooks/tanStackQuery/useTracksQuery';
 import { useActiveTrack } from '@/utils/hooks/audio/useActiveTrack';
 import {
   selectIndex,
@@ -13,11 +13,8 @@ import {
 const WS_URL = import.meta.env.VITE_WS_URL;
 
 export function useActiveTrackController() {
-  const { data, isLoading } = useGetTracks({
-    page: 1,
-    limit: 100,
-  });
-  const tracks = data?.data || [];
+  const { data, isLoading } = useAllGetTracks();
+  const tracks = data || [];
 
   const index = useActiveTrackStore(selectIndex);
   const toggleRandom = useActiveTrackStore(selectToggleRandom);

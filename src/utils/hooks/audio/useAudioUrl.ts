@@ -1,3 +1,4 @@
+import { audioUploadMessages } from '@/constants/message.constant';
 import {
   useAudioBlobStore,
   selectBlobById,
@@ -49,7 +50,7 @@ export function useAudioUrl(id: string, src?: ValueSetter<string>) {
       })
       .catch((err) => {
         if (ignore) return;
-        setError(err.message || 'Failed to load audio');
+        setError(err.message || audioUploadMessages.audioLoadError);
       })
       .finally(() => {
         if (!ignore) setLoading(false);
