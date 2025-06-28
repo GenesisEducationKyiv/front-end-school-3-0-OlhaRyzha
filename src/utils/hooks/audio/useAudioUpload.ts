@@ -7,20 +7,8 @@ import {
   useUploadTrackAudio,
 } from '../tanStackQuery/useTracksQuery';
 import { invariant } from '@/utils/invariant';
-import {
-  selectAudioError,
-  selectAudioFile,
-  selectAudioUrl,
-  selectSetAudioError,
-  selectSetAudioFile,
-  selectSetAudioUrl,
-  useAudioUploadStore,
-} from '@/store/ zustand/useAudioUploadStore';
-import {
-  selectPlayingTrackId,
-  selectSetPlayingTrackId,
-  usePlayingTrackStore,
-} from '@/store/ zustand/usePlayingTrackStore';
+import { useAudioUploadStore } from '@/store/zustand/useAudioUploadStore';
+import { usePlayingTrackStore } from '@/store/zustand/usePlayingTrackStore';
 
 interface UseAudioUploadProps {
   track: Track;
@@ -36,18 +24,9 @@ export function useAudioUpload({
   const { mutate: remove } = useDeleteTrackAudio();
 
   const fileRef = useRef<HTMLInputElement>(null);
+  const { file, setFile, url, setUrl, error, setError } = useAudioUploadStore();
 
-  const file = useAudioUploadStore(selectAudioFile);
-  const setFile = useAudioUploadStore(selectSetAudioFile);
-
-  const url = useAudioUploadStore(selectAudioUrl);
-  const setUrl = useAudioUploadStore(selectSetAudioUrl);
-
-  const error = useAudioUploadStore(selectAudioError);
-  const setError = useAudioUploadStore(selectSetAudioError);
-
-  const playingTrackId = usePlayingTrackStore(selectPlayingTrackId);
-  const setPlayingTrackId = usePlayingTrackStore(selectSetPlayingTrackId);
+  const { playingTrackId, setPlayingTrackId } = usePlayingTrackStore();
 
   useEffect(() => {
     if (!file) {
