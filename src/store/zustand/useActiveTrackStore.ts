@@ -22,10 +22,3 @@ export const useActiveTrackStore = create<
     setPlaying: (v) => set({ playing: v }),
   }))
 );
-
-export const selectIndex = (s: ActiveTrackState) => s.index;
-export const selectRandom = (s: ActiveTrackState) => s.random;
-
-export const selectToggleRandom = (s: ActiveTrackActions) => s.toggleRandom;
-export const selectSetIndex = (s: ActiveTrackActions) => s.setIndex;
-export const selectSetPlaying = (s: ActiveTrackActions) => s.setPlaying;

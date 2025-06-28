@@ -2,11 +2,7 @@ import { lazy, Suspense } from 'react';
 import { Loader } from '@/components/shared';
 import { getTrackAudioUrl } from '@/utils/getTrackAudioUrl';
 import { useAudioUrl } from '@/utils/hooks/audio/useAudioUrl';
-import {
-  selectPlayingTrackId,
-  selectSetPlayingTrackId,
-  usePlayingTrackStore,
-} from '@/store/zustand/usePlayingTrackStore';
+import { usePlayingTrackStore } from '@/store/zustand/usePlayingTrackStore';
 import { ValueSetter } from '@/types/zustand/base';
 
 const Waveform = lazy(() => import('@/components/Audio/AudioWaveform'));
@@ -26,10 +22,7 @@ export function TrackWaveform({
 }: TrackWaveformProps) {
   const src = previewUrl ?? (audioFile ? getTrackAudioUrl(audioFile) : null);
   const { url, loading, error } = useAudioUrl(id, src);
-
-  const playingTrackId = usePlayingTrackStore(selectPlayingTrackId);
-  const setPlayingTrackId = usePlayingTrackStore(selectSetPlayingTrackId);
-
+  const { playingTrackId, setPlayingTrackId } = usePlayingTrackStore();
   const isPlaying = playingTrackId === id;
 
   const handlePlayPause = () => {

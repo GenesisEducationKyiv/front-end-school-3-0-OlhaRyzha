@@ -28,6 +28,4 @@ export const useAudioBlobStore = create<AudioBlobStore>((set) => ({
 
 export const selectBlobById = (id: string) => (state: AudioBlobStore) =>
   state.blobs[id];
-export const selectSetBlob = (state: AudioBlobStore) => state.setBlob;
 export const selectRemoveBlob = (state: AudioBlobStore) => state.removeBlob;
-export const selectClearBlobs = (state: AudioBlobStore) => state.clearBlobs;

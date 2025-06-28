@@ -7,13 +7,7 @@ import {
   useUploadTrackAudio,
 } from '../tanStackQuery/useTracksQuery';
 import { invariant } from '@/utils/invariant';
-import {
-  selectAudioError,
-  selectAudioFile,
-  selectSetAudioError,
-  selectSetAudioFile,
-  useAudioUploadStore,
-} from '@/store/zustand/useAudioUploadStore';
+import { useAudioUploadStore } from '@/store/zustand/useAudioUploadStore';
 import { useLocalAudioUrl } from '@/utils/hooks/audio/useLocalAudioUrl';
 import {
   selectRemoveBlob,
@@ -35,12 +29,7 @@ export function useAudioUpload({
   const { mutate: remove } = useDeleteTrackAudio();
 
   const fileRef = useRef<HTMLInputElement>(null);
-
-  const file = useAudioUploadStore(selectAudioFile);
-  const setFile = useAudioUploadStore(selectSetAudioFile);
-
-  const error = useAudioUploadStore(selectAudioError);
-  const setError = useAudioUploadStore(selectSetAudioError);
+  const { file, setFile, error, setError } = useAudioUploadStore();
 
   const removeBlob = useAudioBlobStore(selectRemoveBlob);
 

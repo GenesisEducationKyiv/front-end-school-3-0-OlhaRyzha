@@ -12,12 +12,3 @@ export const useAudioUploadStore = create<AudioUploadState>((set) => ({
 
   reset: () => set({ file: null, url: null, error: null }),
 }));
-
-export const selectAudioFile = (s: AudioUploadState) => s.file;
-export const selectSetAudioFile = (s: AudioUploadState) => s.setFile;
-
-export const selectAudioUrl = (s: AudioUploadState) => s.url;
-export const selectSetAudioUrl = (s: AudioUploadState) => s.setUrl;
-
-export const selectAudioError = (s: AudioUploadState) => s.error;
-export const selectSetAudioError = (s: AudioUploadState) => s.setError;

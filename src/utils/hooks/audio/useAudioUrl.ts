@@ -1,9 +1,7 @@
 import { audioUploadMessages } from '@/constants/message.constant';
 import {
-  useAudioBlobStore,
   selectBlobById,
-  selectSetBlob,
-  selectRemoveBlob,
+  useAudioBlobStore,
 } from '@/store/zustand/useAudioBlobStore';
 import { ValueSetter } from '@/types/zustand/base';
 import { fetchAudioBlobResult } from '@/utils/fetchAudioBlob';
@@ -11,8 +9,7 @@ import { useState, useEffect, useRef } from 'react';
 
 export function useAudioUrl(id: string, src?: ValueSetter<string>) {
   const blobUrl = useAudioBlobStore(selectBlobById(id));
-  const setBlob = useAudioBlobStore(selectSetBlob);
-  const removeBlob = useAudioBlobStore(selectRemoveBlob);
+  const { setBlob, removeBlob } = useAudioBlobStore();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<ValueSetter<string>>(null);
