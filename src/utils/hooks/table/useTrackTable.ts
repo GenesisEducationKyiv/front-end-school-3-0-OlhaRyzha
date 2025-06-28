@@ -23,18 +23,8 @@ import { trackColumns } from '@/configs/columnsConfig';
 import { useTable } from '@/utils/hooks/table/useTable';
 import { Track } from '@/types/shared/track';
 import { useSyncTableParamsToUrl } from './useTableParams';
-import {
-  selectCloseModal,
-  selectModalAction,
-  selectOpenModal,
-  selectSelectedTrack,
-  useModalsStore,
-} from '@/store/ zustand/useModalsStore';
-import {
-  selectPlayingTrackId,
-  selectSetPlayingTrackId,
-  usePlayingTrackStore,
-} from '@/store/ zustand/usePlayingTrackStore';
+import { useModalsStore } from '@/store/zustand/useModalsStore';
+import { usePlayingTrackStore } from '@/store/zustand/usePlayingTrackStore';
 
 export function useTrackTable() {
   const dispatch = useAppDispatch();
@@ -66,13 +56,10 @@ export function useTrackTable() {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
 
-  const openModal = useModalsStore(selectOpenModal);
-  const closeModal = useModalsStore(selectCloseModal);
-  const selectedTrack = useModalsStore(selectSelectedTrack);
-  const modalAction = useModalsStore(selectModalAction);
+  const { openModal, closeModal, selectedTrack, modalAction } =
+    useModalsStore();
 
-  const playingTrackId = usePlayingTrackStore(selectPlayingTrackId);
-  const setPlayingTrackId = usePlayingTrackStore(selectSetPlayingTrackId);
+  const { playingTrackId, setPlayingTrackId } = usePlayingTrackStore();
 
   const handleConfirmDelete = useCallback(
     (track: Track) => deleteTrack.mutate({ id: track.id }),
