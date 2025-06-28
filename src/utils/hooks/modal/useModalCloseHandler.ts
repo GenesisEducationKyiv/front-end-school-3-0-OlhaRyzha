@@ -1,5 +1,7 @@
 export function useModalCloseHandler(closeFn: () => void) {
-  return (open: boolean) => {
+  const handleToggle = (open: boolean) => {
     if (!open) closeFn();
   };
+
+  return handleToggle;
 }
