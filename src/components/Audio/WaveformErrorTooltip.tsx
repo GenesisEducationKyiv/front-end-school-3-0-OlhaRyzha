@@ -1,4 +1,4 @@
-import fileBroken from '@/assets/png-transparent-file-broken-sign-computer.png';
+import fileBroken from '@/assets/transparent-file-broken-sign-computer.webp';
 import {
   Tooltip,
   TooltipContent,
