@@ -107,6 +107,7 @@ export const trackColumns = ({
           src={row.original.coverImage || noCover}
           alt={row.original.coverImage ? 'Cover image' : 'No cover available'}
           data-testid={`track-item-${row.original.id}-cover`}
+          loading='lazy'
         />
       ),
     },

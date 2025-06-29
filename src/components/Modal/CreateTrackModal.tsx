@@ -95,6 +95,7 @@ function CreateTrackModal({ track, onClose }: CreateTrackModalProps) {
                   src={previewSrc || defaultCover}
                   alt='Cover preview'
                   className='h-32 w-32 object-cover rounded-md shadow'
+                  loading='lazy'
                 />
               </div>
 

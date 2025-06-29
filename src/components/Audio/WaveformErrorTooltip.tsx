@@ -26,6 +26,7 @@ const WaveformErrorTooltip = ({
           src={imgSrc || fileBroken}
           alt={alt}
           className={className}
+          loading='lazy'
         />
       </TooltipTrigger>
       <TooltipContent>{error}</TooltipContent>

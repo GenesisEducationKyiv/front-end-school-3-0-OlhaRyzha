@@ -10,8 +10,10 @@ import {
   TooltipContent,
   TooltipProvider,
 } from '@/components/ui/tooltip';
-import { ActiveTrack } from '@/components/ActiveTrack';
 
+const ActiveTrack = lazy(() =>
+  import('@/components/ActiveTrack').then((m) => ({ default: m.ActiveTrack }))
+);
 const TrackTable = lazy(() =>
   import('@/components/TrackTable').then((m) => ({ default: m.TrackTable }))
 );
