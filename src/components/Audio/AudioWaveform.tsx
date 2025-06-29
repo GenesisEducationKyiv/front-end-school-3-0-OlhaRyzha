@@ -28,7 +28,13 @@ const Waveform = ({
   loading,
   error,
 }: WaveformProps) => {
-  const { waveformRef } = useWaveform({ url, isPlaying });
+  const {
+    waveformRef,
+    error: waveformError,
+    isLoading,
+  } = useWaveform({ url, isPlaying });
+
+  const displayError = error || waveformError;
 
   const handlePlayPause = () => onPlayPause(id);
 
@@ -36,20 +42,20 @@ const Waveform = ({
     <div
       className='relative waveform-container'
       data-testid={`audio-progress-${id}`}>
-      {error ? (
+      {displayError ? (
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
               <img
                 src={fileBroken}
-                alt={error}
+                alt={displayError}
                 className='waveform-broken-img'
               />
             </TooltipTrigger>
-            <TooltipContent>{error}</TooltipContent>
+            <TooltipContent>{displayError}</TooltipContent>
           </Tooltip>
         </TooltipProvider>
-      ) : loading ? (
+      ) : loading || isLoading ? (
         <Skeleton className='h-10 w-full rounded-md' />
       ) : (
         <motion.button
@@ -67,7 +73,7 @@ const Waveform = ({
         </motion.button>
       )}
 
-      {!error && (
+      {!displayError && (
         <div
           ref={waveformRef}
           className='waveform-progress mt-2'
