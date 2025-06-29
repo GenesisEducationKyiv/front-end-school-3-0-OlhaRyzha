@@ -45,7 +45,6 @@ const Waveform = ({
         <WaveformPlayButton
           isPlaying={isPlaying}
           onClick={handlePlayPause}
-          className='waveform-play-btn'
         />
       )}
 
