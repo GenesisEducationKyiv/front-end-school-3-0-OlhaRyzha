@@ -19,9 +19,11 @@ export function useWaveform({ url, isPlaying = false }: UseWaveformProps) {
   const wavesurferRef = useRef<ValueSetter<WaveSurfer>>(null);
   const [error, setError] = useState<ValueSetter<string>>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isVisible, setIsVisible] = useState<boolean>(false);
 
   useEffect(() => {
     let isCancelled = false;
+    setIsVisible(false);
 
     if (!waveformRef.current || !isString(url)) {
       setError(null);
@@ -42,6 +44,7 @@ export function useWaveform({ url, isPlaying = false }: UseWaveformProps) {
       if (isCancelled) return;
       setIsLoading(false);
       setError(null);
+      setIsVisible(true);
     });
 
     wavesurfer.once('error', (e) => {
@@ -79,5 +82,5 @@ export function useWaveform({ url, isPlaying = false }: UseWaveformProps) {
     isPlaying ? ws.play() : ws.pause();
   }, [isPlaying]);
 
-  return { waveformRef, error, isLoading };
+  return { waveformRef, error, isLoading, isVisible };
 }

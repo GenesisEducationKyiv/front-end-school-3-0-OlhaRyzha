@@ -14,7 +14,7 @@ interface TrackWaveformProps {
   onPlayPauseExternal?: (id: string, isPlaying: boolean) => void;
 }
 
-export function TrackWaveform({
+function TrackWaveform({
   id,
   previewUrl,
   audioFile,
@@ -27,7 +27,7 @@ export function TrackWaveform({
 
   const handlePlayPause = () => {
     setPlayingTrackId(isPlaying ? null : id);
-    if (onPlayPauseExternal) onPlayPauseExternal(id, !isPlaying);
+    onPlayPauseExternal?.(id, !isPlaying);
   };
 
   if (!url && !loading && !error) return null;
@@ -39,7 +39,6 @@ export function TrackWaveform({
         id={id}
         url={url}
         isPlaying={isPlaying}
-        loading={loading}
         error={error}
         onPlayPause={handlePlayPause}
       />

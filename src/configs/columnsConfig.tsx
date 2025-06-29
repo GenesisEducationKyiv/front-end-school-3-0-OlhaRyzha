@@ -14,7 +14,7 @@ import {
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
 import { RiDeleteBin5Fill } from 'react-icons/ri';
 import { formatDate } from '@/utils/formatDate';
-import { TrackWaveform } from '@/components/Audio/TrackWaveform';
+import { TrackWaveform } from '@/components/Audio';
 
 interface TrackColumnsOpts {
   selectMode: boolean;
