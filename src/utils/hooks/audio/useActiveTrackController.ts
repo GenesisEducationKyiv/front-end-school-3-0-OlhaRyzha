@@ -1,38 +1,25 @@
 import { useMemo } from 'react';
 import { useAllGetTracks } from '@/utils/hooks/tanStackQuery/useTracksQuery';
-import { useActiveTrack } from '@/utils/hooks/audio/useActiveTrack';
 import { useActiveTrackStore } from '@/store/zustand/useActiveTrackStore';
-
-const WS_URL = import.meta.env.VITE_WS_URL;
+import { useTrackNavigation } from './useTrackNavigation';
+import { useRandomTrackWS } from './useRandomTrackWS';
 
 export function useActiveTrackController() {
-  const { data, isLoading } = useAllGetTracks();
-  const tracks = data || [];
+  const { data: tracks = [], isLoading } = useAllGetTracks();
 
-  const { index, random, toggleRandom, setIndex, setPlaying } =
-    useActiveTrackStore();
-
-  const next = () => {
-    setIndex((i) => (tracks.length ? (i + 1) % tracks.length : 0));
-    setPlaying(false);
-  };
-  const prev = () => {
-    setIndex((i) =>
-      tracks.length ? (i - 1 + tracks.length) % tracks.length : 0
-    );
-    setPlaying(false);
-  };
-
-  const randomTrack = useActiveTrack(random ? WS_URL : null);
+  const { random, toggleRandom } = useActiveTrackStore();
+  const { index, next, prev } = useTrackNavigation(tracks);
+  const randomTrack = useRandomTrackWS(random);
 
   const current = useMemo(
     () => (random ? randomTrack : tracks[index]),
     [random, randomTrack, tracks, index]
   );
+  const isCurrentTrackLoading = random && !current;
 
   return {
     current,
-    isLoading,
+    isLoading: isCurrentTrackLoading || isLoading,
     next,
     prev,
     toggleRandom,

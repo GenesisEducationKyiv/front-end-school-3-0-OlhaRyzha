@@ -2,6 +2,7 @@ import { useActiveTrackController } from '@/utils/hooks/audio/useActiveTrackCont
 import TrackInfo from './TrackInfo';
 import Controls from './Controls';
 import { TrackWaveform } from '../Audio';
+import { Skeleton } from '../ui/skeleton';
 
 export default function ActiveTrack() {
   const { current, isLoading, random, next, prev, toggleRandom } =
@@ -15,13 +16,19 @@ export default function ActiveTrack() {
         loading={isLoading}
       />
 
-      {current?.audioFile && (
+      {isLoading ? (
         <div className='flex-1'>
-          <TrackWaveform
-            id={`player-${current.id}`}
-            audioFile={current.audioFile}
-          />
+          <Skeleton className='h-12 w-full rounded-md' />
         </div>
+      ) : (
+        current?.audioFile && (
+          <div className='flex-1'>
+            <TrackWaveform
+              id={`player-${current.id}`}
+              audioFile={current.audioFile}
+            />
+          </div>
+        )
       )}
 
       <Controls
