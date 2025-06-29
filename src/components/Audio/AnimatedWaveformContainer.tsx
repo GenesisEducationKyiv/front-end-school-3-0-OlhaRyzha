@@ -1,31 +1,25 @@
 import { forwardRef } from 'react';
-import { motion } from 'framer-motion';
 
 interface AnimatedWaveformContainerProps {
   isVisible: boolean;
   className?: string;
 }
 
+import { cn } from '@/lib/utils';
+
 const AnimatedWaveformContainer = forwardRef<
   HTMLDivElement,
   AnimatedWaveformContainerProps
 >(({ isVisible, className }, ref) => (
-  <motion.div
+  <div
     ref={ref}
-    className={className}
-    initial={{ opacity: 0, x: -40, scale: 0.95 }}
-    animate={
+    className={cn(
+      'transition-all duration-700 ease-out',
       isVisible
-        ? { opacity: 1, x: 0, scale: 1 }
-        : { opacity: 0, x: -40, scale: 0.95 }
-    }
-    transition={{
-      type: 'spring',
-      stiffness: 48,
-      damping: 14,
-      mass: 0.7,
-      duration: 0.85,
-    }}
+        ? 'opacity-100 translate-x-0 scale-100'
+        : 'opacity-0 -translate-x-10 scale-95',
+      className
+    )}
   />
 ));
 
