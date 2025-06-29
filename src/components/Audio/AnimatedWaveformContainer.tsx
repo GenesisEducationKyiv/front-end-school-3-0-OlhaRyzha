@@ -1,11 +1,10 @@
 import { forwardRef } from 'react';
+import { cn } from '@/lib/utils';
 
 interface AnimatedWaveformContainerProps {
   isVisible: boolean;
   className?: string;
 }
-
-import { cn } from '@/lib/utils';
 
 const AnimatedWaveformContainer = forwardRef<
   HTMLDivElement,
