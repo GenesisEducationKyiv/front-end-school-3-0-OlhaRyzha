@@ -76,6 +76,7 @@ function TrackTable() {
         <TableBodyComponent
           tracks={tracks}
           table={table}
+          loading={loading}
         />
         <PaginationControls />
       </div>

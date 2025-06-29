@@ -13,7 +13,7 @@ import {
   validationSchema,
 } from '@/configs/formConfig';
 import { Track, CreateTrackDto } from '@/types/shared/track';
-import defaultCover from '@/assets/image_not_available.png';
+import defaultCover from '@/assets/image_not_available.webp';
 import { BTNS_LABELS } from '@/constants/labels.constant';
 import { Loader } from '../shared';
 import { normalizeCoverImage } from '@/utils/normalizeCoverImage';

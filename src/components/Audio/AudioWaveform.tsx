@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { PlayIcon, PauseIcon } from 'lucide-react';
-import fileBroken from '@/assets/png-transparent-file-broken-sign-computer.png';
+import fileBroken from '@/assets/png-transparent-file-broken-sign-computer.webp';
 import {
   Tooltip,
   TooltipContent,

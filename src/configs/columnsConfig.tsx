@@ -1,6 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Track } from '@/types/shared/track';
-import noCover from '@/assets/image_not_available.png';
+import noCover from '@/assets/image_not_available.webp';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import {
