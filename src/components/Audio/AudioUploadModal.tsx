@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from 'react';
+import { useEffect } from 'react';
 import { HiXMark } from 'react-icons/hi2';
 import {
   Dialog,
@@ -11,12 +11,9 @@ import {
 import { Button } from '@/components/ui/button';
 import type { Track } from '@/types/shared/track';
 import { BTNS_LABELS } from '@/constants/labels.constant';
-import { Loader } from '../shared';
 import { audioUploadMessages } from '@/constants/message.constant';
-import { getTrackAudioUrl } from '@/utils/getTrackAudioUrl';
 import { useAudioUpload } from '@/utils/hooks/audio/useAudioUpload';
-
-const Waveform = lazy(() => import('@/components/Audio/AudioWaveform'));
+import TrackWaveform from './TrackWaveform';
 
 interface AudioUploadModalProps {
   track: Track;
@@ -89,14 +86,12 @@ function AudioUploadModal({
           {selectedFile && selectedUrl ? (
             <>
               <p className='text-sm mb-2'>Preview:</p>
-              <Suspense fallback={<Loader loading />}>
-                <Waveform
-                  url={selectedUrl}
-                  id='preview'
-                  isPlaying={playingTrackId === 'preview'}
-                  onPlayPause={handlePlayPause}
-                />
-              </Suspense>
+              <TrackWaveform
+                id='preview'
+                previewUrl={selectedUrl}
+                isPlaying={playingTrackId === 'preview'}
+                onPlayPause={handlePlayPause}
+              />
               <div className='flex items-center gap-2 mt-2'>
                 <span className='truncate text-sm'>{selectedFile.name}</span>
                 <button
@@ -110,14 +105,12 @@ function AudioUploadModal({
           ) : track.audioFile ? (
             <>
               <p className='text-sm mb-2'>Current file:</p>
-              <Suspense fallback={<Loader loading />}>
-                <Waveform
-                  url={getTrackAudioUrl(track.audioFile)}
-                  id={track.id}
-                  isPlaying={playingTrackId === track.id}
-                  onPlayPause={handlePlayPause}
-                />
-              </Suspense>
+              <TrackWaveform
+                id={track.id}
+                audioFile={track.audioFile}
+                isPlaying={playingTrackId === track.id}
+                onPlayPause={handlePlayPause}
+              />
             </>
           ) : null}
         </div>
