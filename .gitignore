@@ -8,6 +8,8 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+build/*
+!build/404.html
 dist
 dist-ssr
 *.local
@@ -35,3 +37,7 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# Source maps
+build/**/*.map
+dist/**/*.map

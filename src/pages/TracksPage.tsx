@@ -1,8 +1,6 @@
-import TrackTable from '@/components/TrackTable/TrackTable';
-import CreateTrackModal from '@/components/Modal/CreateTrackModal';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { lazy, useState } from 'react';
 import { TRACKS_LIST_KEY } from '@/constants/table.constants';
 import { BTNS_LABELS } from '@/constants/labels.constant';
 import { Eye, EyeClosed } from 'lucide-react';
@@ -12,7 +10,14 @@ import {
   TooltipContent,
   TooltipProvider,
 } from '@/components/ui/tooltip';
-import ActiveTrack from '@/components/ActiveTrack/ActiveTrack';
+import { ActiveTrack } from '@/components/ActiveTrack';
+
+const TrackTable = lazy(() =>
+  import('@/components/TrackTable').then((m) => ({ default: m.TrackTable }))
+);
+const CreateTrackModal = lazy(() =>
+  import('@/components/Modal').then((m) => ({ default: m.CreateTrackModal }))
+);
 
 function TracksPage() {
   const [open, setOpen] = useState(false);
