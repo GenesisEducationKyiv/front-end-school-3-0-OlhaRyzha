@@ -20,7 +20,8 @@
     "test:e2e": "playwright test tests/e2e",
     "show-report": "playwright show-report --port=9324",
     "test:e2e:ui": "playwright test --ui",
-    "test:all": "playwright test"
+    "test:all": "playwright test",
+    "unimported": "unimported"
   },
   "dependencies": {
     "@mobily/ts-belt": "^3.13.1",
