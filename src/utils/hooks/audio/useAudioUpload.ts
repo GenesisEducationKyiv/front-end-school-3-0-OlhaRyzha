@@ -1,4 +1,4 @@
-import { useEffect, useRef, ChangeEvent } from 'react';
+import { useRef, ChangeEvent, useEffect } from 'react';
 import { validateAudioFile } from '@/utils/audioUpload';
 import { validationMessages } from '@/constants/message.constant';
 import { Track } from '@/types/shared/track';
@@ -8,13 +8,18 @@ import {
 } from '../tanStackQuery/useTracksQuery';
 import { invariant } from '@/utils/invariant';
 import { useAudioUploadStore } from '@/store/zustand/useAudioUploadStore';
-import { usePlayingTrackStore } from '@/store/zustand/usePlayingTrackStore';
+import { useLocalAudioUrl } from '@/utils/hooks/audio/useLocalAudioUrl';
+import {
+  selectRemoveBlob,
+  useAudioBlobStore,
+} from '@/store/zustand/useAudioBlobStore';
 
 interface UseAudioUploadProps {
   track: Track;
   onOpenChange: (open: boolean) => void;
   onUploaded?: () => void;
 }
+
 export function useAudioUpload({
   track,
   onOpenChange,
@@ -24,23 +29,16 @@ export function useAudioUpload({
   const { mutate: remove } = useDeleteTrackAudio();
 
   const fileRef = useRef<HTMLInputElement>(null);
-  const { file, setFile, url, setUrl, error, setError } = useAudioUploadStore();
+  const { file, setFile, error, setError } = useAudioUploadStore();
 
-  const { playingTrackId, setPlayingTrackId } = usePlayingTrackStore();
+  const removeBlob = useAudioBlobStore(selectRemoveBlob);
+
+  const url = useLocalAudioUrl(file);
 
   useEffect(() => {
-    if (!file) {
-      setUrl(null);
-      return;
-    }
-    const url = URL.createObjectURL(file);
-    setUrl(url);
-    return () => URL.revokeObjectURL(url);
-  }, [file]);
-
-  const handlePlayPause = (id: string) => {
-    setPlayingTrackId(playingTrackId === id ? null : id);
-  };
+    setFile(null);
+    setError(null);
+  }, [track.id]);
 
   const handleChoose = () => fileRef.current?.click();
 
@@ -79,6 +77,7 @@ export function useAudioUpload({
 
   const handleRemove = () => {
     remove({ id: track.id });
+    removeBlob(track.id);
     onOpenChange(false);
   };
 
@@ -89,11 +88,9 @@ export function useAudioUpload({
     error,
     handleChoose,
     handleChange,
-    handlePlayPause,
     handleSave,
     handleRemove,
     loading: isPending,
     clear,
-    playingTrackId,
   };
 }

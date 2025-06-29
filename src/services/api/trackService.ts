@@ -18,6 +18,7 @@ import {
 } from '@/schemas/track.schemas';
 
 const tracksRoute = API_ROUTES.TRACKS;
+const allTracksRoute = API_ROUTES.ALL_TRACKS;
 
 const TrackService = {
   getAll: (params?: QueryParams): Promise<PaginatedResponse<TrackType>> =>
@@ -25,6 +26,8 @@ const TrackService = {
       apiClient.get(tracksRoute, { params }),
       paginatedResponseSchema(trackSchema)
     ),
+  getAllRaw: (): Promise<TrackType[]> =>
+    safeFetch(apiClient.get(allTracksRoute), trackSchema.array()),
 
   getTrackBySlug: (slug: string): Promise<TrackType> =>
     safeFetch(apiClient.get(`${tracksRoute}/${slug}`), trackSchema),

@@ -13,6 +13,7 @@ import {
 } from '../../../types/shared/track';
 import { IdType } from '@/types/ids';
 import {
+  ALL_TRACKS_KEY,
   FILE_KEY,
   TRACK_KEY,
   TRACKS_LIST_KEY,
@@ -22,19 +23,24 @@ import { setAllArtists } from '@/store/slices/table/tableSlice';
 import { useEffect } from 'react';
 
 export const useGetTracks = (params?: QueryParams) => {
-  const dispatch = useAppDispatch();
-
-  const query = useQuery<PaginatedResponse<Track>>({
+  return useQuery<PaginatedResponse<Track>>({
     queryKey: [TRACKS_LIST_KEY, params],
     queryFn: async () => await trackService.getAll(params),
   });
+};
+
+export const useAllGetTracks = () => {
+  const dispatch = useAppDispatch();
+
+  const query = useQuery<Track[]>({
+    queryKey: [ALL_TRACKS_KEY],
+    queryFn: async () => await trackService.getAllRaw(),
+  });
 
   useEffect(() => {
-    const tracks = query.data?.data;
+    const tracks = query.data;
     if (tracks) {
-      const availableArtists = Array.from(
-        new Set(tracks?.map((t) => t?.artist))
-      );
+      const availableArtists = Array.from(new Set(tracks.map((t) => t.artist)));
       dispatch(setAllArtists(availableArtists));
     }
   }, [query.data, dispatch]);

@@ -26,12 +26,7 @@ export const DEFAULT_META = {
 
 const initialParamsFromUrl = (() => {
   if (typeof window !== 'undefined') {
-    const allArtists = window.__PRELOADED_STATE__?.table?.allArtists ?? [
-      'Lady Gaga',
-    ];
-    const allGenresRaw = window.__QUERY_CLIENT__?.['GENRES_QUERY_KEY'];
-    const allGenres = Array.isArray(allGenresRaw) ? allGenresRaw : [];
-    return getQueryParamsFromUrl(window.location.search, allGenres, allArtists);
+    return getQueryParamsFromUrl(window.location.search);
   }
   return DEFAULT_PARAMS;
 })();

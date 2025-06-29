@@ -62,3 +62,8 @@ export const apiErrorMessages = {
   serverErrorStatus: 'Server error',
   networkError: 'Network error',
 };
+
+export const audioWaveformMessages = {
+  onlyBlobUrls: 'Only blob urls supported in waveform!',
+  invalidUrl: 'Invalid url',
+};

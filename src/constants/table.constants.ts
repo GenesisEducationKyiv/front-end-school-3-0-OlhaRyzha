@@ -10,6 +10,8 @@ export const TABLE_SIZES = [10, 20, 30, 40, 50];
 
 export const TRACKS_LIST_KEY = 'tracks';
 
+export const ALL_TRACKS_KEY = 'all_tracks';
+
 export const TRACK_KEY = 'track';
 
 export const FILE_KEY = 'file';

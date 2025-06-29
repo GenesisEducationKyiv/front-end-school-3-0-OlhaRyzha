@@ -2,8 +2,6 @@ import { pipe, O } from '@mobily/ts-belt';
 import type { Order, QueryParams, Sort } from '@/types/shared/track';
 import { META, PARAMS } from '@/constants/table.constants';
 import { getTrimmedValue } from '../getTrimmedValue';
-import { GenresType } from '@/types/shared/genre';
-import { ArtistsType } from '@/types/shared/artists';
 
 const VALID_SORTS = ['title', 'artist', 'album', 'createdAt', ''] as const;
 const VALID_ORDERS = ['asc', 'desc', ''] as const;
@@ -11,11 +9,7 @@ const VALID_ORDERS = ['asc', 'desc', ''] as const;
 type ParamConfig = {
   key: keyof QueryParams;
   map?: (value: string) => string | number;
-  validate?: (
-    value: string | number,
-    allGenres: GenresType,
-    allArtists: ArtistsType
-  ) => boolean;
+  validate?: (value: string | number) => boolean;
   def: string | number;
 };
 
@@ -49,25 +43,15 @@ const PARAMS_CONFIG: ParamConfig[] = [
     key: PARAMS.GENRE,
     map: getTrimmedValue,
     def: '',
-    validate: (value, allGenres) =>
-      !value ||
-      (Array.isArray(allGenres) && allGenres.includes(value as string)),
   },
   {
     key: PARAMS.ARTIST,
     map: getTrimmedValue,
     def: '',
-    validate: (value, _allGenres, allArtists) =>
-      !value ||
-      (Array.isArray(allArtists) && allArtists.includes(value as string)),
   },
 ] as const;
 
-export function getQueryParamsFromUrl(
-  search: string,
-  allGenres: GenresType,
-  allArtists: ArtistsType
-): QueryParams {
+export function getQueryParamsFromUrl(search: string): QueryParams {
   const params = new URLSearchParams(search);
 
   return PARAMS_CONFIG.reduce<QueryParams>(
@@ -78,7 +62,7 @@ export function getQueryParamsFromUrl(
         O.getWithDefault(def)
       );
 
-      if (validate && !validate(value, allGenres, allArtists)) {
+      if (validate && !validate(value)) {
         value = def;
       }
 
