@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import { PlayIcon, PauseIcon } from 'lucide-react';
 
 interface WaveformPlayButtonProps {
@@ -16,12 +17,12 @@ const WaveformPlayButton = ({
   <button
     type='button'
     onClick={onClick}
-    className={`
-      waveform-play-btn
-      active:scale-90 transition-transform duration-150
-      animate-in fade-in zoom-in
-      ${className}
-    `}
+    className={cn(
+      'waveform-play-btn',
+      'active:scale-90 transition-transform duration-150',
+      'animate-in fade-in zoom-in',
+      className
+    )}
     style={{ animationDuration: '0.7s' }}>
     {isPlaying ? (
       <PauseIcon className={iconClassName} />
