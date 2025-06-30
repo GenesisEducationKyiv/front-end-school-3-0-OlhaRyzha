@@ -11,8 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
-import { RiDeleteBin5Fill } from 'react-icons/ri';
+import { ArrowUpDown, MoreHorizontal, Trash2 } from 'lucide-react';
 import { formatDate } from '@/utils/formatDate';
 import { TrackWaveform } from '@/components/Audio';
 
@@ -203,7 +202,7 @@ export const trackColumns = ({
                 <DropdownMenuItem
                   data-testid={`delete-track-${track.id}`}
                   onSelect={() => onDelete(track)}>
-                  Delete <RiDeleteBin5Fill className='ml-1' />
+                  Delete <Trash2 className='ml-1' />
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

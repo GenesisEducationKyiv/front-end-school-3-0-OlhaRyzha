@@ -1,6 +1,6 @@
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { lazy, useState } from 'react';
+import { lazy, useState, Suspense } from 'react';
 import { TRACKS_LIST_KEY } from '@/constants/table.constants';
 import { BTNS_LABELS } from '@/constants/labels.constant';
 import { Eye, EyeClosed } from 'lucide-react';
@@ -10,6 +10,7 @@ import {
   TooltipContent,
   TooltipProvider,
 } from '@/components/ui/tooltip';
+import { Loader } from '@/components/shared';
 
 const ActiveTrack = lazy(() =>
   import('@/components/ActiveTrack').then((m) => ({ default: m.ActiveTrack }))
@@ -28,8 +29,9 @@ function TracksPage() {
   return (
     <main className='flex flex-col min-h-screen'>
       <div className='relative sticky top-0 z-40 bg-white border-b'>
-        {isPlayerVisible && <ActiveTrack />}
-
+        <Suspense fallback={<Loader loading />}>
+          {isPlayerVisible && <ActiveTrack />}
+        </Suspense>
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -47,14 +49,12 @@ function TracksPage() {
           </Tooltip>
         </TooltipProvider>
       </div>
-
       <section className='p-6 flex-1 overflow-y-auto'>
         <h1
           data-testid='tracks-header'
           className='text-2xl font-bold mb-4 capitalize'>
           {TRACKS_LIST_KEY}
         </h1>
-
         <Dialog
           open={open}
           onOpenChange={setOpen}>
@@ -66,10 +66,13 @@ function TracksPage() {
               {BTNS_LABELS.CREATE_TRACK}
             </Button>
           </DialogTrigger>
-          <CreateTrackModal onClose={() => setOpen(false)} />
+          <Suspense fallback={<Loader loading />}>
+            <CreateTrackModal onClose={() => setOpen(false)} />
+          </Suspense>
         </Dialog>
-
-        <TrackTable />
+        <Suspense fallback={<Loader loading />}>
+          <TrackTable />
+        </Suspense>
       </section>
     </main>
   );

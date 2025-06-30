@@ -39,7 +39,9 @@ const TableBodyComponent: FC<TableBodyProps> = ({ tracks, table, loading }) => {
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody data-testid='track-list'>
+        <TableBody
+          className='track-list'
+          data-testid='track-list'>
           {tracks?.length
             ? table?.getRowModel().rows.map((row) => (
                 <TableRow

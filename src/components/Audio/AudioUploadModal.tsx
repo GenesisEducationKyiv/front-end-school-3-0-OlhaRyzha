@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { HiXMark } from 'react-icons/hi2';
+import { X } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -98,7 +98,7 @@ function AudioUploadModal({
                   onClick={clear}
                   className='text-gray-500 hover:text-gray-700'
                   data-testid={`clear-selected-file-${track.id}`}>
-                  <HiXMark className='h-4 w-4' />
+                  <X className='h-4 w-4' />
                 </button>
               </div>
             </>

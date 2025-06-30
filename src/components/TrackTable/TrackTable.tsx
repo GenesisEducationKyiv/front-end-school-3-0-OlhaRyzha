@@ -7,7 +7,7 @@ import { PaginationControls } from '../shared/pagination';
 import { useTrackTable } from '@/utils/hooks/table/useTrackTable';
 import { dialogMessages } from '@/constants/message.constant';
 import { useModalCloseHandler } from '@/utils/hooks/modal/useModalCloseHandler';
-import { lazy } from 'react';
+import { lazy, Suspense } from 'react';
 
 const CreateTrackModal = lazy(() =>
   import('../Modal').then((m) => ({ default: m.CreateTrackModal }))
@@ -39,19 +39,23 @@ function TrackTable() {
         <Dialog
           open
           onOpenChange={handleModalClose}>
-          <CreateTrackModal
-            track={selectedTrack}
-            onClose={closeModal}
-          />
+          <Suspense fallback={<Loader loading />}>
+            <CreateTrackModal
+              track={selectedTrack}
+              onClose={closeModal}
+            />
+          </Suspense>
         </Dialog>
       )}
 
       {modalAction === 'upload' && selectedTrack && (
-        <AudioUploadModal
-          track={selectedTrack}
-          open
-          onOpenChange={handleModalClose}
-        />
+        <Suspense fallback={<Loader loading />}>
+          <AudioUploadModal
+            track={selectedTrack}
+            open
+            onOpenChange={handleModalClose}
+          />
+        </Suspense>
       )}
 
       <AlertDialogComponent
