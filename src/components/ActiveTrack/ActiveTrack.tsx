@@ -17,9 +17,7 @@ export default function ActiveTrack() {
       />
 
       {isLoading ? (
-        <div className='flex-1'>
-          <Skeleton className='h-10 w-full rounded-md' />
-        </div>
+        <Skeleton className='h-12 w-full rounded-md' />
       ) : (
         current?.audioFile && (
           <div className='flex-1'>
