@@ -1,6 +1,15 @@
-import { test, expect, Page } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { ALL_ARTISTS, ALL_GENRES } from '@/constants/labels.constant';
 import { TableState } from '@/store/slices/table/tableSlice';
+import {
+  ARTISTS_LIST,
+  FILTERS,
+  GENRES_LIST,
+  getFilter,
+  selectDropdownOption,
+  TIMEOUT,
+  waitForLoaderToDisappear,
+} from './helpers/test-helpers';
 
 declare global {
   interface Window {
@@ -12,14 +21,6 @@ declare global {
     };
   }
 }
-
-const ARTISTS_LIST = ['Lady Gaga', 'Justin Bieber', 'Post Malone', 'Rihanna'];
-const GENRES_LIST = ['Rock', 'Jazz', 'Pop', 'Hip Hop'];
-const TIMEOUT = { timeout: 15000 };
-const FILTERS = {
-  artist: 'filter-artist',
-  genre: 'filter-genre',
-};
 
 test.use({
   contextOptions: {},
@@ -45,29 +46,6 @@ test.beforeEach(async ({ page }) => {
   await page.getByTestId('go-to-tracks').click();
   await waitForLoaderToDisappear(page);
 });
-
-async function waitForLoaderToDisappear(page: Page) {
-  await page.waitForFunction(() => {
-    const loaders = Array.from(document.querySelectorAll('.loader-overlay'));
-    if (!loaders.length) return true;
-  }, TIMEOUT);
-}
-
-async function selectDropdownOption(
-  page: Page,
-  filterTestId: string,
-  optionName: string
-) {
-  await page.getByTestId(filterTestId).click();
-  await expect(page.getByRole('option', { name: optionName })).toBeVisible(
-    TIMEOUT
-  );
-  await page.getByRole('option', { name: optionName }).click();
-}
-
-function getFilter(page: Page, filterTestId: string) {
-  return page.getByTestId(filterTestId);
-}
 
 test.describe('FiltersBar Component', () => {
   test('should display initial filter values', async ({ page }) => {
