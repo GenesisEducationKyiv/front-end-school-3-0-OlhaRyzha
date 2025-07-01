@@ -1,12 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Track } from '@/types/shared/track';
-
-declare module '@tanstack/react-table' {
-  interface TableMeta<TData> {
-    playingTrackId?: string | null;
-    setPlayingTrackId?: (id: string | null) => void;
-  }
-}
 import noCover from '@/assets/image_not_available.png';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
@@ -20,12 +13,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
 import { RiDeleteBin5Fill } from 'react-icons/ri';
-import { lazy, Suspense } from 'react';
-import { Loader } from '@/components/shared';
-import { getTrackAudioUrl } from '@/utils/getTrackAudioUrl';
 import { formatDate } from '@/utils/formatDate';
-
-const Waveform = lazy(() => import('@/components/Audio/AudioWaveform'));
+import { TrackWaveform } from '@/components/Audio';
 
 interface TrackColumnsOpts {
   selectMode: boolean;
@@ -145,27 +134,14 @@ export const trackColumns = ({
       header: 'Audio',
       size: 600,
       minSize: 400,
-      cell: ({ row, table }) => {
+      cell: ({ row }) => {
         const track = row.original;
-        const audioUrl = getTrackAudioUrl(track.audioFile);
 
-        return audioUrl ? (
-          <Suspense fallback={<Loader loading />}>
-            <Waveform
-              url={audioUrl}
-              id={track.id}
-              isPlaying={table.options.meta?.playingTrackId === track.id}
-              onPlayPause={(id) => {
-                if (table.options.meta?.setPlayingTrackId) {
-                  table.options.meta.setPlayingTrackId(
-                    table.options.meta.playingTrackId === id ? null : id
-                  );
-                }
-              }}
-            />
-          </Suspense>
-        ) : (
-          <span className='text-sm text-muted-foreground'>—</span>
+        return (
+          <TrackWaveform
+            id={track.id}
+            audioFile={track.audioFile}
+          />
         );
       },
     },
@@ -215,7 +191,9 @@ export const trackColumns = ({
 
                 <DropdownMenuItem
                   data-testid={`upload-track-${track.id}`}
-                  onSelect={() => onUpload(track)}>
+                  onSelect={() => {
+                    setTimeout(() => onUpload(track), 0);
+                  }}>
                   {track.audioFile ? 'Remove audio' : 'Upload audio'}
                 </DropdownMenuItem>
 

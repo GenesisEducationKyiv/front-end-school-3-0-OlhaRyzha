@@ -41,7 +41,7 @@ export function useMutateItemWithOptimisticUpdate<
 
   return useMutation<
     TItem | void,
-    Error,
+    ApiError,
     TVariables,
     OptimisticUpdateContext<TItem>
   >({

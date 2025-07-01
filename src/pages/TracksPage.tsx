@@ -5,13 +5,43 @@ import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { TRACKS_LIST_KEY } from '@/constants/table.constants';
 import { BTNS_LABELS } from '@/constants/labels.constant';
+import { Eye, EyeClosed } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+} from '@/components/ui/tooltip';
+import ActiveTrack from '@/components/ActiveTrack/ActiveTrack';
 
 function TracksPage() {
   const [open, setOpen] = useState(false);
+  const [isPlayerVisible, setIsPlayerVisible] = useState(true);
 
   return (
-    <main>
-      <section className='p-6'>
+    <main className='flex flex-col min-h-screen'>
+      <div className='relative sticky top-0 z-40 bg-white border-b'>
+        {isPlayerVisible && <ActiveTrack />}
+
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                size='icon'
+                variant='ghost'
+                onClick={() => setIsPlayerVisible((prev) => !prev)}
+                className='absolute top-[0.3px] right-2'>
+                {isPlayerVisible ? <EyeClosed size={20} /> : <Eye size={20} />}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side='left'>
+              {isPlayerVisible ? 'Hide player' : 'Show player'}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
+
+      <section className='p-6 flex-1 overflow-y-auto'>
         <h1
           data-testid='tracks-header'
           className='text-2xl font-bold mb-4 capitalize'>
@@ -37,4 +67,5 @@ function TracksPage() {
     </main>
   );
 }
+
 export default TracksPage;

@@ -19,6 +19,7 @@ import {
   selectTableParams,
   setTableParams,
 } from '@/store/slices/table/tableSlice';
+import { useValidateTableParams } from '@/utils/hooks/table/useValidateTableParams';
 
 const FiltersBar = () => {
   const dispatch = useAppDispatch();
@@ -26,6 +27,8 @@ const FiltersBar = () => {
   const availableArtists = useAppSelector(selectAllArtists);
   const availableGenres =
     queryClient.getQueryData<GenresType>(GENRES_QUERY_KEY) ?? [];
+
+  useValidateTableParams(availableGenres, availableArtists);
 
   const handleParamsUpdate = useCallback(
     (updater: (p: QueryParams) => QueryParams) =>

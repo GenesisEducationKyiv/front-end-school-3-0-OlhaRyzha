@@ -1,5 +1,6 @@
 import { DEFAULT_TABLE_COLUMN } from '@/constants/table.constants';
 import { IdType } from '@/types/ids';
+import { isFunction } from '@/utils/guards/isFunction';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -23,10 +24,6 @@ interface GetTableProps<T extends { id: IdType }> {
   setColumnVisibility: OnChangeFn<VisibilityState>;
   setColumnFilters: OnChangeFn<ColumnFiltersState>;
   setRowSelection: (updater: Record<string, boolean>) => void;
-  meta?: {
-    playingTrackId: string | null;
-    setPlayingTrackId: (id: string | null) => void;
-  };
 }
 
 export function useTable<T extends { id: IdType }>(props: GetTableProps<T>) {
@@ -41,7 +38,6 @@ export function useTable<T extends { id: IdType }>(props: GetTableProps<T>) {
     setColumnVisibility,
     setColumnFilters,
     setRowSelection,
-    meta,
   } = props;
 
   return useReactTable({
@@ -58,8 +54,7 @@ export function useTable<T extends { id: IdType }>(props: GetTableProps<T>) {
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: (updater) => {
-      const next =
-        typeof updater === 'function' ? updater(rowSelection) : updater;
+      const next = isFunction(updater) ? updater(rowSelection) : updater;
       setRowSelection(next);
     },
     enableRowSelection: true,
@@ -68,7 +63,6 @@ export function useTable<T extends { id: IdType }>(props: GetTableProps<T>) {
     getFilteredRowModel: getFilteredRowModel(),
     manualPagination: true,
     getRowId: (row) => String(row.id),
-    meta,
     onColumnSizingChange: () => {},
   });
 }

@@ -1,84 +1,86 @@
 import { useRef, useEffect, useState } from 'react';
 import WaveSurfer from 'wavesurfer.js';
-import { Result, ok, err } from 'neverthrow';
-import { audioUploadMessages } from '@/constants/message.constant';
 import { isString } from '@/utils/guards/isString';
+import { ValueSetter } from '@/types/zustand/base';
+import { getWaveSurfer } from '@/utils/getWaveSurfer';
+import { isAbortError } from '@/utils/guards/isAbortError';
+import {
+  audioUploadMessages,
+  audioWaveformMessages,
+} from '@/constants/message.constant';
 
 interface UseWaveformProps {
-  url: string | null;
+  url: ValueSetter<string>;
   isPlaying?: boolean;
 }
+
 export function useWaveform({ url, isPlaying = false }: UseWaveformProps) {
   const waveformRef = useRef<HTMLDivElement>(null);
-  const wavesurferRef = useRef<WaveSurfer>(null);
-  const [error, setError] = useState<string | null>(null);
+  const wavesurferRef = useRef<ValueSetter<WaveSurfer>>(null);
+  const [error, setError] = useState<ValueSetter<string>>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isVisible, setIsVisible] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!waveformRef.current || !isString(url) || !url) {
+    let isCancelled = false;
+    setIsVisible(false);
+
+    if (!waveformRef.current || !isString(url)) {
       setError(null);
       setIsLoading(false);
       return;
     }
 
-    wavesurferRef.current = WaveSurfer.create({
-      container: waveformRef.current,
-      waveColor: '#9ca3af',
-      progressColor: '#374151',
-      cursorColor: 'transparent',
-      height: 40,
-      barWidth: 2,
-      barGap: 1,
-      barRadius: 2,
-      normalize: true,
+    const isBlob = url.startsWith('blob:');
+    const isHttp = url.startsWith('http');
+
+    const wavesurfer = getWaveSurfer(waveformRef.current);
+    wavesurferRef.current = wavesurfer;
+
+    setIsLoading(true);
+    setError(null);
+
+    wavesurfer.once('ready', () => {
+      if (isCancelled) return;
+      setIsLoading(false);
+      setError(null);
+      setIsVisible(true);
     });
 
-    const loadAudio = async () => {
-      setIsLoading(true);
-      const result: Result<void, string> = await fetch(url)
-        .then((response) => {
-          if (!response.ok) return err(audioUploadMessages.audioNotFound);
-          return ok(undefined);
-        })
-        .catch(() => err(audioUploadMessages.audioUnavailable));
+    wavesurfer.once('error', (e) => {
+      if (isCancelled) return;
+      if (isAbortError(e)) return;
+      setError(isString(e) ? e : audioUploadMessages.audioLoadError);
+      setIsLoading(false);
+    });
 
-      if (result.isErr()) {
-        setError(result.error);
+    if (isBlob) {
+      wavesurfer.load(url).catch((e) => {
+        if (isCancelled || isAbortError(e)) return;
+        setError(isString(e) ? e : audioUploadMessages.audioLoadError);
         setIsLoading(false);
-        return;
-      }
-
-      try {
-        await wavesurferRef.current?.load(url);
-        setError(null);
-      } catch (e) {
-        setError(audioUploadMessages.audioUnavailable);
-        console.error(audioUploadMessages.audioLoadError, e);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadAudio();
+      });
+    } else if (isHttp) {
+      setError(audioWaveformMessages.onlyBlobUrls);
+      setIsLoading(false);
+      return;
+    } else {
+      setError(audioWaveformMessages.invalidUrl);
+      setIsLoading(false);
+      return;
+    }
 
     return () => {
+      isCancelled = true;
       wavesurferRef.current?.destroy();
     };
   }, [url]);
 
   useEffect(() => {
-    if (!wavesurferRef.current) return;
-
-    if (isPlaying) {
-      wavesurferRef.current.play();
-    } else {
-      wavesurferRef.current.pause();
-    }
+    const ws = wavesurferRef.current;
+    if (!ws) return;
+    isPlaying ? ws.play() : ws.pause();
   }, [isPlaying]);
 
-  return {
-    waveformRef,
-    error,
-    isLoading,
-  };
+  return { waveformRef, error, isLoading, isVisible };
 }

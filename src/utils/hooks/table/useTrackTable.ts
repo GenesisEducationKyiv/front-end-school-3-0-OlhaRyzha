@@ -103,7 +103,6 @@ export function useTrackTable() {
     setColumnVisibility,
     setColumnFilters,
     setRowSelection,
-    meta: { playingTrackId, setPlayingTrackId },
   });
 
   const loading = isLoading || isFetching;
