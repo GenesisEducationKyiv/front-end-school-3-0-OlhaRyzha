@@ -1,14 +1,21 @@
 import TableBodyComponent from './TableBody';
-import CreateTrackModal from '@/components/Modal/CreateTrackModal';
 import { AlertDialogComponent } from '@/components/shared/AlertDialog';
 import { Dialog } from '../ui/dialog';
-import { AudioUploadModal } from '../Audio';
 import { Loader } from '../shared';
 import TableToolbar from './TableToolbar';
 import { PaginationControls } from '../shared/pagination';
 import { useTrackTable } from '@/utils/hooks/table/useTrackTable';
 import { dialogMessages } from '@/constants/message.constant';
 import { useModalCloseHandler } from '@/utils/hooks/modal/useModalCloseHandler';
+import { lazy, Suspense } from 'react';
+
+const CreateTrackModal = lazy(() =>
+  import('../Modal').then((m) => ({ default: m.CreateTrackModal }))
+);
+
+const AudioUploadModal = lazy(() =>
+  import('../Audio').then((m) => ({ default: m.AudioUploadModal }))
+);
 
 function TrackTable() {
   const {
@@ -32,19 +39,23 @@ function TrackTable() {
         <Dialog
           open
           onOpenChange={handleModalClose}>
-          <CreateTrackModal
-            track={selectedTrack}
-            onClose={closeModal}
-          />
+          <Suspense fallback={<Loader loading />}>
+            <CreateTrackModal
+              track={selectedTrack}
+              onClose={closeModal}
+            />
+          </Suspense>
         </Dialog>
       )}
 
       {modalAction === 'upload' && selectedTrack && (
-        <AudioUploadModal
-          track={selectedTrack}
-          open
-          onOpenChange={handleModalClose}
-        />
+        <Suspense fallback={<Loader loading />}>
+          <AudioUploadModal
+            track={selectedTrack}
+            open
+            onOpenChange={handleModalClose}
+          />
+        </Suspense>
       )}
 
       <AlertDialogComponent

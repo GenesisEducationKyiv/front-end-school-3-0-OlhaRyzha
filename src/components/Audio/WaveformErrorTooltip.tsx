@@ -1,4 +1,4 @@
-import fileBroken from '@/assets/png-transparent-file-broken-sign-computer.png';
+import fileBroken from '@/assets/transparent-file-broken-sign-computer.webp';
 import {
   Tooltip,
   TooltipContent,
@@ -26,6 +26,7 @@ const WaveformErrorTooltip = ({
           src={imgSrc || fileBroken}
           alt={alt}
           className={className}
+          loading='lazy'
         />
       </TooltipTrigger>
       <TooltipContent>{error}</TooltipContent>

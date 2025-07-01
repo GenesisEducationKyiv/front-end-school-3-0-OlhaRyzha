@@ -1,6 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Track } from '@/types/shared/track';
-import noCover from '@/assets/image_not_available.png';
+import noCover from '@/assets/image_not_available.webp';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import {
@@ -11,8 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
-import { RiDeleteBin5Fill } from 'react-icons/ri';
+import { ArrowUpDown, MoreHorizontal, Trash2 } from 'lucide-react';
 import { formatDate } from '@/utils/formatDate';
 import { TrackWaveform } from '@/components/Audio';
 
@@ -107,6 +106,7 @@ export const trackColumns = ({
           src={row.original.coverImage || noCover}
           alt={row.original.coverImage ? 'Cover image' : 'No cover available'}
           data-testid={`track-item-${row.original.id}-cover`}
+          loading='lazy'
         />
       ),
     },
@@ -202,7 +202,7 @@ export const trackColumns = ({
                 <DropdownMenuItem
                   data-testid={`delete-track-${track.id}`}
                   onSelect={() => onDelete(track)}>
-                  Delete <RiDeleteBin5Fill className='ml-1' />
+                  Delete <Trash2 className='ml-1' />
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

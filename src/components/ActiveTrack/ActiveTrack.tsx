@@ -9,7 +9,7 @@ export default function ActiveTrack() {
     useActiveTrackController();
 
   return (
-    <div className='relative w-full bg-white shadow-md rounded-xl px-6 py-3 flex items-center justify-between gap-10'>
+    <div className='relative w-full h-20 bg-white shadow-md rounded-xl px-6 py-3 flex items-center justify-between gap-10'>
       <TrackInfo
         title={current?.title}
         artist={current?.artist}
@@ -17,9 +17,7 @@ export default function ActiveTrack() {
       />
 
       {isLoading ? (
-        <div className='flex-1'>
-          <Skeleton className='h-12 w-full rounded-md' />
-        </div>
+        <Skeleton className='h-12 w-full rounded-md' />
       ) : (
         current?.audioFile && (
           <div className='flex-1'>

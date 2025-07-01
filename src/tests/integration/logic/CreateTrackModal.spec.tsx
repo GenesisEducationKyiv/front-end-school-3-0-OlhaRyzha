@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as Dialog from '@radix-ui/react-dialog';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import CreateTrackModal from '@/components/Modal/CreateTrackModal';
 import { mockExistingTrack } from '@/tests/__mocks__/mockTrack';
+
+const CreateTrackModal = lazy(() =>
+  import('@/components/Modal').then((m) => ({ default: m.CreateTrackModal }))
+);
 
 const mockCreate = vi.fn();
 const mockUpdate = vi.fn();

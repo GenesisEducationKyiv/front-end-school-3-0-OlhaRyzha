@@ -1,8 +1,8 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import App from './App';
-import TracksPage from './pages/TracksPage';
-import HomePage from './pages/HomePage';
+
 import { ROOT, TRACKS } from './constants/route.constant';
+import { HomePage, TracksPage } from './pages';
 
 export const router = createBrowserRouter(
   [
