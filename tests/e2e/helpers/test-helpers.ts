@@ -7,6 +7,7 @@ export const ARTISTS_LIST = [
   'Post Malone',
   'Rihanna',
 ];
+
 export const GENRES_LIST = ['Rock', 'Jazz', 'Pop', 'Hip Hop'];
 
 export const FILTERS = {
@@ -31,6 +32,42 @@ export async function selectDropdownOption(
     TIMEOUT
   );
   await page.getByRole('option', { name: optionName }).click();
+}
+
+export async function setupInitializedPage({ page }: { page: Page }) {
+  await page.addInitScript(
+    ([artists, genres]) => {
+      window.__PRELOADED_STATE__ = {
+        ...(window.__PRELOADED_STATE__ || {}),
+        table: {
+          ...(window.__PRELOADED_STATE__?.table || {}),
+          allArtists: artists,
+        },
+      };
+      window.__QUERY_CLIENT__ = window.__QUERY_CLIENT__ || {};
+      window.__QUERY_CLIENT__['genres'] = genres;
+    },
+    [ARTISTS_LIST, GENRES_LIST]
+  );
+
+  await page.goto('/tracker/');
+  await page.getByTestId('go-to-tracks').click();
+  await waitForLoaderToDisappear(page);
+}
+
+export async function checkErrorToast(
+  page: Page,
+  expectedTitle: string,
+  expectedDescription: string
+) {
+  const toast = page.getByTestId('toast-destructive');
+  await expect(toast).toBeVisible(TIMEOUT);
+
+  const toastTitle = toast.locator('.text-sm.font-semibold');
+  await expect(toastTitle).toContainText(expectedTitle, TIMEOUT);
+
+  const toastDescription = toast.locator('.text-sm.opacity-90');
+  await expect(toastDescription).toContainText(expectedDescription, TIMEOUT);
 }
 
 export function getFilter(page: Page, filterTestId: string) {
@@ -62,7 +99,7 @@ export async function getColumnIndex(
   }
   throw new Error(`Header with text "${headerText}" not found`);
 }
-// Add to test-helpers.ts
+
 export async function getTrackNames(page: Page): Promise<string[]> {
   const rows = getTrackRows(page);
   const count = await rows.count();
@@ -74,10 +111,4 @@ export async function getTrackNames(page: Page): Promise<string[]> {
   }
 
   return names;
-}
-// Add this function to get all dropdown options
-export async function getDropdownOptions(page: Page): Promise<string[]> {
-  return page.$$eval('.select-content .select-item', (items) =>
-    items.map((item) => item.textContent?.trim() || '')
-  );
 }

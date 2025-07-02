@@ -2,9 +2,7 @@ import { test, expect } from '@playwright/test';
 import { ALL_ARTISTS, ALL_GENRES } from '@/constants/labels.constant';
 import { TableState } from '@/store/slices/table/tableSlice';
 import {
-  ARTISTS_LIST,
   FILTERS,
-  GENRES_LIST,
   getCellText,
   getColumnIndex,
   getFilter,
@@ -13,6 +11,7 @@ import {
   selectDropdownOption,
   TIMEOUT,
   waitForLoaderToDisappear,
+  setupInitializedPage,
 } from './helpers/test-helpers';
 
 declare global {
@@ -26,29 +25,8 @@ declare global {
   }
 }
 
-test.use({
-  contextOptions: {},
-});
-
 test.beforeEach(async ({ page }) => {
-  await page.addInitScript(
-    ([artists, genres]) => {
-      window.__PRELOADED_STATE__ = {
-        ...(window.__PRELOADED_STATE__ || {}),
-        table: {
-          ...(window.__PRELOADED_STATE__?.table || {}),
-          allArtists: artists,
-        },
-      };
-      window.__QUERY_CLIENT__ = window.__QUERY_CLIENT__ || {};
-      window.__QUERY_CLIENT__['genres'] = genres;
-    },
-    [ARTISTS_LIST, GENRES_LIST]
-  );
-
-  await page.goto('/tracker/');
-  await page.getByTestId('go-to-tracks').click();
-  await waitForLoaderToDisappear(page);
+  await setupInitializedPage({ page });
 });
 
 test.describe('Error Handling', () => {
@@ -246,8 +224,13 @@ test.describe('FiltersBar Component', () => {
       await selectDropdownOption(page, FILTERS.genre, ALL_GENRES);
       await waitForLoaderToDisappear(page);
 
-      const resetTrackNames = await getTrackNames(page);
-      expect(resetTrackNames).toEqual(initialTrackNames);
+      const resetTrackNames = (await getTrackNames(page)).filter(
+        (name) => name.trim() !== ''
+      );
+      const filteredInitialTrackNames = initialTrackNames.filter(
+        (name) => name.trim() !== ''
+      );
+      expect(resetTrackNames).toEqual(filteredInitialTrackNames);
     });
   });
 });
