@@ -49,8 +49,8 @@ const FiltersBar = () => {
 
   const FILTERS_LIST = getFiltersConfig(
     params,
-    availableArtists,
-    availableGenres,
+    availableArtists || [],
+    availableGenres || [],
     onArtistChange,
     onGenreChange
   );

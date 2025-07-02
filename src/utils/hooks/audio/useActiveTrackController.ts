@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
-import { useAllGetTracks } from '@/utils/hooks/tanStackQuery/useTracksQuery';
+import { useGetAllTracks } from '@/utils/hooks/tanStackQuery/useTracksQuery';
 import { useActiveTrackStore } from '@/store/zustand/useActiveTrackStore';
 import { useTrackNavigation } from './useTrackNavigation';
 import { useRandomTrackWS } from './useRandomTrackWS';
 
 export function useActiveTrackController() {
-  const { data: tracks = [], isLoading } = useAllGetTracks();
+  const { data: tracks = [], isLoading } = useGetAllTracks();
 
   const { random, toggleRandom } = useActiveTrackStore();
   const { index, next, prev } = useTrackNavigation(tracks);
