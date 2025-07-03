@@ -89,10 +89,10 @@ export async function checkErrorToast(
   const toast = page.getByTestId('toast-destructive');
   await expect(toast).toBeVisible(TIMEOUT);
 
-  const toastTitle = toast.locator('.text-sm.font-semibold');
+  const toastTitle = toast.getByTestId('toast-title');
   await expect(toastTitle).toContainText(expectedTitle, TIMEOUT);
 
-  const toastDescription = toast.locator('.text-sm.opacity-90');
+  const toastDescription = toast.getByTestId('toast-description');
   await expect(toastDescription).toContainText(expectedDescription, TIMEOUT);
 }
 
