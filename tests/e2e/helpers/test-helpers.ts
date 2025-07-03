@@ -1,13 +1,20 @@
 import { expect, Locator, Page } from '@playwright/test';
+import { GENRES_QUERY_KEY } from '@/constants/queryKeys.constants';
+import {
+  GetTrackNames,
+  WaitForLoaderToDisappear,
+  FilterAction,
+  FilterSelection,
+} from './test-helpers.types';
 
 export const TIMEOUT = { timeout: 5000 };
+
 export const ARTISTS_LIST = [
   'Lady Gaga',
   'Justin Bieber',
   'Post Malone',
   'Rihanna',
 ];
-
 export const GENRES_LIST = ['Rock', 'Jazz', 'Pop', 'Hip Hop'];
 
 export const FILTERS = {
@@ -15,10 +22,22 @@ export const FILTERS = {
   genre: 'filter-genre',
 };
 
+export const EMPTY_JSON_RESPONSE = {
+  status: 200,
+  contentType: 'application/json',
+  body: JSON.stringify([]),
+};
+
+export const SERVER_ERROR_RESPONSE = {
+  status: 500,
+  contentType: 'application/json',
+  body: JSON.stringify({ message: 'Server Error' }),
+};
+
 export async function waitForLoaderToDisappear(page: Page) {
   await page.waitForFunction(() => {
     const loaders = Array.from(document.querySelectorAll('.loader-overlay'));
-    if (!loaders.length) return true;
+    return loaders.length === 0;
   }, TIMEOUT);
 }
 
@@ -34,7 +53,15 @@ export async function selectDropdownOption(
   await page.getByRole('option', { name: optionName }).click();
 }
 
-export async function setupInitializedPage({ page }: { page: Page }) {
+export async function setupInitializedPage({
+  page,
+  artists = ARTISTS_LIST,
+  genres = GENRES_LIST,
+}: {
+  page: Page;
+  artists?: string[];
+  genres?: string[];
+}) {
   await page.addInitScript(
     ([artists, genres]) => {
       window.__PRELOADED_STATE__ = {
@@ -45,11 +72,10 @@ export async function setupInitializedPage({ page }: { page: Page }) {
         },
       };
       window.__QUERY_CLIENT__ = window.__QUERY_CLIENT__ || {};
-      window.__QUERY_CLIENT__['genres'] = genres;
+      window.__QUERY_CLIENT__[GENRES_QUERY_KEY[0]] = genres;
     },
-    [ARTISTS_LIST, GENRES_LIST]
+    [artists, genres]
   );
-
   await page.goto('/tracker/');
   await page.getByTestId('go-to-tracks').click();
   await waitForLoaderToDisappear(page);
@@ -103,12 +129,94 @@ export async function getColumnIndex(
 export async function getTrackNames(page: Page): Promise<string[]> {
   const rows = getTrackRows(page);
   const count = await rows.count();
-  const names = [];
-
+  const names: string[] = [];
   for (let i = 0; i < count; i++) {
     const name = await rows.nth(i).locator('td').first().innerText();
     names.push(name.trim());
   }
-
   return names;
+}
+
+export async function expectFilterText(
+  page: Page,
+  filterType: string,
+  value: string,
+  timeout: { timeout: number } = TIMEOUT
+): Promise<void> {
+  await expect(getFilter(page, filterType)).toContainText(value, timeout);
+}
+
+export async function verifyFilteredColumn(
+  page: Page,
+  filterType: string,
+  filterValue: string,
+  columnName: string
+) {
+  await selectDropdownOption(page, filterType, filterValue);
+  await waitForLoaderToDisappear(page);
+
+  const columnIndex = await getColumnIndex(page, columnName);
+  const rows = getTrackRows(page);
+  const count = await rows.count();
+  expect(count).toBeGreaterThan(0);
+
+  for (let i = 0; i < count; i++) {
+    const row = rows.nth(i);
+    const text = await getCellText(row, columnIndex);
+    expect(text).toContain(filterValue);
+  }
+}
+
+export async function verifyMultipleFiltersReset({
+  page,
+  actions,
+  getTrackNames,
+  waitForLoaderToDisappear,
+}: {
+  page: Page;
+  actions: FilterAction[];
+  getTrackNames: GetTrackNames;
+  waitForLoaderToDisappear: WaitForLoaderToDisappear;
+}) {
+  const initialTrackNames = (await getTrackNames(page)).filter(Boolean);
+
+  for (const { filterType, selectValue } of actions) {
+    await selectDropdownOption(page, filterType, selectValue);
+  }
+  await waitForLoaderToDisappear(page);
+
+  for (const { filterType, resetValue } of actions) {
+    await selectDropdownOption(page, filterType, resetValue);
+  }
+  await waitForLoaderToDisappear(page);
+
+  const resetTrackNames = (await getTrackNames(page)).filter(Boolean);
+  expect(resetTrackNames).toEqual(initialTrackNames);
+}
+
+export async function verifyFiltersPersistAfterReload({
+  page,
+  filters,
+  waitForLoaderToDisappear,
+  expectFilterText,
+}: {
+  page: Page;
+  filters: FilterSelection[];
+  waitForLoaderToDisappear: WaitForLoaderToDisappear;
+  expectFilterText: (
+    page: Page,
+    filterType: string,
+    value: string
+  ) => Promise<void>;
+}) {
+  for (const { filterType, value } of filters) {
+    await selectDropdownOption(page, filterType, value);
+  }
+
+  await page.reload();
+  await waitForLoaderToDisappear(page);
+
+  for (const { filterType, value } of filters) {
+    await expectFilterText(page, filterType, value);
+  }
 }
