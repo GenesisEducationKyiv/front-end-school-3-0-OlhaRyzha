@@ -1,29 +1,22 @@
-import React from 'react';
 import { describe, test, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import * as Dialog from '@radix-ui/react-dialog';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-const toastMock = vi.fn();
-vi.mock('@/utils/hooks/use-toast', () => ({
-  useToast: () => ({
-    toast: toastMock,
-    dismiss: vi.fn(),
-    toasts: [],
-  }),
-}));
-
+import { renderModal, fillForm } from '@/tests/__mocks__/testUtils';
 import {
   mockExistingTrack,
   createTrackDtoMock,
+  DUPLICATE_TITLE_ERROR,
+  GENERIC_SERVER_ERROR,
 } from '@/tests/__mocks__/mockTrack';
-import { CreateTrackModal } from '@/components/Modal';
-import { ToastProvider, ToastViewport } from '@/components/ui/toast';
+
+const toastMock = vi.fn();
+vi.mock('@/utils/hooks/use-toast', () => ({
+  useToast: () => ({ toast: toastMock, dismiss: vi.fn(), toasts: [] }),
+}));
 
 const mockCreate = vi.fn();
 const mockUpdate = vi.fn();
-
 vi.mock('@/utils/hooks/tanStackQuery/useTracksQuery', () => ({
   useCreateTrack: () => ({ mutateAsync: mockCreate }),
   useUpdateTrack: () => ({ mutateAsync: mockUpdate }),
@@ -32,18 +25,6 @@ vi.mock('@/utils/hooks/tanStackQuery/useTracksQuery', () => ({
 vi.mock('@/utils/hooks/tanStackQuery/useGenresQuery', () => ({
   useGenresQuery: () => ({ data: ['Rock', 'Pop', 'Jazz'], isLoading: false }),
 }));
-
-const createWrapper = () => {
-  const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-  return ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={qc}>
-      <ToastProvider>
-        <Dialog.Root open>{children}</Dialog.Root>
-        <ToastViewport />
-      </ToastProvider>
-    </QueryClientProvider>
-  );
-};
 
 describe('CreateTrackModal', () => {
   beforeEach(() => {
@@ -54,19 +35,9 @@ describe('CreateTrackModal', () => {
   test('creates a new track and calls onClose', async () => {
     mockCreate.mockResolvedValueOnce({ ...createTrackDtoMock, id: '999' });
     const onClose = vi.fn();
-    render(<CreateTrackModal onClose={onClose} />, {
-      wrapper: createWrapper(),
-    });
+    renderModal(onClose);
 
-    await userEvent.type(
-      screen.getByLabelText(/title/i),
-      createTrackDtoMock.title
-    );
-    await userEvent.type(
-      screen.getByLabelText(/artist/i),
-      createTrackDtoMock.artist
-    );
-    await userEvent.click(screen.getByText('Rock'));
+    await fillForm(createTrackDtoMock);
     await userEvent.click(screen.getByTestId('submit-button'));
 
     await waitFor(() => {
@@ -77,14 +48,12 @@ describe('CreateTrackModal', () => {
 
   test('shows validation errors if required fields are empty', async () => {
     const onClose = vi.fn();
-    render(<CreateTrackModal onClose={onClose} />, {
-      wrapper: createWrapper(),
-    });
+    renderModal(onClose);
 
     await userEvent.click(screen.getByTestId('submit-button'));
 
-    const errorMessages = await screen.findAllByText(/required/i);
-    expect(errorMessages.length).toBeGreaterThanOrEqual(1);
+    const errors = await screen.findAllByText(/required/i);
+    expect(errors.length).toBeGreaterThan(0);
     expect(mockCreate).not.toHaveBeenCalled();
     expect(onClose).not.toHaveBeenCalled();
   });
@@ -95,13 +64,7 @@ describe('CreateTrackModal', () => {
       title: 'Updated Title',
     });
     const onClose = vi.fn();
-    render(
-      <CreateTrackModal
-        track={mockExistingTrack}
-        onClose={onClose}
-      />,
-      { wrapper: createWrapper() }
-    );
+    renderModal(onClose, mockExistingTrack);
 
     expect(screen.getByLabelText(/title/i)).toHaveValue(
       mockExistingTrack.title
@@ -123,11 +86,69 @@ describe('CreateTrackModal', () => {
     });
   });
 
-  test('does not call onClose when cancelled', async () => {
+  test('shows error toast when creating a track with duplicate title', async () => {
+    mockCreate.mockRejectedValueOnce(new Error(DUPLICATE_TITLE_ERROR.message));
     const onClose = vi.fn();
-    render(<CreateTrackModal onClose={onClose} />, {
-      wrapper: createWrapper(),
+    renderModal(onClose);
+
+    await fillForm(createTrackDtoMock);
+    await userEvent.click(screen.getByTestId('submit-button'));
+
+    await waitFor(() => {
+      expect(toastMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: 'Error',
+          description: expect.stringMatching(/track with this title/i),
+          variant: 'destructive',
+        })
+      );
     });
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
+  test('shows error toast when updating a track fails', async () => {
+    mockUpdate.mockRejectedValueOnce(new Error(GENERIC_SERVER_ERROR.message));
+    const onClose = vi.fn();
+    renderModal(onClose, mockExistingTrack);
+
+    await fillForm({ ...createTrackDtoMock, title: 'Some Title' });
+    await userEvent.click(screen.getByTestId('submit-button'));
+
+    await waitFor(() => {
+      expect(toastMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: 'Error',
+          description: expect.stringMatching(/Server Error/),
+          variant: 'destructive',
+        })
+      );
+    });
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
+  test('shows generic error toast on server error', async () => {
+    mockCreate.mockRejectedValueOnce(new Error(GENERIC_SERVER_ERROR.message));
+    const onClose = vi.fn();
+    renderModal(onClose);
+
+    await fillForm(createTrackDtoMock);
+    await userEvent.click(screen.getByTestId('submit-button'));
+
+    await waitFor(() => {
+      expect(toastMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: 'Error',
+          description: expect.stringMatching(/Server Error/),
+          variant: 'destructive',
+        })
+      );
+    });
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
+  test('closes modal when cancelled', async () => {
+    const onClose = vi.fn();
+    renderModal(onClose);
 
     await userEvent.click(screen.getByText(/cancel/i));
     expect(onClose).toHaveBeenCalledTimes(1);

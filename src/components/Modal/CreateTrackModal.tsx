@@ -21,6 +21,8 @@ import FormField from './FormField';
 import GenresSection from './GenresSection';
 import { SetFieldValueType } from '@/types/form';
 import { GenresType } from '@/types/shared/genre';
+import { useToast } from '@/utils/hooks/use-toast';
+import { ApiError } from '@/utils/apiError';
 
 export interface CreateTrackModalProps {
   track?: Track;
@@ -31,6 +33,7 @@ function CreateTrackModal({ track, onClose }: CreateTrackModalProps) {
   const { data: genresList = [], isLoading: loadingGenres } = useGenresQuery();
   const { mutateAsync: createTrack } = useCreateTrack();
   const { mutateAsync: updateTrack } = useUpdateTrack();
+  const { toast } = useToast();
 
   const initialValues = useMemo<CreateTrackDto>(
     () => getInitialValues(track),
@@ -41,19 +44,28 @@ function CreateTrackModal({ track, onClose }: CreateTrackModalProps) {
     values: CreateTrackDto,
     { setSubmitting }: FormikHelpers<CreateTrackDto>
   ) => {
-    const payload = {
-      ...values,
-      coverImage: normalizeCoverImage(values.coverImage),
-    };
+    try {
+      const payload = {
+        ...values,
+        coverImage: normalizeCoverImage(values.coverImage),
+      };
 
-    track
-      ? await updateTrack({ id: track.id, payload })
-      : await createTrack(payload);
+      track
+        ? await updateTrack({ id: track.id, payload })
+        : await createTrack(payload);
 
-    setSubmitting(false);
-    onClose();
+      onClose();
+    } catch (err: unknown) {
+      const apiError = ApiError.fromUnknown(err);
+      toast({
+        title: 'Error',
+        description: apiError.userMessage,
+        variant: 'destructive',
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
-
   const toggleGenre = (
     genre: string,
     currentGenres: GenresType,

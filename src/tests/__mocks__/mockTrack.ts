@@ -34,23 +34,12 @@ export const createTrackDtoMock: CreateTrackDto = {
   coverImage: '',
 };
 
-export const invalidTrackMock = {
-  id: '123',
-  // missing title
-  artist: '',
-  album: '',
-  genres: [],
-  slug: '',
-  createdAt: '',
-  updatedAt: '',
-};
-
-export const apiErrorResponse = {
-  status: 500,
-  message: 'Server Error',
-};
-
 export const DUPLICATE_TITLE_ERROR = {
   message: 'A track with this title already exists',
-  userMessage: 'A track with this title already exists',
+  status: 409,
+};
+
+export const GENERIC_SERVER_ERROR = {
+  message: 'Server Error',
+  status: 500,
 };
