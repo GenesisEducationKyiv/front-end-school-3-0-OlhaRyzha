@@ -29,15 +29,15 @@ export interface CreateTrackModalProps {
 
 function CreateTrackModal({ track, onClose }: CreateTrackModalProps) {
   const { data: genresList = [], isLoading: loadingGenres } = useGenresQuery();
-  const { mutate: createTrack } = useCreateTrack();
-  const { mutate: updateTrack } = useUpdateTrack();
+  const { mutateAsync: createTrack } = useCreateTrack();
+  const { mutateAsync: updateTrack } = useUpdateTrack();
 
   const initialValues = useMemo<CreateTrackDto>(
     () => getInitialValues(track),
     [track]
   );
 
-  const handleSubmit = (
+  const handleSubmit = async (
     values: CreateTrackDto,
     { setSubmitting }: FormikHelpers<CreateTrackDto>
   ) => {
@@ -46,11 +46,10 @@ function CreateTrackModal({ track, onClose }: CreateTrackModalProps) {
       coverImage: normalizeCoverImage(values.coverImage),
     };
 
-    const operation = track
-      ? () => updateTrack({ id: track.id, payload })
-      : () => createTrack(payload);
+    track
+      ? await updateTrack({ id: track.id, payload })
+      : await createTrack(payload);
 
-    operation();
     setSubmitting(false);
     onClose();
   };
