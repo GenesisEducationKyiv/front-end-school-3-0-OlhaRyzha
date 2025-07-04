@@ -6,13 +6,13 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   reporter: 'html',
   webServer: {
-    command: 'npm run preview -- --host 0.0.0.0',
-    url: 'http://127.0.0.1:4173/tracker/',
-    timeout: 60 * 1000,
+    command: 'npm run preview',
+    url: 'http://localhost:4173/tracker/',
+    timeout: 30 * 1000,
     reuseExistingServer: !process.env.CI,
   },
   use: {
-    baseURL: 'http://127.0.0.1:4173/tracker/',
+    baseURL: 'http://localhost:4173/tracker/',
     trace: 'on-first-retry',
     headless: true,
     video: 'on',
