@@ -7,13 +7,13 @@ export default defineConfig({
   reporter: 'html',
 
   webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:3000',
+    command: 'npm run preview',
+    url: 'http://localhost:4173',
     timeout: 30 * 1000,
     reuseExistingServer: !process.env.CI,
   },
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: 'http://localhost:4173',
     trace: 'on-first-retry',
     headless: true,
     video: 'on',
