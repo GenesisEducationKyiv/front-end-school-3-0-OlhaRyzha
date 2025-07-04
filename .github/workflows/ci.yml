@@ -122,16 +122,6 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      - name: Start frontend preview server
-        run: npm run preview &
-
-      - name: Wait for frontend to be ready
-        run: |
-          for i in {1..10}; do
-            curl -sf http://localhost:4173 && break
-            echo "Waiting for frontend..." && sleep 2
-          done
-
       - name: Run E2E tests
         run: npm run test:e2e
 
