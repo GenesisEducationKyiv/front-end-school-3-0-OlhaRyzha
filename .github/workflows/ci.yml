@@ -73,7 +73,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dist
-          path: ./build
+          path: ./dist
 
   e2e:
     runs-on: ubuntu-latest
@@ -114,7 +114,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: dist
-          path: ./build
+          path: ./dist
 
       - name: Create .env.production
         run: echo "VITE_API_BASE_URL=http://backend:8000/api/" > .env.production
@@ -129,7 +129,6 @@ jobs:
             echo "Waiting for backend..." && sleep 4
           done
 
-      # Запуск E2E через Playwright (сам підніме preview через webServer.command)
       - name: Run E2E tests
         run: npm run test:e2e
 
