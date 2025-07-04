@@ -13,7 +13,7 @@
     "clean:maps": "find build -name \"*.map\" -type f -delete",
     "predeploy": "npm run build && npm run clean:maps && cp build/index.html build/404.html",
     "deploy": "gh-pages -d build",
-    "preview": "vite preview --port=4173",
+    "preview": "vite preview --port=4173 --host 0.0.0.0",
     "test": "vitest",
     "test:watch": "vitest --watch",
     "test:coverage": "vitest run --coverage",
