@@ -64,6 +64,8 @@
     "@ljharb/tsconfig": "^0.3.2",
     "@playwright/experimental-ct-react": "^1.53.1",
     "@playwright/test": "^1.53.1",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
     "@tsconfig/node18": "^18.2.4",

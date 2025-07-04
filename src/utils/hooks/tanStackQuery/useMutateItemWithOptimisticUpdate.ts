@@ -1,7 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '../../../services';
 import { ActionType } from '../../../types/actions';
-import { IdType } from '../../../types/ids';
 import { ACTIONS } from '../../../constants/actions.constants';
 import {
   messageOnSuccessCreated,
@@ -11,14 +10,18 @@ import {
 import { useToast } from '@/utils/hooks/use-toast';
 import {
   MutateItemOptions,
+  MutationVariables,
   OptimisticUpdateContext,
+  WithId,
 } from '@/types/mutationTypes';
 import { hasId } from '@/utils/guards/hasId';
 import { ApiError } from '@/utils/apiError';
+import { isObject } from '@/utils/guards/isObject';
+import { isArray } from '@/utils/guards/isArray';
 
 interface UseMutateItemWithOptimisticUpdateProps<
-  TItem extends { id: IdType },
-  TVariables extends Partial<TItem> | IdType[]
+  TItem extends object,
+  TVariables extends MutationVariables<TItem>
 > {
   queryKey: string[];
   action: ActionType;
@@ -28,8 +31,8 @@ interface UseMutateItemWithOptimisticUpdateProps<
 }
 
 export function useMutateItemWithOptimisticUpdate<
-  TItem extends { id: IdType },
-  TVariables extends Partial<TItem> | IdType[]
+  TItem extends object,
+  TVariables extends MutationVariables<TItem>
 >({
   queryKey,
   action,
@@ -50,25 +53,35 @@ export function useMutateItemWithOptimisticUpdate<
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey });
       const previousData = queryClient.getQueryData<TItem[]>(queryKey);
+      let updatedData = previousData ? [...previousData] : [];
 
-      queryClient.setQueryData<TItem[]>(queryKey, (oldData = []) => {
-        if (action === ACTIONS.BULK_DELETE && Array.isArray(variables)) {
-          return oldData.filter((item) => !variables.includes(item.id));
-        }
-        if (action === ACTIONS.UPDATE && hasId(variables)) {
-          return oldData?.map((item) =>
-            item.id === variables.id ? { ...item, ...variables } : item
-          );
-        }
-        if (action === ACTIONS.CREATE) {
-          const newItem: TItem = { ...(variables as Partial<TItem>) } as TItem;
-          return [...oldData, newItem];
-        }
-        if (action === ACTIONS.DELETE && hasId(variables)) {
-          return oldData.filter((item) => item.id !== variables.id);
-        }
-        return oldData;
-      });
+      if (action === ACTIONS.BULK_DELETE && isArray(variables)) {
+        updatedData = updatedData.filter(
+          (item) =>
+            !((item as WithId).id && variables.includes((item as WithId).id!))
+        );
+      } else if (action === ACTIONS.UPDATE && hasId(variables)) {
+        updatedData = updatedData.map((item) =>
+          (item as WithId).id &&
+          (item as WithId).id === (variables as WithId).id
+            ? { ...item, ...variables }
+            : item
+        );
+      } else if (
+        action === ACTIONS.CREATE &&
+        isObject(variables) &&
+        !isArray(variables)
+      ) {
+        updatedData = [...updatedData, variables as TItem];
+      } else if (action === ACTIONS.DELETE && hasId(variables)) {
+        updatedData = updatedData.filter(
+          (item) =>
+            (item as WithId).id ||
+            (item as WithId).id !== (variables as WithId).id
+        );
+      }
+
+      queryClient.setQueryData(queryKey, updatedData);
 
       return { previousData };
     },

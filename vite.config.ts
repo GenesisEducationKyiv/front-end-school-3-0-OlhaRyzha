@@ -51,9 +51,6 @@ export default defineConfig({
             if (id.match(/node_modules\/@radix-ui\//)) {
               return 'radix-vendors';
             }
-            // if (id.match(/node_modules\/axios\//)) {
-            //   return 'axios-vendor';
-            // }
           }
         },
       },
