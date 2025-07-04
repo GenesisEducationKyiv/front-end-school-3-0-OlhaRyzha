@@ -40,7 +40,6 @@ class ApiClient {
   }
 
   private handleResponseError(error: AxiosError): Promise<never> {
-    console.error('[API ERROR]', error);
     return Promise.reject(error);
   }
 
