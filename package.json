@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "vite --port 3000",
     "start": "npm run dev",
-    "build": "vite build --outDir build",
+    "build": "vite build --outDir dist",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "clean:maps": "find build -name \"*.map\" -type f -delete",
