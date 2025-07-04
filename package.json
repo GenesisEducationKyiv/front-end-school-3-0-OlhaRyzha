@@ -9,6 +9,7 @@
     "start": "npm run dev",
     "build": "vite build --outDir build",
     "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
     "clean:maps": "find build -name \"*.map\" -type f -delete",
     "predeploy": "npm run build && npm run clean:maps && cp build/index.html build/404.html",
     "deploy": "gh-pages -d build",

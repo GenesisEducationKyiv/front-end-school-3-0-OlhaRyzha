@@ -27,6 +27,7 @@ export default defineConfig({
   },
   base: '/tracker/',
   build: {
+    chunkSizeWarningLimit: 1500,
     rollupOptions: {
       output: {
         manualChunks(id) {
@@ -47,15 +48,12 @@ export default defineConfig({
             ) {
               return 'react-query-vendors';
             }
-            if (id.match(/node_modules\/(formik|yup|zod)\//)) {
-              return 'form-vendors';
-            }
             if (id.match(/node_modules\/@radix-ui\//)) {
               return 'radix-vendors';
             }
-            if (id.match(/node_modules\/axios\//)) {
-              return 'axios-vendor';
-            }
+            // if (id.match(/node_modules\/axios\//)) {
+            //   return 'axios-vendor';
+            // }
           }
         },
       },
