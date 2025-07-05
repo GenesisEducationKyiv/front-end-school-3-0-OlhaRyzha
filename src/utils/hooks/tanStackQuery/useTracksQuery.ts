@@ -29,7 +29,7 @@ export const useGetTracks = (params?: QueryParams) => {
   });
 };
 
-export const useAllGetTracks = () => {
+export const useGetAllTracks = () => {
   const dispatch = useAppDispatch();
 
   const query = useQuery<Track[]>({
