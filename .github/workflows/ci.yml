@@ -57,16 +57,20 @@ jobs:
     needs: build
     steps:
       - uses: actions/checkout@v4
-      - run: docker compose up --build -d
-      - run: |
+      - name: Build and start stack via Docker Compose
+        run: docker compose up --build -d
+      - name: Wait for frontend to be ready
+        run: |
           for i in {1..20}; do
             if curl --fail http://localhost:8080/; then
-              break
+              echo "Frontend is up!"; break;
             fi
-            sleep 3
+            echo "Waiting for frontend..."; sleep 3;
           done
-      - run: npx playwright install --with-deps
-      - run: npx playwright test tests/e2e
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      - name: Run E2E tests
+        run: npx playwright test tests/e2e
       - if: failure()
         uses: actions/upload-artifact@v4
         with:
