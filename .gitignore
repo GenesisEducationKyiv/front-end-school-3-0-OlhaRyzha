@@ -32,11 +32,13 @@ coverage/
 *.sln
 *.sw?
 
-# Playwright
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
+# Coverage reports
+coverage/
+
+# Playwright reports & artifacts
+playwright-report/
+test-results/
+stats.html
 
 # Source maps
 build/**/*.map
