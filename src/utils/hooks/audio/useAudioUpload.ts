@@ -26,7 +26,7 @@ export function useAudioUpload({
   onUploaded,
 }: UseAudioUploadProps) {
   const { mutateAsync: upload, isPending } = useUploadTrackAudio();
-  const { mutate: remove } = useDeleteTrackAudio();
+  const { mutateAsync: remove } = useDeleteTrackAudio();
 
   const fileRef = useRef<HTMLInputElement>(null);
   const { file, setFile, error, setError } = useAudioUploadStore();
@@ -75,8 +75,8 @@ export function useAudioUpload({
     }
   };
 
-  const handleRemove = () => {
-    remove({ id: track.id });
+  const handleRemove = async () => {
+    await remove({ id: track.id });
     removeBlob(track.id);
     onOpenChange(false);
   };
