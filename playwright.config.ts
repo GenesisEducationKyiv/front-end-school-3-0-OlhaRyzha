@@ -5,14 +5,8 @@ export default defineConfig({
   fullyParallel: true,
   retries: process.env.CI ? 2 : 0,
   reporter: 'html',
-  webServer: {
-    command: 'npm run preview',
-    url: 'http://localhost:4173/tracker/',
-    timeout: 30 * 1000,
-    reuseExistingServer: !process.env.CI,
-  },
   use: {
-    baseURL: 'http://localhost:4173/tracker/',
+    baseURL: 'http://localhost:8080/',
     trace: 'on-first-retry',
     headless: true,
     video: 'on',
