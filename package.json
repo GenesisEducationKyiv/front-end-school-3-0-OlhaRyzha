@@ -22,7 +22,13 @@
     "show-report": "playwright show-report --port=9324",
     "test:e2e:ui": "playwright test --ui",
     "test:all": "playwright test",
-    "unimported": "unimported"
+    "unimported": "unimported",
+    "docker:build": "docker buildx build --platform linux/amd64,linux/arm64 -t tracks-manager-client:latest . ",
+    "docker:push": "docker push tracks-manager-client:latest",
+    "docker:run": "docker run --rm -p 8080:80 tracks-manager-client:latest",
+    "docker:ps": "docker ps -a",
+    "docker:stopall": "docker stop $(docker ps -q)",
+    "docker:rmall": "docker rm $(docker ps -aq)"
   },
   "dependencies": {
     "@mobily/ts-belt": "^3.13.1",
