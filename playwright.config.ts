@@ -9,8 +9,8 @@ export default defineConfig({
     baseURL: 'http://localhost:8080/',
     trace: 'on-first-retry',
     headless: true,
-    video: 'on',
-    screenshot: 'on',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
   },
   projects: [
     {
