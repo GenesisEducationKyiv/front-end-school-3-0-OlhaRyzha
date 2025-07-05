@@ -27,7 +27,6 @@ export default defineConfig({
   },
   base: '/tracker/',
   build: {
-    outDir: 'dist',
     chunkSizeWarningLimit: 1500,
     rollupOptions: {
       output: {
