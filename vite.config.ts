@@ -27,6 +27,7 @@ export default defineConfig({
   },
   base: '/tracker/',
   build: {
+    sourcemap: 'hidden',
     rollupOptions: {
       output: {
         manualChunks(id) {
