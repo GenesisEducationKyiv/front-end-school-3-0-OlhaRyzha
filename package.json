@@ -54,6 +54,7 @@
     "axios": "^1.8.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "compression": "^1.8.0",
     "date-fns": "^4.1.0",
     "formik": "^2.4.6",
     "ldrs": "^1.1.7",
@@ -121,6 +122,7 @@
     "unimported": "^1.31.1",
     "vite": "^6.3.1",
     "vite-plugin-compression": "^0.5.1",
+    "vite-plugin-purgecss": "^0.2.13",
     "vitest": "^3.2.4"
   }
 }

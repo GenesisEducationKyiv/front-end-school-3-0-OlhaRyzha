@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   Select,
   SelectContent,
@@ -23,7 +23,7 @@ import { useValidateTableParams } from '@/utils/hooks/table/useValidateTablePara
 import { getArtistValue } from '@/utils/table/filters/getArtistValue';
 import { getGenreValue } from '@/utils/table/filters/getGenreValue';
 
-const FiltersBar = () => {
+const FiltersBarComponent = () => {
   const dispatch = useAppDispatch();
   const params = useAppSelector(selectTableParams);
   const availableArtists = useAppSelector(selectAllArtists) ?? [];
@@ -33,32 +33,50 @@ const FiltersBar = () => {
   useValidateTableParams(availableGenres, availableArtists);
 
   const handleParamsUpdate = useCallback(
-    (updater: (p: QueryParams) => QueryParams) =>
-      dispatch(setTableParams(updater(params))),
+    (updater: (p: QueryParams) => QueryParams) => {
+      dispatch(setTableParams(updater(params)));
+    },
     [dispatch, params]
   );
 
-  const onArtistChange = getFilterChangeHandler(
-    'artist',
-    ALL_ARTISTS,
-    handleParamsUpdate
-  );
-  const onGenreChange = getFilterChangeHandler(
-    'genre',
-    ALL_GENRES,
-    handleParamsUpdate
+  const onArtistChange = useMemo(
+    () => getFilterChangeHandler('artist', ALL_ARTISTS, handleParamsUpdate),
+    [handleParamsUpdate]
   );
 
-  const artists = getArtistValue(params.artist) ?? [];
-  const genres = getGenreValue(params.genre) ?? [];
+  const onGenreChange = useMemo(
+    () => getFilterChangeHandler('genre', ALL_GENRES, handleParamsUpdate),
+    [handleParamsUpdate]
+  );
 
-  const FILTERS_LIST = getFiltersConfig(
-    artists,
-    genres,
-    availableArtists,
-    availableGenres,
-    onArtistChange,
-    onGenreChange
+  const artists = useMemo(
+    () => getArtistValue(params.artist) ?? [],
+    [params.artist]
+  );
+
+  const genres = useMemo(
+    () => getGenreValue(params.genre) ?? [],
+    [params.genre]
+  );
+
+  const FILTERS_LIST = useMemo(
+    () =>
+      getFiltersConfig(
+        artists,
+        genres,
+        availableArtists,
+        availableGenres,
+        onArtistChange,
+        onGenreChange
+      ),
+    [
+      artists,
+      genres,
+      availableArtists,
+      availableGenres,
+      onArtistChange,
+      onGenreChange,
+    ]
   );
 
   return (
@@ -69,6 +87,8 @@ const FiltersBar = () => {
           value={filter.value}
           onValueChange={filter.onChange}>
           <SelectTrigger
+            id={`select-${filter.testid}`}
+            aria-label={filter.placeholder}
             className='w-[180px]'
             data-testid={filter.testid}>
             <SelectValue placeholder={filter.placeholder} />
@@ -92,4 +112,5 @@ const FiltersBar = () => {
   );
 };
 
+const FiltersBar = React.memo(FiltersBarComponent);
 export default FiltersBar;

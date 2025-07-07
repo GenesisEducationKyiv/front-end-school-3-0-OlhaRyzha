@@ -7,7 +7,7 @@ import {
   DropdownMenuContent,
   DropdownMenuCheckboxItem,
 } from '@/components/ui/dropdown-menu';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown } from '@/components/icons';
 import { Track } from '@/types/shared/track';
 import { Table } from '@tanstack/react-table';
 import { useAppDispatch, useAppSelector } from '@/store';

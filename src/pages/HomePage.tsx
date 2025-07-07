@@ -1,6 +1,5 @@
 import { FC } from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
 import { ROOT, TRACKS } from '@/constants/route.constant';
 
 const HomePage: FC = () => (
@@ -13,15 +12,13 @@ const HomePage: FC = () => (
       Upload, edit and keep your music library organised in one place.
     </p>
 
-    <Button
-      asChild
-      size='lg'>
-      <Link
-        to={`${ROOT}${TRACKS}`}
-        data-testid='go-to-tracks'>
-        Go to Tracks
-      </Link>
-    </Button>
+    <Link
+      to={`${ROOT}${TRACKS}`}
+      data-testid='go-to-tracks'
+      className='w-40 h-12 flex items-center justify-center bg-primary text-primary-foreground rounded-lg text-lg font-medium hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50'
+      aria-label='Go to Tracks page'>
+      Go to Tracks
+    </Link>
   </section>
 );
 

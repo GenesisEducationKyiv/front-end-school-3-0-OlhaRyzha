@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { ArrowUpDown, MoreHorizontal, Trash2 } from 'lucide-react';
+import { ArrowUpDown, MoreHorizontal, Trash2 } from '@/components/icons';
 import { formatDate } from '@/utils/formatDate';
 import { TrackWaveform } from '@/components/Audio';
 
@@ -34,13 +34,13 @@ export const trackColumns = ({
   if (selectMode) {
     cols.push({
       id: 'select',
-
+      
       header: ({ table }) => (
         <Checkbox
           data-testid='select-all'
           checked={table.getIsAllPageRowsSelected()}
           onCheckedChange={(v) => table.toggleAllPageRowsSelected(!!v)}
-          aria-label='Select all'
+          aria-label='Select all tracks'
         />
       ),
       cell: ({ row }) => (
@@ -67,7 +67,8 @@ export const trackColumns = ({
           type='button'
           variant='ghost'
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          data-testid='sort-select'>
+          data-testid='sort-title'
+          aria-label='Sort by title'>
           Title <ArrowUpDown className='ml-1 h-4 w-4' />
         </Button>
       ),
@@ -85,7 +86,8 @@ export const trackColumns = ({
         <Button
           type='button'
           variant='ghost'
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          aria-label='Sort by artist'>
           Artist <ArrowUpDown className='ml-1 h-4 w-4' />
         </Button>
       ),
@@ -100,15 +102,25 @@ export const trackColumns = ({
       header: 'Cover',
       size: 200,
       minSize: 150,
-      cell: ({ row }) => (
-        <img
-          className='h-12 w-12 rounded object-cover'
-          src={row.original.coverImage || noCover}
-          alt={row.original.coverImage ? 'Cover image' : 'No cover available'}
-          data-testid={`track-item-${row.original.id}-cover`}
-          loading='lazy'
-        />
-      ),
+      cell: ({ row, table }) => {
+        const index = table
+          .getRowModel()
+          .rows.findIndex((r) => r.id === row.id);
+        const isFirst = index === 0;
+        return (
+          <img
+            className='h-12 w-12 rounded object-cover'
+            src={row.original.coverImage || noCover}
+            alt={
+              row.original.coverImage
+                ? `Cover image for ${row.original.title}`
+                : 'No cover available'
+            }
+            data-testid={`track-item-${row.original.id}-cover`}
+            loading={isFirst ? undefined : 'lazy'}
+          />
+        );
+      },
     },
     {
       id: 'createdAt',
@@ -118,8 +130,9 @@ export const trackColumns = ({
         <Button
           type='button'
           variant='ghost'
+          data-testid='sort-select'
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          data-testid='sort-select'>
+          aria-label='Sort by creation date'>
           Created At <ArrowUpDown className='ml-1 h-4 w-4' />
         </Button>
       ),
@@ -173,7 +186,8 @@ export const trackColumns = ({
                   type='button'
                   size='icon'
                   variant='ghost'
-                  data-testid='track-menu-button'>
+                  data-testid='track-menu-button'
+                  aria-label={`Open actions menu for ${track.title}`}>
                   <MoreHorizontal className='h-4 w-4' />
                 </Button>
               </DropdownMenuTrigger>
