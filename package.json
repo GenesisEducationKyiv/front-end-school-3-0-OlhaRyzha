@@ -119,7 +119,7 @@
     "tailwindcss-animate": "^1.0.7",
     "typescript": "~5.5.0",
     "unimported": "^1.31.1",
-    "vite": "^6.3.1",
+    "vite": "^7.0.2",
     "vite-plugin-compression": "^0.5.1",
     "vitest": "^3.2.4"
   }
