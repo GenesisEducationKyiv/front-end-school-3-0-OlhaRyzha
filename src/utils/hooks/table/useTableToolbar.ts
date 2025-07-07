@@ -59,7 +59,7 @@ export function useTableToolbar({
   }, [selectedIds, bulkDeleteMutation, setRowSelection]);
 
   const handleReset = useCallback(() => {
-    dispatch(setTableParams({ ...params, ...DEFAULT_PARAMS }));
+    dispatch(setTableParams(DEFAULT_PARAMS));
     setLocalSearch(DEFAULT_PARAMS.search || '');
   }, []);
 

@@ -20,11 +20,13 @@ import {
   setTableParams,
 } from '@/store/slices/table/tableSlice';
 import { useValidateTableParams } from '@/utils/hooks/table/useValidateTableParams';
+import { getArtistValue } from '@/utils/table/filters/getArtistValue';
+import { getGenreValue } from '@/utils/table/filters/getGenreValue';
 
 const FiltersBar = () => {
   const dispatch = useAppDispatch();
   const params = useAppSelector(selectTableParams);
-  const availableArtists = useAppSelector(selectAllArtists);
+  const availableArtists = useAppSelector(selectAllArtists) ?? [];
   const availableGenres =
     queryClient.getQueryData<GenresType>(GENRES_QUERY_KEY) ?? [];
 
@@ -47,8 +49,12 @@ const FiltersBar = () => {
     handleParamsUpdate
   );
 
+  const artists = getArtistValue(params.artist) ?? [];
+  const genres = getGenreValue(params.genre) ?? [];
+
   const FILTERS_LIST = getFiltersConfig(
-    params,
+    artists,
+    genres,
     availableArtists,
     availableGenres,
     onArtistChange,
@@ -73,6 +79,7 @@ const FiltersBar = () => {
             </SelectItem>
             {filter.availableOptions?.map((option) => (
               <SelectItem
+                data-testid='options'
                 key={option}
                 value={option}>
                 {option}

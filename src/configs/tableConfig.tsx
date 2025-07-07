@@ -1,12 +1,10 @@
-import { QueryParams } from '@/types/shared/track';
 import { ALL_ARTISTS, ALL_GENRES } from '@/constants/labels.constant';
 import { GenresType } from '@/types/shared/genre';
 import { ArtistsType } from '@/types/shared/artists';
-import { getArtistValue } from '@/utils/table/filters/getArtistValue';
-import { getGenreValue } from '@/utils/table/filters/getGenreValue';
 
 export function getFiltersConfig(
-  params: QueryParams,
+  artists: string,
+  genres: string,
   availableArtists: ArtistsType,
   availableGenres: GenresType,
   onArtistChange: (v: string) => void,
@@ -14,7 +12,7 @@ export function getFiltersConfig(
 ) {
   return [
     {
-      value: getArtistValue(params.artist),
+      value: artists,
       onChange: onArtistChange,
       testid: 'filter-artist',
       placeholder: 'Filter by artist',
@@ -22,7 +20,7 @@ export function getFiltersConfig(
       selectedItem: ALL_ARTISTS,
     },
     {
-      value: getGenreValue(params.genre),
+      value: genres,
       onChange: onGenreChange,
       testid: 'filter-genre',
       placeholder: 'Filter by genre',

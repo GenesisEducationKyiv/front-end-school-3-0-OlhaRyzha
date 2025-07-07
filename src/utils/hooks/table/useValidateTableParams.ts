@@ -22,19 +22,28 @@ export function useValidateTableParams(
   const params = useAppSelector(selectTableParams);
 
   useEffect(() => {
+    const isInitialArtists =
+      allArtists.length === 1 && allArtists[0] === 'Lady Gaga';
+
+    if (
+      isInitialArtists ||
+      !isNonEmptyArray(allGenres) ||
+      !isNonEmptyArray(allArtists)
+    ) {
+      return;
+    }
+
     const validations: FieldValidation[] = [
       { key: 'genre', list: allGenres },
       { key: 'artist', list: allArtists },
     ];
-
-    if (!isNonEmptyArray(allGenres) && !isNonEmptyArray(allArtists)) return;
 
     let nextParams = { ...params };
     let changed = false;
 
     validations.forEach(({ key, list }) => {
       const value = params[key];
-      if (value && (!Array.isArray(list) || !list.includes(value))) {
+      if (value && !list.includes(value)) {
         nextParams[key] = '';
         changed = true;
       }
