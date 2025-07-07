@@ -44,15 +44,25 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            if (id.match(/node_modules\/(react|react-dom)\//))
+            if (id.match(/node_modules\/(react|react-dom)\//)) {
               return 'react-core';
-            if (id.match(/node_modules\/react-router-dom\//))
+            }
+            if (id.match(/node_modules\/react-router-dom\//)) {
               return 'react-router';
-            if (id.match(/node_modules\/(react-redux|redux-persist)\//))
+            }
+            if (id.match(/node_modules\/(react-redux|redux-persist)\//)) {
               return 'react-redux';
-            if (id.match(/node_modules\/@tanstack\/react-query/))
+            }
+            if (
+              id.match(
+                /node_modules\/(@tanstack\/react-query|@tanstack\/react-query-devtools)\//
+              )
+            ) {
               return 'react-query-vendors';
-            if (id.match(/node_modules\/@radix-ui\//)) return 'radix-vendors';
+            }
+            if (id.match(/node_modules\/@radix-ui\//)) {
+              return 'radix-vendors';
+            }
           }
         },
       },
