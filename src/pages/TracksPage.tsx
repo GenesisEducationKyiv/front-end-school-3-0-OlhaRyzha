@@ -28,15 +28,9 @@ function TracksPage() {
   const [open, setOpen] = useState(false);
   const [isPlayerVisible, setIsPlayerVisible] = useState(true);
 
-  const handleTogglePlayer = useCallback(
-    () => setIsPlayerVisible((prev) => !prev),
-    []
-  );
+  const handleTogglePlayer = () => setIsPlayerVisible((prev) => !prev);
 
-  const handleDialogOpenChange = useCallback(
-    (open: boolean) => setOpen(open),
-    []
-  );
+  const handleDialogOpenChange = (open: boolean) => setOpen(open);
 
   return (
     <main className='flex flex-col min-h-screen'>
