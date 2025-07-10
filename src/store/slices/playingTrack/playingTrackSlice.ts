@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { RootState } from '../rootReducer';
 import { ValueSetter } from '@/types/base';
+import { RootState } from '@/store';
 
 export interface PlayingTrackIdState {
   playingTrackId: ValueSetter<string>;

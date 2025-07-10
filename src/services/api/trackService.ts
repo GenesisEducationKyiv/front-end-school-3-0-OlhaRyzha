@@ -17,7 +17,6 @@ import {
   trackSchema,
 } from '@/schemas/track.schemas';
 import { getValidatedAudioUrl } from '@/utils/getValidatedAudioUrl';
-import { ValueSetter } from '@/types/base';
 
 const tracksRoute = API_ROUTES.TRACKS;
 const allTracksRoute = API_ROUTES.ALL_TRACKS;
