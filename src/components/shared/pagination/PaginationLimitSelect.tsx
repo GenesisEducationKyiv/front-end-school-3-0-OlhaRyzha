@@ -12,10 +12,13 @@ const PaginationLimitSelect = () => {
 
   return (
     <select
+      id='rows-per-page'
+      name='rowsPerPage'
       value={limit}
       onChange={onChange}
       className='text-sm p-1 border rounded'
-      aria-label='Rows per page'>
+      aria-label='Rows per page'
+      data-testid='rows-per-page-select'>
       {TABLE_SIZES.map((sz) => (
         <option
           key={sz}
@@ -26,4 +29,5 @@ const PaginationLimitSelect = () => {
     </select>
   );
 };
+
 export default PaginationLimitSelect;

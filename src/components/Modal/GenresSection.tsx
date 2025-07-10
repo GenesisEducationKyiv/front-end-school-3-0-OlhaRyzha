@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils';
 import { SetFieldValueType } from '@/types/form';
 import { ToggleGenre } from '@/types/shared/genre';
 import { ErrorMessage } from 'formik';
-import { Plus, X } from 'lucide-react';
+import { Plus, X } from '@/components/icons';
 
 interface GenresSectionProps {
   selectedGenres: string[];

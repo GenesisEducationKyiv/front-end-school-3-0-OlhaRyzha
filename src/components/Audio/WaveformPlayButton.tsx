@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { PlayIcon, PauseIcon } from 'lucide-react';
+import { PlayIcon, PauseIcon } from '@/components/icons';
 
 interface WaveformPlayButtonProps {
   isPlaying?: boolean;
