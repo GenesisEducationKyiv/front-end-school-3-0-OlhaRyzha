@@ -35,6 +35,7 @@ export const validationSchema = z.object({
 
   coverImage: z
     .union([z.string(), z.custom<File>(isFile)])
+    .optional()
     .nullable()
     .refine(
       (value) => {

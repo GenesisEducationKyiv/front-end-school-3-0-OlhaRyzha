@@ -17,7 +17,7 @@ interface TrackWaveformProps {
   onPlayPauseExternal?: (id: string, isPlaying: boolean) => void;
 }
 
-export default function TrackWaveform({
+function TrackWaveform({
   id,
   previewUrl,
   audioFile,
@@ -50,3 +50,5 @@ export default function TrackWaveform({
     </Suspense>
   );
 }
+
+export default TrackWaveform;
