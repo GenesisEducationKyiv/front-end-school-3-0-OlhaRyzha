@@ -23,7 +23,8 @@ const WaveformPlayButton = ({
       'animate-in fade-in zoom-in',
       className
     )}
-    style={{ animationDuration: '0.7s' }}>
+    style={{ animationDuration: '0.7s' }}
+    aria-label={isPlaying ? 'Pause audio' : 'Play audio'}>
     {isPlaying ? (
       <PauseIcon className={iconClassName} />
     ) : (

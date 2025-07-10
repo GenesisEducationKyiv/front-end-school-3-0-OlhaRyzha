@@ -7,7 +7,7 @@ const TrackInfo: FC<{
   artist?: string;
   loading: boolean;
 }> = ({ title, artist, loading }) => (
-  <div className='flex flex-col gap-1 flex-wrap'>
+  <div className='flex flex-col gap-1 min-w-3/6 w-3/6 flex-wrap'>
     <span className='text-sm text-muted-foreground'>🎵 Now playing:</span>
     {loading ? (
       <Skeleton className='w-full h-6' />
