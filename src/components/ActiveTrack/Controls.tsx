@@ -29,6 +29,7 @@ const Controls: FC<ControlsProps> = ({ onPrev, onNext, shuffleOn }) => {
         size='icon'
         variant={shuffleOn ? 'default' : 'outline'}
         className='h-12 w-12 disabled:opacity-100'
+        onClick={() => dispatch(toggleRandom())}
         aria-pressed={shuffleOn}
         aria-label={shuffleOn ? 'Disable shuffle' : 'Enable shuffle'}
         title={shuffleOn ? 'Disable shuffle' : 'Enable shuffle'}
