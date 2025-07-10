@@ -1,67 +1,74 @@
 import { validationMessages } from '@/constants/message.constant';
 import { CreateTrackDto, Track } from '@/types/shared/track';
+import { isBlobUrl } from '@/utils/guards/isBlobUrl';
 import { isFile } from '@/utils/guards/isFile';
 import { isString } from '@/utils/guards/isString';
-import * as Yup from 'yup';
+import { z } from 'zod';
 
 const allowedSchemes = ['http:', 'https:', 'blob:'];
+
 const allowedHosts = [
   'images.unsplash.com',
   'cdn.pixabay.com',
   'picsum.photos',
 ];
+
 const allowedImageTypes = [
   'image/jpeg',
   'image/png',
   'image/webp',
   'image/gif',
 ];
-const maxFileSize = 5 * 1024 * 1024; // 5MB
 
-export const validationSchema = Yup.object({
-  title: Yup.string().required(validationMessages.required),
-  artist: Yup.string().required(validationMessages.required),
-  album: Yup.string().optional(),
-  coverImage: Yup.mixed()
+const maxFileSize = 5 * 1024 * 1024;
+
+export const validationSchema = z.object({
+  title: z.string({
+    required_error: validationMessages.requiredField('Title'),
+  }),
+
+  artist: z.string({
+    required_error: validationMessages.requiredField('Artist'),
+  }),
+
+  album: z.string().optional(),
+
+  coverImage: z
+    .union([z.string(), z.custom<File>(isFile)])
+    .optional()
     .nullable()
-    .test('is-valid-url-or-file', validationMessages.url, (value) => {
-      if (!value) return true;
-
-      if (isString(value)) {
+    .refine(
+      (value) => {
+        if (!value) return true;
+        if (isString(value)) {
+          try {
+            const url = new URL(value);
+            return allowedSchemes.includes(url.protocol);
+          } catch {
+            return false;
+          }
+        }
+        return allowedImageTypes.includes(value.type);
+      },
+      { message: validationMessages.url }
+    )
+    .refine(
+      (value) => {
+        if (!value || !isString(value)) return true;
         try {
           const url = new URL(value);
-          return allowedSchemes.includes(url.protocol);
+          return isBlobUrl(url.protocol) || allowedHosts.includes(url.hostname);
         } catch {
           return false;
         }
-      }
-
-      if (isFile(value)) {
-        return allowedImageTypes.includes(value.type);
-      }
-
-      return false;
-    })
-    .test('valid-host-if-url', validationMessages.invalidHost, (value) => {
-      if (!value || !isString(value)) return true;
-
-      try {
-        const url = new URL(value);
-        if (url.protocol === 'blob:') return true;
-        return allowedHosts.includes(url.hostname);
-      } catch {
-        return true;
-      }
-    })
-    .test('max-size-if-file', validationMessages.lengthMax('5MB'), (value) => {
-      if (isFile(value)) {
-        return value.size <= maxFileSize;
-      }
-      return true;
+      },
+      { message: validationMessages.invalidHost }
+    )
+    .refine((value) => !(isFile(value) && value.size > maxFileSize), {
+      message: validationMessages.lengthMax('5MB'),
     }),
-  genres: Yup.array()
-    .of(Yup.string())
-    .min(1, validationMessages.selectAtLeastOne),
+
+  genres: z.array(z.string()).min(1, validationMessages.selectAtLeastOne),
 });
 
 export const getInitialValues = (track?: Track): CreateTrackDto => ({

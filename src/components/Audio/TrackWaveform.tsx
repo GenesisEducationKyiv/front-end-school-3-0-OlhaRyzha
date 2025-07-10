@@ -1,9 +1,12 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useCallback } from 'react';
 import { Loader } from '@/components/shared';
-import { getTrackAudioUrl } from '@/utils/getTrackAudioUrl';
 import { useAudioUrl } from '@/utils/hooks/audio/useAudioUrl';
-import { usePlayingTrackStore } from '@/store/zustand/usePlayingTrackStore';
-import { ValueSetter } from '@/types/zustand/base';
+import { useAppDispatch, useAppSelector } from '@/store';
+import { ValueSetter } from '@/types/base';
+import {
+  selectPlayingTrackId,
+  setPlayingTrackId,
+} from '@/store/slices/playingTrack/playingTrackSlice';
 
 const Waveform = lazy(() => import('@/components/Audio/AudioWaveform'));
 
@@ -20,15 +23,17 @@ function TrackWaveform({
   audioFile,
   onPlayPauseExternal,
 }: TrackWaveformProps) {
-  const src = previewUrl ?? (audioFile ? getTrackAudioUrl(audioFile) : null);
+  const src = previewUrl || audioFile || null;
   const { url, loading, error } = useAudioUrl(id, src);
-  const { playingTrackId, setPlayingTrackId } = usePlayingTrackStore();
+  const dispatch = useAppDispatch();
+  const playingTrackId = useAppSelector(selectPlayingTrackId);
   const isPlaying = playingTrackId === id;
 
-  const handlePlayPause = () => {
-    setPlayingTrackId(isPlaying ? null : id);
+  const handlePlayPause = useCallback(() => {
+    const next = isPlaying ? null : id;
+    dispatch(setPlayingTrackId(next));
     onPlayPauseExternal?.(id, !isPlaying);
-  };
+  }, [dispatch, id, isPlaying, onPlayPauseExternal]);
 
   if (!url && !loading && !error) return null;
 

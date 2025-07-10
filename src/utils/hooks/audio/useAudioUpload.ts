@@ -1,4 +1,4 @@
-import { useRef, ChangeEvent, useEffect } from 'react';
+import { useRef, ChangeEvent, useEffect, useState } from 'react';
 import { validateAudioFile } from '@/utils/audioUpload';
 import { validationMessages } from '@/constants/message.constant';
 import { Track } from '@/types/shared/track';
@@ -7,12 +7,9 @@ import {
   useUploadTrackAudio,
 } from '../tanStackQuery/useTracksQuery';
 import { invariant } from '@/utils/invariant';
-import { useAudioUploadStore } from '@/store/zustand/useAudioUploadStore';
-import { useLocalAudioUrl } from '@/utils/hooks/audio/useLocalAudioUrl';
-import {
-  selectRemoveBlob,
-  useAudioBlobStore,
-} from '@/store/zustand/useAudioBlobStore';
+import { useObjectUrl } from './useObjectUrl';
+import { R } from '@mobily/ts-belt';
+import { ValueSetter } from '@/types/base';
 
 interface UseAudioUploadProps {
   track: Track;
@@ -25,38 +22,39 @@ export function useAudioUpload({
   onOpenChange,
   onUploaded,
 }: UseAudioUploadProps) {
+  const [file, setFile] = useState<ValueSetter<File>>(null);
+  const [error, setError] = useState<ValueSetter<string>>(null);
+  const url = useObjectUrl(file);
+
   const { mutateAsync: upload, isPending } = useUploadTrackAudio();
   const { mutateAsync: remove } = useDeleteTrackAudio();
 
   const fileRef = useRef<HTMLInputElement>(null);
-  const { file, setFile, error, setError } = useAudioUploadStore();
-
-  const removeBlob = useAudioBlobStore(selectRemoveBlob);
-
-  const url = useLocalAudioUrl(file);
 
   useEffect(() => {
     setFile(null);
     setError(null);
   }, [track.id]);
 
-  const handleChoose = () => fileRef.current?.click();
+  const handleChoose = () => {
+    fileRef.current?.click();
+  };
 
   const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    if (!file) return;
+    const selected = e.target.files?.[0] || null;
+    if (!selected) return;
 
-    const validationResult = await validateAudioFile(file);
-    validationResult.match(
+    const result = await validateAudioFile(selected);
+    R.match(
       () => {
         setError(null);
-        setFile(file);
+        setFile(selected);
       },
-      (errorMsg) => {
-        setError(errorMsg);
+      (msg: string) => {
+        setError(msg);
         setFile(null);
       }
-    );
+    )(result);
   };
 
   const clear = () => {
@@ -67,7 +65,7 @@ export function useAudioUpload({
   const handleSave = async () => {
     invariant(file, validationMessages.requiredFile);
     try {
-      await upload({ id: track.id, file: file });
+      await upload({ id: track.id, file });
       onOpenChange(false);
       onUploaded?.();
     } catch (error) {
@@ -77,7 +75,6 @@ export function useAudioUpload({
 
   const handleRemove = async () => {
     await remove({ id: track.id });
-    removeBlob(track.id);
     onOpenChange(false);
   };
 

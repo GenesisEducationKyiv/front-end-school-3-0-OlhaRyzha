@@ -34,7 +34,7 @@ export const trackColumns = ({
   if (selectMode) {
     cols.push({
       id: 'select',
-      
+
       header: ({ table }) => (
         <Checkbox
           data-testid='select-all'
@@ -111,6 +111,9 @@ export const trackColumns = ({
           <img
             className='h-12 w-12 rounded object-cover'
             src={row.original.coverImage || noCover}
+            onError={(e) => {
+              e.currentTarget.src = noCover;
+            }}
             alt={
               row.original.coverImage
                 ? `Cover image for ${row.original.title}`

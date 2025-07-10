@@ -1,4 +1,5 @@
-import { Result, ok, err } from 'neverthrow';
+import { R } from '@mobily/ts-belt';
+import type { Result } from '@mobily/ts-belt';
 import { validationMessages } from '@/constants/message.constant';
 
 const ALLOWED_MIME_TYPES = [
@@ -21,23 +22,23 @@ const formatSize = (bytes: number) => {
 export async function validateAudioFile(
   file: File,
   maxSize: number = MAX_SIZE
-): Promise<Result<void, string>> {
+): Promise<Result<{}, string>> {
   if (file.size > maxSize) {
-    return err(validationMessages.lengthMax(formatSize(maxSize)));
+    return R.Error(validationMessages.lengthMax(formatSize(maxSize)));
   }
 
   if (file.size === 0) {
-    return err(validationMessages.emty);
+    return R.Error(validationMessages.emty);
   }
 
   if (!ALLOWED_MIME_TYPES.includes(file.type)) {
-    return err(validationMessages.unsupportedFormat);
+    return R.Error(validationMessages.unsupportedFormat);
   }
 
   const extension = file.name.split('.').pop()?.toLowerCase();
   if (!extension || !ALLOWED_EXTENSIONS.includes(extension)) {
-    return err(validationMessages.fileExtension);
+    return R.Error(validationMessages.fileExtension);
   }
 
-  return ok(undefined);
+  return R.Ok({});
 }
