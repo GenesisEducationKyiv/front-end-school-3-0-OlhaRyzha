@@ -9,6 +9,8 @@ export const messageOnSuccessDeleted = (value: string) =>
 
 export const validationMessages = {
   required: 'This field is required and cannot be left empty.',
+  requiredField: (fiealName: string = 'This field') =>
+    `${fiealName} is required field and cannot be empty.`,
   requiredFile: 'File must be selected',
   url: 'Please enter a valid URL starting with http:// or https://.',
   fileExtension:

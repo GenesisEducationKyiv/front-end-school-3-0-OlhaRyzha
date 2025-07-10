@@ -1,9 +1,15 @@
 import { pipe, R } from '@mobily/ts-belt';
 import type { Result } from '@mobily/ts-belt';
 import z from 'zod';
-import { ApiError } from '@/utils/apiError';
-import { validationMessages } from '@/constants/message.constant';
+import { ApiError, ApiErrorType } from '@/utils/apiError';
+import {
+  audioUploadMessages,
+  validationMessages,
+} from '@/constants/message.constant';
 import { toast } from './hooks/use-toast';
+import { isAxiosError } from 'axios';
+import { isInvalidAudioBlob } from './guards/isInvalidAudioBlob';
+import { IdType } from '@/types/ids';
 
 function handleErrorToastAndThrow<T>(result: Result<T, ApiError>): T {
   return R.match(
@@ -52,4 +58,41 @@ export async function fetchVoidResponse(
   );
 
   return handleErrorToastAndThrow(checked);
+}
+
+export async function safeFetchBlob(
+  id: IdType,
+  apiCall: Promise<Blob>
+): Promise<Blob> {
+  const initial: R.Result<Blob, unknown> = await R.fromPromise(apiCall);
+
+  const mappedErrors = pipe(
+    initial,
+    R.mapError((err) => {
+      if (isAxiosError(err) && err.response?.status === 404) {
+        return new ApiError(
+          ApiErrorType.NotFound,
+          `Track ${id}: ${audioUploadMessages.audioNotFound}`
+        );
+      }
+      return ApiError.fromUnknown(err);
+    })
+  );
+
+  const validated = pipe(
+    mappedErrors,
+    R.flatMap((blob) => {
+      if (isInvalidAudioBlob(blob)) {
+        return R.Error(
+          new ApiError(
+            ApiErrorType.Validation,
+            `Track ${id}: ${audioUploadMessages.audioUnavailable}`
+          )
+        );
+      }
+      return R.Ok(blob);
+    })
+  );
+
+  return handleErrorToastAndThrow(validated);
 }

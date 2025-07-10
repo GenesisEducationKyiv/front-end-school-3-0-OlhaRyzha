@@ -1,5 +1,6 @@
 import { test, expect } from 'vitest';
 import { validateAudioFile } from '../../utils/audioUpload';
+import { R } from '@mobily/ts-belt';
 
 interface CreateFileProps {
   name: string;
@@ -21,7 +22,7 @@ test('returns ok for valid file', async () => {
     type: 'audio/mpeg',
   });
   const result = await validateAudioFile(file, TEN_MB);
-  expect(result.isOk()).toBe(true);
+  expect(R.isOk(result)).toBe(true);
 });
 
 test('returns error for wrong mime type', async () => {
@@ -31,7 +32,7 @@ test('returns error for wrong mime type', async () => {
     type: 'application/json',
   });
   const result = await validateAudioFile(file, TEN_MB);
-  expect(result.isErr()).toBe(true);
+  expect(R.isError(result)).toBe(true);
 });
 
 test('returns error for unsupported extension', async () => {
@@ -41,7 +42,7 @@ test('returns error for unsupported extension', async () => {
     type: 'audio/mpeg',
   });
   const result = await validateAudioFile(file, TEN_MB);
-  expect(result.isErr()).toBe(true);
+  expect(R.isError(result)).toBe(true);
 });
 
 test('returns error for oversized file', async () => {
@@ -51,5 +52,5 @@ test('returns error for oversized file', async () => {
     type: 'audio/mpeg',
   });
   const result = await validateAudioFile(file, TEN_MB);
-  expect(result.isErr()).toBe(true);
+  expect(R.isError(result)).toBe(true);
 });

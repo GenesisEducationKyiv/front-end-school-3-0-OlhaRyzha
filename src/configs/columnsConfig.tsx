@@ -34,7 +34,7 @@ export const trackColumns = ({
   if (selectMode) {
     cols.push({
       id: 'select',
-      
+
       header: ({ table }) => (
         <Checkbox
           data-testid='select-all'
@@ -102,25 +102,18 @@ export const trackColumns = ({
       header: 'Cover',
       size: 200,
       minSize: 150,
-      cell: ({ row, table }) => {
-        const index = table
-          .getRowModel()
-          .rows.findIndex((r) => r.id === row.id);
-        const isFirst = index === 0;
-        return (
-          <img
-            className='h-12 w-12 rounded object-cover'
-            src={row.original.coverImage || noCover}
-            alt={
-              row.original.coverImage
-                ? `Cover image for ${row.original.title}`
-                : 'No cover available'
-            }
-            data-testid={`track-item-${row.original.id}-cover`}
-            loading={isFirst ? undefined : 'lazy'}
-          />
-        );
-      },
+      cell: ({ row }) => (
+        <img
+          className='h-12 w-12 rounded object-cover'
+          src={row.original.coverImage || noCover}
+          onError={(e) => {
+            e.currentTarget.src = noCover;
+          }}
+          alt={row.original.coverImage ? 'Cover image' : 'No cover available'}
+          data-testid={`track-item-${row.original.id}-cover`}
+          loading='lazy'
+        />
+      ),
     },
     {
       id: 'createdAt',

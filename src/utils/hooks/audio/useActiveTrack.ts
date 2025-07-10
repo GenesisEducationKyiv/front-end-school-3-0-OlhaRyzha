@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Track } from '@/types/shared/track';
-import { ValueSetter } from '@/types/zustand/base';
+import { ValueSetter } from '@/types/base';
 
 export function useActiveTrack(url: ValueSetter<string>) {
   const [track, setTrack] = useState<ValueSetter<Track>>(null);

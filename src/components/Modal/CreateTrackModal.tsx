@@ -23,6 +23,7 @@ import { SetFieldValueType } from '@/types/form';
 import { GenresType } from '@/types/shared/genre';
 import { useToast } from '@/utils/hooks/use-toast';
 import { ApiError } from '@/utils/apiError';
+import { toFormikValidationSchema } from 'zod-formik-adapter';
 
 export interface CreateTrackModalProps {
   track?: Track;
@@ -95,7 +96,7 @@ function CreateTrackModal({ track, onClose }: CreateTrackModalProps) {
         data-testid='track-form'
         enableReinitialize
         initialValues={initialValues}
-        validationSchema={validationSchema}
+        validationSchema={toFormikValidationSchema(validationSchema)}
         onSubmit={handleSubmit}>
         {({ values, setFieldValue, isSubmitting, dirty, isValid }) => {
           const previewSrc = normalizeCoverImage(values.coverImage);
@@ -104,6 +105,9 @@ function CreateTrackModal({ track, onClose }: CreateTrackModalProps) {
               <div className='flex justify-center'>
                 <img
                   src={previewSrc || defaultCover}
+                  onError={(e) => {
+                    e.currentTarget.src = defaultCover;
+                  }}
                   alt='Cover preview'
                   className='h-32 w-32 object-cover rounded-md shadow'
                   loading='lazy'

@@ -1,18 +1,28 @@
-import { useActiveTrackStore } from '@/store/zustand/useActiveTrackStore';
+import { useCallback } from 'react';
+import { useAppDispatch, useAppSelector } from '@/store';
+import {
+  selectActiveTrackIndex,
+  setIndex,
+  setPlaying,
+} from '@/store/slices/activeTrack/activeTrackSlice';
 import { Track } from '@/types/shared/track';
 
 export function useTrackNavigation(tracks: Track[]) {
-  const { index, setIndex, setPlaying } = useActiveTrackStore();
+  const dispatch = useAppDispatch();
+  const index = useAppSelector(selectActiveTrackIndex);
+  const length = tracks.length;
 
-  const next = () => {
-    setIndex((i) => (tracks.length ? (i + 1) % tracks.length : 0));
-    setPlaying(false);
-  };
-  const prev = () => {
-    setIndex((i) =>
-      tracks.length ? (i - 1 + tracks.length) % tracks.length : 0
-    );
-    setPlaying(false);
-  };
+  const goTo = useCallback(
+    (offset: number) => {
+      const newIndex = length ? (index + offset + length) % length : 0;
+      dispatch(setIndex(newIndex));
+      dispatch(setPlaying(false));
+    },
+    [dispatch, index, length]
+  );
+
+  const next = useCallback(() => goTo(1), [goTo]);
+  const prev = useCallback(() => goTo(-1), [goTo]);
+
   return { index, next, prev };
 }

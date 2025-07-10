@@ -10,12 +10,14 @@ import {
 } from '../../types/shared/track';
 import apiClient from '../BaseService';
 import { ACTIONS } from '@/constants/actions.constants';
-import { safeFetch, fetchVoidResponse } from '@/utils/safeFetch';
+import { safeFetch, fetchVoidResponse, safeFetchBlob } from '@/utils/safeFetch';
 import {
   batchDeleteResponseSchema,
   paginatedResponseSchema,
   trackSchema,
 } from '@/schemas/track.schemas';
+import { getValidatedAudioUrl } from '@/utils/getValidatedAudioUrl';
+import { ValueSetter } from '@/types/base';
 
 const tracksRoute = API_ROUTES.TRACKS;
 const allTracksRoute = API_ROUTES.ALL_TRACKS;
@@ -63,6 +65,14 @@ const TrackService = {
       apiClient.delete(`${tracksRoute}/${id}/${API_ROUTES.FILE}`),
       trackSchema
     ),
+
+  fetchAudioBlob: (id: IdType, audioFile?: string): Promise<Blob> => {
+    const url = getValidatedAudioUrl(audioFile);
+    return safeFetchBlob(
+      String(id),
+      apiClient.get<Blob>(url, { responseType: 'blob' })
+    );
+  },
 };
 
 export default TrackService;

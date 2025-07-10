@@ -23,15 +23,22 @@ import { trackColumns } from '@/configs/columnsConfig';
 import { useTable } from '@/utils/hooks/table/useTable';
 import { Track } from '@/types/shared/track';
 import { useSyncTableParamsToUrl } from './useTableParams';
-import { useModalsStore } from '@/store/zustand/useModalsStore';
-import { usePlayingTrackStore } from '@/store/zustand/usePlayingTrackStore';
+import {
+  closeModal,
+  openModal,
+  selectModalAction,
+  selectModalTrack,
+} from '@/store/slices/modal/modalsSlice';
+import {
+  selectPlayingTrackId,
+  setPlayingTrackId,
+} from '@/store/slices/playingTrack/playingTrackSlice';
 
 export function useTrackTable() {
   const dispatch = useAppDispatch();
   const params = useAppSelector(selectTableParams);
   const sorting = useAppSelector(selectSorting);
   const selectMode = useAppSelector(selectSelectMode);
-
   const deleteTrack = useDeleteTrack();
 
   useSyncTableParamsToUrl();
@@ -56,10 +63,9 @@ export function useTrackTable() {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
 
-  const { openModal, closeModal, selectedTrack, modalAction } =
-    useModalsStore();
-
-  const { playingTrackId, setPlayingTrackId } = usePlayingTrackStore();
+  const selectedTrack = useAppSelector(selectModalTrack);
+  const modalAction = useAppSelector(selectModalAction);
+  const playingTrackId = useAppSelector(selectPlayingTrackId);
 
   const handleConfirmDelete = useCallback(
     (track: Track) => deleteTrack.mutate({ id: track.id }),
@@ -74,12 +80,15 @@ export function useTrackTable() {
     () =>
       trackColumns({
         selectMode,
-        playAudio: (id: string) => setPlayingTrackId(id),
-        onEdit: (t) => openModal(t, 'edit'),
-        onUpload: (t) => openModal(t, 'upload'),
-        onDelete: (t) => openModal(t, 'delete'),
+        playAudio: (id: string) => dispatch(setPlayingTrackId(id)),
+        onEdit: (t: Track) =>
+          dispatch(openModal({ selectedTrack: t, modalAction: 'edit' })),
+        onUpload: (t: Track) =>
+          dispatch(openModal({ selectedTrack: t, modalAction: 'upload' })),
+        onDelete: (t: Track) =>
+          dispatch(openModal({ selectedTrack: t, modalAction: 'delete' })),
       }),
-    [selectMode, setPlayingTrackId, openModal]
+    [selectMode, dispatch]
   );
 
   const handleSortingChange: OnChangeFn<SortingState> = (updaterOrValue) => {
@@ -106,10 +115,19 @@ export function useTrackTable() {
   });
 
   const loading = isLoading || isFetching;
-
   const selectedIds = useMemo(
     () => Object.keys(rowSelection).filter((id) => rowSelection[id]),
     [rowSelection]
+  );
+
+  const openModalHandler = useCallback(
+    (t: Track, action: string) =>
+      dispatch(openModal({ selectedTrack: t, modalAction: action })),
+    [dispatch]
+  );
+  const closeModalHandler = useCallback(
+    () => dispatch(closeModal()),
+    [dispatch]
   );
 
   return {
@@ -117,8 +135,8 @@ export function useTrackTable() {
     selectedIds,
     selectedTrack,
     modalAction,
-    openModal,
-    closeModal,
+    openModal: openModalHandler,
+    closeModal: closeModalHandler,
     handleConfirmDelete,
     table,
     tracks,

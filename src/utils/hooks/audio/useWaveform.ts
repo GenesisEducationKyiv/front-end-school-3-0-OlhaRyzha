@@ -1,13 +1,15 @@
 import { useRef, useEffect, useState } from 'react';
 import WaveSurfer from 'wavesurfer.js';
 import { isString } from '@/utils/guards/isString';
-import { ValueSetter } from '@/types/zustand/base';
+import { ValueSetter } from '@/types/base';
 import { getWaveSurfer } from '@/utils/getWaveSurfer';
 import { isAbortError } from '@/utils/guards/isAbortError';
 import {
   audioUploadMessages,
   audioWaveformMessages,
 } from '@/constants/message.constant';
+import { isBlobUrl } from '@/utils/guards/isBlobUrl';
+import { isHttpUrl } from '@/utils/guards/isHttpUrl';
 
 interface UseWaveformProps {
   url: ValueSetter<string>;
@@ -28,11 +30,14 @@ export function useWaveform({ url, isPlaying = false }: UseWaveformProps) {
     if (!waveformRef.current || !isString(url)) {
       setError(null);
       setIsLoading(false);
-      return;
+      return () => {
+        isCancelled = true;
+        wavesurferRef.current?.destroy();
+      };
     }
 
-    const isBlob = url.startsWith('blob:');
-    const isHttp = url.startsWith('http');
+    const isBlob = isBlobUrl(url);
+    const isHttp = isHttpUrl(url);
 
     const wavesurfer = getWaveSurfer(waveformRef.current);
     wavesurferRef.current = wavesurfer;
@@ -63,11 +68,9 @@ export function useWaveform({ url, isPlaying = false }: UseWaveformProps) {
     } else if (isHttp) {
       setError(audioWaveformMessages.onlyBlobUrls);
       setIsLoading(false);
-      return;
     } else {
       setError(audioWaveformMessages.invalidUrl);
       setIsLoading(false);
-      return;
     }
 
     return () => {
@@ -79,7 +82,11 @@ export function useWaveform({ url, isPlaying = false }: UseWaveformProps) {
   useEffect(() => {
     const ws = wavesurferRef.current;
     if (!ws) return;
-    isPlaying ? ws.play() : ws.pause();
+    if (isPlaying) {
+      ws.play();
+    } else {
+      ws.pause();
+    }
   }, [isPlaying]);
 
   return { waveformRef, error, isLoading, isVisible };

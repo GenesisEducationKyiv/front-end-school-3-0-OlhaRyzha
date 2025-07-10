@@ -3,6 +3,8 @@
   "include": ["src", "tests"],
   "compilerOptions": {
     "baseUrl": "./",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "paths": {
       "@/*": ["src/*"],
       "@/utils/*": ["src/utils/*"],

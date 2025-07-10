@@ -13,7 +13,7 @@ import type { Track } from '@/types/shared/track';
 import { BTNS_LABELS } from '@/constants/labels.constant';
 import { audioUploadMessages } from '@/constants/message.constant';
 import { useAudioUpload } from '@/utils/hooks/audio/useAudioUpload';
-import { ValueSetter } from '@/types/zustand/base';
+import { ValueSetter } from '@/types/base';
 import TrackWaveform from './TrackWaveform';
 
 interface AudioUploadModalProps {
