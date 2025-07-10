@@ -35,9 +35,11 @@ function TracksPage() {
   return (
     <main className='flex flex-col min-h-screen'>
       <div className='sticky z-40 bg-white border-b'>
-        <Suspense fallback={<Loader loading />}>
-          {isPlayerVisible && <ActiveTrack />}
-        </Suspense>
+        {isPlayerVisible && (
+          <Suspense fallback={<Loader loading />}>
+            <ActiveTrack />
+          </Suspense>
+        )}
 
         <TooltipProvider>
           <Tooltip>
