@@ -1,0 +1,48 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependency directories
+node_modules/
+**/node_modules/
+
+# Build output
+build/
+dist/
+dist-ssr/
+.vite/
+coverage/
+
+# Local env files
+.env*
+*.local
+
+# Editor files
+.vscode/
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Coverage reports
+coverage/
+
+# Playwright reports & artifacts
+playwright-report/
+test-results/
+stats.html
+
+# Source maps
+build/**/*.map
+dist/**/*.map
+
+# Allow custom 404.html for GH Pages
+!build/404.html
