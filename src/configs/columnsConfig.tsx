@@ -101,11 +101,7 @@ export const trackColumns = ({
       header: 'Cover',
       size: 200,
       minSize: 150,
-      cell: ({ row, table }) => {
-        const index = table
-          .getRowModel()
-          .rows.findIndex((r) => r.id === row.id);
-        const isFirst = index === 0;
+      cell: ({ row }) => {
         return (
           <img
             className='h-12 w-12 rounded object-cover'
@@ -119,7 +115,7 @@ export const trackColumns = ({
                 : 'No cover available'
             }
             data-testid={`track-item-${row.original.id}-cover`}
-            loading={isFirst ? undefined : 'lazy'}
+            loading='lazy'
           />
         );
       },

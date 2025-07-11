@@ -40,7 +40,7 @@ const Waveform = ({
       {displayError ? (
         <WaveformErrorTooltip error={displayError} />
       ) : isLoading ? (
-        <Skeleton className='h-10 w-full rounded-md' />
+        <Skeleton className='w-10 h-10 rounded-full shadow-md' />
       ) : (
         <WaveformPlayButton
           isPlaying={isPlaying}
