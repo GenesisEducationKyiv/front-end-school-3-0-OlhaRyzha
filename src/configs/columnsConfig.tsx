@@ -34,7 +34,6 @@ export const trackColumns = ({
   if (selectMode) {
     cols.push({
       id: 'select',
-
       header: ({ table }) => (
         <Checkbox
           data-testid='select-all'
@@ -151,12 +150,12 @@ export const trackColumns = ({
       size: 600,
       minSize: 400,
       cell: ({ row }) => {
-        const track = row.original;
-
+        const { audioFile, id } = row.original;
+        if (!audioFile) return null;
         return (
           <TrackWaveform
-            id={track.id}
-            audioFile={track.audioFile}
+            id={id}
+            audioFile={audioFile}
           />
         );
       },
