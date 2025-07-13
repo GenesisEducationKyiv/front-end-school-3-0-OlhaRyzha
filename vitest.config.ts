@@ -11,6 +11,10 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
+      'tracks-manager-ui': path.resolve(
+        __dirname,
+        'node_modules/tracks-manager-ui/dist/index.esm.js'
+      ),
     },
   },
 });
