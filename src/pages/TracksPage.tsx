@@ -1,6 +1,5 @@
 import { lazy, useState, Suspense } from 'react';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
 import { TRACKS_LIST_KEY } from '@/constants/table.constants';
 import { BTNS_LABELS } from '@/constants/labels.constant';
 import { Eye, EyeClosed } from '@/components/icons';
@@ -11,6 +10,7 @@ import {
   TooltipProvider,
 } from '@/components/ui/tooltip';
 import { Loader } from '@/components/shared';
+import { Button } from 'tracks-manager-ui';
 
 const ActiveTrack = lazy(() =>
   import('@/components/ActiveTrack').then((m) => ({ default: m.ActiveTrack }))

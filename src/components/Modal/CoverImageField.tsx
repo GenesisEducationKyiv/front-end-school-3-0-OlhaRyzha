@@ -1,5 +1,4 @@
 import { cn } from '@/lib/utils';
-import { Input } from '../ui/input';
 import { Field, FieldProps } from 'formik';
 import { FormikError, RadioButton } from '../shared';
 import { COVER_IMAGE_FIELD_NAME } from '@/constants/fieldNames.constants';
@@ -7,6 +6,7 @@ import { isUrl } from '@/utils/guards/isUrl';
 import { INPUT_COVER_IMG_TYPES } from '@/types/input';
 import { isFileType } from '@/utils/guards/isFile';
 import { useCoverImageField } from '@/utils/hooks/cover/useCoverImageField';
+import { Input } from 'tracks-manager-ui';
 
 type CoverImageFieldProps = {
   placeholder?: string;

@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { Loader } from '../shared';
-import { Skeleton } from '../ui/skeleton';
+import { Skeleton } from 'tracks-manager-ui';
 
 const TrackInfo: FC<{
   title?: string;

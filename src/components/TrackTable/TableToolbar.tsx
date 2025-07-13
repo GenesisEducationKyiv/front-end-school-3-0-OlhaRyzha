@@ -1,5 +1,3 @@
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { AlertDialogComponent } from '../shared/AlertDialog';
 import {
   DropdownMenu,
@@ -21,6 +19,7 @@ import { SetRowSelectionType } from '@/types/shared/table';
 import { useTableToolbar } from '@/utils/hooks/table/useTableToolbar';
 import { isNonEmptyArray } from '@/utils/guards/isNonEmptyArray';
 import { dialogMessages } from '@/constants/message.constant';
+import { Button, Input } from 'tracks-manager-ui';
 
 interface TableToolbarProps {
   selectedIds: string[];

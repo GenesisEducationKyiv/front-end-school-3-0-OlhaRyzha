@@ -1,10 +1,10 @@
 import { cn } from '@/lib/utils';
-import { Input } from '../ui/input';
 import { Label } from '@radix-ui/react-label';
 import { Field, FieldProps } from 'formik';
 import { FormikError } from '../shared';
 import { isCoverImageField } from '@/utils/guards/isCoverImageField';
 import CoverImageField from './CoverImageField';
+import { Input } from 'tracks-manager-ui';
 
 interface FormFieldProps {
   name: string;
