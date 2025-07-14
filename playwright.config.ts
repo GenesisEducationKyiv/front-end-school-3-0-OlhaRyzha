@@ -1,8 +1,10 @@
 import { defineConfig, devices } from '@playwright/test';
+import dotenv from 'dotenv';
 
+dotenv.config();
 const isCI = !!process.env.CI;
-const devUrl = process.env.DEV_URL || 'http://localhost:3000';
-const prodUrl = process.env.PROD_URL || 'http://localhost:8080';
+const devUrl = process.env.DEV_URL;
+const prodUrl = process.env.PROD_URL;
 
 export default defineConfig({
   testDir: 'tests/e2e',
