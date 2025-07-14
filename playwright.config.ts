@@ -1,8 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 
 const isCI = !!process.env.CI;
-const devUrl = 'http://localhost:3000';
-const prodUrl = 'http://localhost:8080';
+const devUrl = process.env.DEV_URL || 'http://localhost:3000';
+const prodUrl = process.env.PROD_URL || 'http://localhost:8080';
 
 export default defineConfig({
   testDir: 'tests/e2e',
