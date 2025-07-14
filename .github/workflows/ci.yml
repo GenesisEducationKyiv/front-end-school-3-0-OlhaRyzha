@@ -24,8 +24,6 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         run: npm ci
-        env:
-          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
       - name: Lint
         run: npm run lint
       - name: Type check
@@ -51,12 +49,8 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         run: npm ci
-        env:
-          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
       - name: Build frontend
         run: npm run build
-        env:
-          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
@@ -86,14 +80,15 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         run: npm ci
-        env:
-          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
+      - name: Load environment variables from .env
+        run: |
+          set -o allexport
+          source .env
+          set +o allexport
       - name: Build and start frontend via Docker Compose
         run: docker compose up --build -d --no-deps frontend
-        env:
-          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
       - name: Wait for frontend
         run: |
           for i in {1..20}; do
@@ -106,8 +101,6 @@ jobs:
           echo "Frontend did not respond in time" && exit 1
       - name: Run E2E tests
         run: npx playwright test --config=playwright.config.ts
-        env:
-          PROD_URL: ${{ secrets.PROD_URL }}
       - if: failure()
         uses: actions/upload-artifact@v4
         with:
