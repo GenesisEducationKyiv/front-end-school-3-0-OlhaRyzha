@@ -43,6 +43,7 @@ const FormField = ({
             ) : (
               <Input
                 {...field}
+                value={field.value ?? ''}
                 id={name}
                 data-testid={testId}
                 placeholder={placeholder}

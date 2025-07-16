@@ -46,7 +46,7 @@ const CoverImageField = ({
             <div>
               <Input
                 {...field}
-                value={field.value as string}
+                value={field.value ?? ''}
                 onChange={handleUrlChange}
                 placeholder={placeholder}
                 data-testid={testId}
