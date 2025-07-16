@@ -11,6 +11,8 @@ import {
 } from '@/components/ui/tooltip';
 import { Loader } from '@/components/shared';
 import { Button } from 'tracks-manager-ui';
+import { Switch } from '@/components/ui/switch';
+import { useTheme } from '@/utils/hooks/theme/useTheme';
 
 const ActiveTrack = lazy(() =>
   import('@/components/ActiveTrack').then((m) => ({ default: m.ActiveTrack }))
@@ -25,6 +27,8 @@ const CreateTrackModal = lazy(() =>
 );
 
 function TracksPage() {
+  const { theme, toggleTheme } = useTheme();
+
   const [open, setOpen] = useState(false);
   const [isPlayerVisible, setIsPlayerVisible] = useState(true);
 
@@ -34,39 +38,49 @@ function TracksPage() {
 
   return (
     <main className='flex flex-col min-h-screen'>
-      <div className='sticky z-40 bg-white border-b'>
-        {isPlayerVisible && (
-          <Suspense fallback={<Loader loading />}>
-            <ActiveTrack />
-          </Suspense>
-        )}
-
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                size='icon'
-                variant='ghost'
-                onClick={handleTogglePlayer}
-                aria-label={isPlayerVisible ? 'Hide player' : 'Show player'}
-                data-testid='toggle-player-button'
-                className='absolute top-4 right-2 h-12 w-12'>
-                {isPlayerVisible ? <EyeClosed size={20} /> : <Eye size={20} />}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side='left'>
-              {isPlayerVisible ? 'Hide player' : 'Show player'}
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </div>
-
       <section className='p-6 flex-1 overflow-y-auto'>
-        <h1
-          data-testid='tracks-header'
-          className='text-2xl font-bold mb-4 capitalize'>
-          {TRACKS_LIST_KEY}
-        </h1>
+        <div className='flex justify-between items-center mb-4'>
+          <h1
+            data-testid='tracks-header'
+            className='text-2xl font-bold capitalize'>
+            {TRACKS_LIST_KEY}
+          </h1>
+          <div className='flex justify-center items-center gap-2'>
+            {isPlayerVisible && (
+              <Suspense fallback={<Loader loading />}>
+                <ActiveTrack />
+              </Suspense>
+            )}
+
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    size='icon'
+                    variant='ghost'
+                    onClick={handleTogglePlayer}
+                    aria-label={isPlayerVisible ? 'Hide player' : 'Show player'}
+                    data-testid='toggle-player-button'
+                    className='h-12 w-12'>
+                    {isPlayerVisible ? (
+                      <EyeClosed size={20} />
+                    ) : (
+                      <Eye size={20} />
+                    )}
+                  </Button>
+                </TooltipTrigger>
+
+                <TooltipContent side='left'>
+                  {isPlayerVisible ? 'Hide player' : 'Show player'}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <Switch
+              checked={theme === 'dark'}
+              onCheckedChange={toggleTheme}
+            />
+          </div>
+        </div>
 
         <Dialog
           open={open}
@@ -83,6 +97,7 @@ function TracksPage() {
             <CreateTrackModal onClose={() => setOpen(false)} />
           </Suspense>
         </Dialog>
+
         <Suspense fallback={<Loader loading />}>
           <TrackTable />
         </Suspense>

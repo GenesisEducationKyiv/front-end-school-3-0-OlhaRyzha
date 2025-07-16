@@ -3,6 +3,7 @@ import { SetFieldValueType } from '@/types/form';
 import { ToggleGenre } from '@/types/shared/genre';
 import { ErrorMessage } from 'formik';
 import { Plus, X } from '@/components/icons';
+import { Button } from '../ui/button';
 
 interface GenresSectionProps {
   selectedGenres: string[];
@@ -18,18 +19,19 @@ const GenresSection = ({
   setFieldValue,
 }: GenresSectionProps) => (
   <div>
-    <p className='text-sm font-medium mb-1'>Genres</p>
+    <p className='text-sm font-medium mb-2'>Genres:</p>
     <div
       className='genres-section-list'
       data-testid='genre-selector'>
       {allGenres.map((genre) => {
         const selected = selectedGenres.includes(genre);
         return (
-          <button
+          <Button
             type='button'
+            size='sm'
             key={genre}
             onClick={() => toggleGenre(genre, selectedGenres, setFieldValue)}
-            className={cn('genre-btn', {
+            className={cn({
               ['selected']: selected,
               ['unselected']: !selected,
             })}>
@@ -45,7 +47,7 @@ const GenresSection = ({
                 aria-label='Add genre'
               />
             )}
-          </button>
+          </Button>
         );
       })}
     </div>
