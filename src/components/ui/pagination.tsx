@@ -44,6 +44,7 @@ PaginationItem.displayName = 'PaginationItem';
 type PaginationLinkProps = {
   isActive?: boolean;
   disabled?: boolean;
+  variant?: ButtonProps['variant'];
 } & Pick<ButtonProps, 'size'> &
   React.ComponentProps<'a'>;
 
@@ -54,24 +55,16 @@ export const PaginationLink = ({
   className,
   ...props
 }: PaginationLinkProps) => {
-  const base = buttonVariants({
-    variant: isActive ? 'default' : 'ghost',
-    size,
-  });
-  const activeClasses = isActive
-    ? ''
-    : 'text-foreground hover:bg-accent hover:text-accent-foreground';
-  const disabledClasses = disabled
-    ? 'cursor-not-allowed disabled:text-gray-600'
-    : '';
+  const variant = isActive ? 'default' : 'paginationInactive';
+
   return (
     <a
       aria-current={isActive ? 'page' : undefined}
+      aria-disabled={disabled || undefined}
       className={cn(
-        base,
+        buttonVariants({ variant, size }),
         'min-h-[20px] min-w-[20px] flex items-center justify-center',
-        activeClasses,
-        disabledClasses,
+        disabled ? 'cursor-not-allowed opacity-50 pointer-events-none' : '',
         className
       )}
       {...props}
