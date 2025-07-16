@@ -13,6 +13,7 @@ import { Loader } from '@/components/shared';
 import { Button } from 'tracks-manager-ui';
 import { Switch } from '@/components/ui/switch';
 import { useTheme } from '@/utils/hooks/theme/useTheme';
+import { cn } from '@/lib/utils';
 
 const ActiveTrack = lazy(() =>
   import('@/components/ActiveTrack').then((m) => ({ default: m.ActiveTrack }))
@@ -37,7 +38,10 @@ function TracksPage() {
   const handleDialogOpenChange = (open: boolean) => setOpen(open);
 
   return (
-    <main className='flex flex-col min-h-screen'>
+    <main
+      className={cn('flex flex-col min-h-screen', {
+        'pb-20': isPlayerVisible,
+      })}>
       <section className='p-6 flex-1 overflow-y-auto'>
         <div className='flex justify-between items-center mb-4'>
           <h1

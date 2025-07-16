@@ -64,7 +64,7 @@ export const PaginationLink = ({
       className={cn(
         buttonVariants({ variant, size }),
         'min-h-[20px] min-w-[20px] flex items-center justify-center',
-        disabled ? 'cursor-not-allowed opacity-50 pointer-events-none' : '',
+        disabled ? 'cursor-not-allowed opacity-50' : '',
         className
       )}
       {...props}
