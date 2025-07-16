@@ -27,7 +27,7 @@ const CoverImageField = ({
 
   return (
     <div className='space-y-2'>
-      <div className='flex gap-2'>
+      <div className='flex gap-2 mt-2'>
         <RadioButton
           active={isUrlType}
           onClick={() => setInputType(INPUT_COVER_IMG_TYPES[0])}>

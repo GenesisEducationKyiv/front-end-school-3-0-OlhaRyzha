@@ -7,3 +7,10 @@
 .radio-btn.inactive {
   @apply border-gray-300 hover:bg-gray-50;
 }
+
+.dark .radio-btn.active {
+  @apply bg-muted border-white text-white;
+}
+.dark .radio-btn.inactive {
+  @apply border-muted hover:bg-muted;
+}

@@ -85,7 +85,7 @@ function CreateTrackModal({ track, onClose }: CreateTrackModalProps) {
   return (
     <DialogContent
       aria-describedby={undefined}
-      className='bg-white rounded-lg p-6 w-full max-h-[90vh] overflow-y-auto max-w-md'>
+      className='bg-background dark:bg-card rounded-lg p-6 w-full max-h-[90vh] overflow-y-auto max-w-md'>
       <DialogHeader>
         <DialogTitle>
           {track ? BTNS_LABELS.UPDATE_TRACK : BTNS_LABELS.CREATE_TRACK}

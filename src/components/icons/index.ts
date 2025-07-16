@@ -16,3 +16,5 @@ export { default as MoreHorizontal } from 'lucide-react/dist/esm/icons/more-hori
 export { default as Trash2 } from 'lucide-react/dist/esm/icons/trash-2';
 export { default as Eye } from 'lucide-react/dist/esm/icons/eye';
 export { default as EyeClosed } from 'lucide-react/dist/esm/icons/eye-off';
+export { default as Sun } from 'lucide-react/dist/esm/icons/sun';
+export { default as Moon } from 'lucide-react/dist/esm/icons/moon';
