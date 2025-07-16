@@ -8,7 +8,7 @@ A single-page React application for managing music tracks: create, edit, delete,
 
 1. **Create Track (metadata only)**
 
-   - Modal form (Formik + Yup) with client-side validation
+   - Modal form (Formik + Zod) with client-side validation
    - Fields: title, artist, album, genres (multi-select tags), cover image URL (with URL format validation & default placeholder)
 
 2. **Edit Track**
@@ -45,8 +45,8 @@ A single-page React application for managing music tracks: create, edit, delete,
 ## Tech Stack
 
 - **Framework**: React (Vite)
-- **State & Data**: React-Query, Redux Toolkit
-- **Form Validation**: Formik + Yup
+- **State & Data**: TanStack Query, Redux Toolkit
+- **Form Validation**: Formik + Zod
 - **UI Components**: shadcn/ui, Radix UI primitives
 - **Audio**: HTML5 `<audio>`, WaveSurfer.js
 - **Routing**: React Router v6
