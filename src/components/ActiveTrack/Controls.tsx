@@ -1,8 +1,8 @@
 import { FC } from 'react';
-import { Button } from '../ui/button';
 import { Shuffle, SkipBack, SkipForward } from 'lucide-react';
 import { useAppDispatch } from '@/store';
 import { toggleRandom } from '@/store/slices/activeTrack/activeTrackSlice';
+import { Button } from 'tracks-manager-ui';
 
 interface ControlsProps {
   onPrev: () => void;

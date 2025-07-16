@@ -6,7 +6,6 @@ import {
 } from '@/utils/hooks/tanStackQuery/useTracksQuery';
 import { useGenresQuery } from '@/utils/hooks/tanStackQuery/useGenresQuery';
 import { DialogHeader, DialogContent, DialogTitle } from '../ui/dialog';
-import { Button } from '../ui/button';
 import {
   formFields,
   getInitialValues,
@@ -24,6 +23,7 @@ import { GenresType } from '@/types/shared/genre';
 import { useToast } from '@/utils/hooks/use-toast';
 import { ApiError } from '@/utils/apiError';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
+import { Button } from 'tracks-manager-ui';
 
 export interface CreateTrackModalProps {
   track?: Track;

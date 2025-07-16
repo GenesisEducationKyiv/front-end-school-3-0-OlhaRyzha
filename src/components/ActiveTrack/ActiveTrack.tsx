@@ -2,7 +2,7 @@ import { useActiveTrackController } from '@/utils/hooks/audio/useActiveTrackCont
 import TrackInfo from './TrackInfo';
 import Controls from './Controls';
 import { TrackWaveform } from '../Audio';
-import { Skeleton } from '../ui/skeleton';
+import { Skeleton } from 'tracks-manager-ui';
 
 export default function ActiveTrack() {
   const { current, isLoading, random, next, prev } = useActiveTrackController();

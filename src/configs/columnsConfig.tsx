@@ -2,7 +2,6 @@ import { ColumnDef } from '@tanstack/react-table';
 import { Track } from '@/types/shared/track';
 import noCover from '@/assets/image_not_available.webp';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +13,7 @@ import {
 import { ArrowUpDown, MoreHorizontal, Trash2 } from '@/components/icons';
 import { formatDate } from '@/utils/formatDate';
 import { TrackWaveform } from '@/components/Audio';
+import { Button } from 'tracks-manager-ui';
 
 interface TrackColumnsOpts {
   selectMode: boolean;

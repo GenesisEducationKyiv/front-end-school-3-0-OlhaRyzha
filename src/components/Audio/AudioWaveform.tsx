@@ -1,9 +1,9 @@
-import { Skeleton } from '@/components/ui/skeleton';
 import { useWaveform } from '@/utils/hooks/audio/useWaveform';
 import { ValueSetter } from '@/types/base';
 import AnimatedWaveformContainer from './AnimatedWaveformContainer';
 import WaveformPlayButton from './WaveformPlayButton';
 import WaveformErrorTooltip from './WaveformErrorTooltip';
+import { Skeleton } from 'tracks-manager-ui';
 
 interface WaveformProps {
   url: ValueSetter<string>;

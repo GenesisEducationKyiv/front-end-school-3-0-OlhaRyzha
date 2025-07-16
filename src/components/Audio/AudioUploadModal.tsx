@@ -8,13 +8,13 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
 import type { Track } from '@/types/shared/track';
 import { BTNS_LABELS } from '@/constants/labels.constant';
 import { audioUploadMessages } from '@/constants/message.constant';
 import { useAudioUpload } from '@/utils/hooks/audio/useAudioUpload';
 import { ValueSetter } from '@/types/base';
 import TrackWaveform from './TrackWaveform';
+import { Button, Input } from 'tracks-manager-ui';
 
 interface AudioUploadModalProps {
   track: Track;
@@ -65,7 +65,7 @@ function AudioUploadModal({
           </DialogDescription>
         </DialogHeader>
 
-        <input
+        <Input
           ref={fileRef}
           type='file'
           accept='audio/*'
