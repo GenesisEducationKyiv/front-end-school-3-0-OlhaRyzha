@@ -13,6 +13,7 @@ import { Loader } from '@/components/shared';
 import { Button } from 'tracks-manager-ui';
 import { Switch } from '@/components/ui/switch';
 import { useTheme } from '@/utils/hooks/theme/useTheme';
+import { Button } from 'tracks-manager-ui';
 
 const ActiveTrack = lazy(() =>
   import('@/components/ActiveTrack').then((m) => ({ default: m.ActiveTrack }))

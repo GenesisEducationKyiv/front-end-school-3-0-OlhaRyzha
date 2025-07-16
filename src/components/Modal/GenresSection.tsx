@@ -3,7 +3,7 @@ import { SetFieldValueType } from '@/types/form';
 import { ToggleGenre } from '@/types/shared/genre';
 import { ErrorMessage } from 'formik';
 import { Plus, X } from '@/components/icons';
-import { Button } from '../ui/button';
+import { Button } from 'tracks-manager-ui';
 
 interface GenresSectionProps {
   selectedGenres: string[];
