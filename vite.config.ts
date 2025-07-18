@@ -4,21 +4,12 @@ import path from 'node:path';
 import { visualizer } from 'rollup-plugin-visualizer';
 import viteCompression from 'vite-plugin-compression';
 import compression from 'compression';
-import purgecss from 'vite-plugin-purgecss';
 
 const devCompressionPlugin: Plugin = {
   name: 'dev-compression',
   configureServer(server) {
     server.middlewares.use(compression());
   },
-};
-
-const purgeCssPlugin: Plugin<'post'> = {
-  ...purgecss({
-    content: ['./index.html', './src/**/*.{tsx,ts,jsx,js}'],
-    safelist: ['dark', 'light'],
-  }),
-  enforce: 'post',
 };
 
 export default defineConfig({
@@ -32,8 +23,8 @@ export default defineConfig({
       ext: '.br',
     }),
     devCompressionPlugin,
-    purgeCssPlugin,
   ],
+
   css: { postcss: './postcss.config.cjs' },
   resolve: { alias: { '@': path.resolve(__dirname, 'src') } },
   base: '/tracker/',
