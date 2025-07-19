@@ -1,0 +1,7 @@
+.genres-section-list {
+  @apply flex flex-wrap gap-2;
+}
+
+.genre-error {
+  @apply text-red-500 text-xs;
+}

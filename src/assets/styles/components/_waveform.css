@@ -1,0 +1,18 @@
+.waveform-container {
+  @apply min-w-[200px] flex items-center gap-1 bg-gray-50 p-2 rounded-xl shadow-lg border border-gray-200;
+}
+
+.waveform-play-btn {
+  @apply w-10 h-10 flex justify-center items-center bg-gray-800 hover:bg-gray-700 transition rounded-full shadow-md;
+}
+
+.waveform-broken-img {
+  @apply w-10 h-10 opacity-50;
+}
+
+.waveform-progress {
+  @apply flex-1 min-w-0;
+}
+.waveform-icon {
+  @apply text-white w-5 h-5;
+}
